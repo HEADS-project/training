@@ -72,7 +72,7 @@ thing HelloTimer includes TimerClient {
 			end
 			
 			transition -> Init //this will loop on the Init state, and start a new timer
-			//event //TODO: make the transition to be triggered by a timer_timeout event received on the timer port
+			//event myPort?myMessage //TODO: make the transition to be triggered by a timer_timeout event received on the timer port
 			action do
 				//TODO: print hello
 			end

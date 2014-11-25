@@ -12,7 +12,7 @@ thing fragment ClockMsgs {
 
 thing fragment Clock includes ClockMsgs 
 {
-	readonly property period : Integer = 1000 // clock period in ms
+	readonly property period : Integer = 100 // clock period in ms
 	
 	provided port signal {
 		sends clock_tick
@@ -36,12 +36,14 @@ thing ClockLinux includes Clock
 	do
 		while (1) do
 			sleep_ms(period)
-			signal!clock_tick()
+            signal!clock_tick()
 		end
 	end
 	
 	statechart ClockImpl init Ticking {
-		on entry start_clock_process()
+		on entry do
+            start_clock_process()
+        end
 		state Ticking{}
 	}
 }
@@ -54,14 +56,14 @@ thing TimerLinux includes Timer, ClockMsgs
 	required port clock { receives clock_tick }
 	
 	//To use timer in millisecond, set "millisecond" to true and "period" to the period of the clock
-	readonly property millisecond : Boolean = false
+	readonly property millisecond : Boolean = true
 	readonly property period : Integer = 100
 	
 	statechart ClockTimerImpl init Idle {
 		
 		property remaining : Integer = 0
 		
-		state Idle {
+        state Idle {
 			transition -> Counting event m : timer?timer_start action remaining = m.delay 
 		}
 		
@@ -79,9 +81,9 @@ thing TimerLinux includes Timer, ClockMsgs
 
 }
 
-configuration TestTimerJava {
+configuration TestTimerC {
     instance clock : ClockLinux
-	set clock.period = 1000
+	set clock.period = 100
 	instance timer : TimerLinux
 	connector timer.clock => clock.signal
     instance client : HelloTimer//this is your application
