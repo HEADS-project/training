@@ -1,7 +1,6 @@
-![HEADS](http://heads-project.eu/sites/default/files/heads_large.png)
-
 HEADS IDE Training and Turorials
 ================================
+![HEADS](http://heads-project.eu/sites/default/files/heads_large.png)
 
 This repository contains a set of tutorials to get started with the technologies developped in the [HEADS research project](http://heads-project.eu/). 
 
