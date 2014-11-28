@@ -5,13 +5,14 @@ HEADS IDE Training and Turorials
 
 This repository contains a set of tutorials to get started with the technologies developped in the [HEADS research project](http://heads-project.eu/). 
 
-These tutorial are currently used internally in the HEADS project in order to evaluate the initial release of the HEADS IDE. However, these tutorial can be followed by external developpers with no prior knoledge of the HEADS technologies. Do not hesitate to contact us if you have any enquiery or would like more information.
+These tutorials are currently used internally in the HEADS project in order to evaluate the initial release of the HEADS IDE. However, these tutorial can be followed by external developpers with no prior knoledge of the HEADS technologies. Do not hesitate to contact us if you have any enquiery or would like more information.
 
-# List of tutorial
+# List of tutorials
 
-We currently have a list of 5 tutorial to be developped. We will update there description when they are available. These tutorial typically assume that you follow them in order but ThingML and Kevoree tutorial might be followed independently.
+We currently have a list of 5 tutorials (under development). We will update there description when they are available. These tutorial typically assume that you follow them in order but ThingML and Kevoree tutorial might be followed independently.
 
 ## 1. HEADS ThingML modelling language basics
+Learn the basics of ThingML. How to write you first program in a platform independent way and compile it to different platfroms ranging from an Arduino microcontroller to a plan Java program. Also learn how to write platform specific components and link to exiting APIs or libraries.
 
 ## 2. HEADS Kervoree runtime management basics
 
