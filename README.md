@@ -5,3 +5,10 @@ This repository contains a set of tutorials to get started with the technologies
 
 These tutorial are currently used internally in the HEADS project in order to evaluate the initial release of the HEADS IDE. However, these tutorial can be followed by external developpers with no prior knoledge of the HEADS technologies. Do not hesitate to contact us if you have any enquiery or would like more information.
 
+
+Contact us
+==========
+
+HEADS project: Franck FLEUREY (franck.fleurey@sintef.no)
+ThingML tools: Brice MORIN (brice.morin@sintef.no)
+Kevoree tools: Olivier Barais (obarais@irisa.fr)
