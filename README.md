@@ -9,11 +9,17 @@ These tutorial are currently used internally in the HEADS project in order to ev
 
 # List of tutorial
 
+We currently have a list of 5 tutorial to be developped. We will update there description when they are available. These tutorial typically assume that you follow them in order but ThingML and Kevoree tutorial might be followed independently.
+
 ## 1. HEADS ThingML modelling language basics
 
 ## 2. HEADS Kervoree runtime management basics
 
-## 3. HEADS From design time to runtime 
+## 3. HEADS From design time to runtime (ThingML + Kevoree)
+
+## 4. HEADS ThingML modelling language "advanced"
+
+## 5. HEADS Kervoree runtime management "advanced"
 
 # Reporting issues, getting support, etc
 
