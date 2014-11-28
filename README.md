@@ -9,6 +9,6 @@ These tutorial are currently used internally in the HEADS project in order to ev
 Contact us
 ==========
 
-HEADS project: Franck FLEUREY (franck.fleurey@sintef.no)
-ThingML tools: Brice MORIN (brice.morin@sintef.no)
-Kevoree tools: Olivier Barais (obarais@irisa.fr)
+* HEADS project: Franck FLEUREY (franck.fleurey@sintef.no)
+* ThingML tools: Brice MORIN (brice.morin@sintef.no)
+* Kevoree tools: Olivier Barais (obarais@irisa.fr)
