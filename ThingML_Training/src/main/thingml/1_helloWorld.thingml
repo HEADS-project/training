@@ -15,7 +15,7 @@ thing HelloThing {
 		}
 	
 		state Bye {
-			on entry print "Bye."
+			on entry print "Bye.\n"
 		}
 	
 	}
