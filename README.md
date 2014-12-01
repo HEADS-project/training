@@ -7,30 +7,41 @@ This repository contains a set of tutorials to get started with the technologies
 
 These tutorials are currently used internally in the HEADS project in order to evaluate the initial release of the HEADS IDE. However, these tutorial can be followed by external developpers with no prior knoledge of the HEADS technologies. Do not hesitate to contact us if you have any enquiery or would like more information.
 
-# List of tutorials
+## List of tutorials
 
 We currently have a list of 5 tutorials (under development). We will update there description when they are available. These tutorial typically assume that you follow them in order but ThingML and Kevoree tutorial might be followed independently.
 
-## 1. HEADS ThingML modelling language basics
+### 1. HEADS ThingML modelling language basics
+
 Learn the basics of ThingML. How to write you first program in a platform independent way and compile it to different platfroms ranging from an Arduino microcontroller to a plan Java program. Also learn how to write platform specific components and link to exiting APIs or libraries.
 
-## 2. HEADS Kervoree runtime management basics
+**[Go to this tutorial](https://github.com/HEADS-project/training/tree/master/1.ThingML_Basics) ** (Beta version released on 01/12/2014, your feedback is welcome).
 
-## 3. HEADS From design time to runtime (ThingML + Kevoree)
+### 2. HEADS Kervoree runtime management basics
 
-## 4. HEADS ThingML modelling language "advanced"
+To be released around 15/12/2014.
 
-## 5. HEADS Kervoree runtime management "advanced"
+### 3. HEADS From design time to runtime (ThingML + Kevoree)
 
-# Quick Links
+To be released around 01/01/2015.
+
+### 4. HEADS ThingML modelling language "advanced"
+
+To be released around 30/01/2015.
+
+### 5. HEADS Kervoree runtime management "advanced"
+
+To be released around 15/02/2015.
+
+## Quick Links
 
 Installing the HEADS IDE: https://heads-project.github.io/methodology/heads_ide/installation_guide.html
 
-# Reporting issues, getting support, etc
+## Reporting issues, getting support, etc
 
 If you encouter any problem, find a bug or have suggestions for additional features, please use the HEADS IDE bug tracker at https://github.com/HEADS-project/heads_ide/issues. This is the best and prefered way of getting in touch with us.
 
-# Contact us
+## Contact us
 
 For any other issue feel free to contact any of us by email.
 
