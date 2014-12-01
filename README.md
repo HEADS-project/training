@@ -36,4 +36,4 @@ For any other issue feel free to contact any of us by email.
 
 * HEADS project: Franck FLEUREY (franck.fleurey@sintef.no)
 * ThingML tools: Brice MORIN (brice.morin@sintef.no)
-* Kevoree tools: Olivier Barais (obarais@irisa.fr)
+* Kevoree tools: Olivier Barais (barais@irisa.fr)
