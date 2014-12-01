@@ -15,6 +15,11 @@ Learn the basics of ThingML. How to write you first program in a platform indepe
 * Specializing ThingML platform independent components to different platforms
 * Writing an additional example program in ThingML
 
+**Note:**
+
+* Some documentation on the ThingML syntax can be found on the [ThingML web site](http://thingml.org/) . It is currently incomplete but might be useful.
+* A lot of ThingML example programs can be found [here](https://github.com/SINTEF-9012/ThingML/tree/master/org.thingml.samples/src/main/thingml).
+
 
 ### 0. Installing the HEADS tools for ThingML
 
@@ -142,4 +147,4 @@ For any other issue feel free to contact any of us by email.
 
 * HEADS project: Franck FLEUREY (franck.fleurey@sintef.no)
 * ThingML tools: Brice MORIN (brice.morin@sintef.no)
-* Kevoree tools: Olivier Barais (obarais@irisa.fr)
+* Kevoree tools: Olivier Barais (obarais@irisa.fr)
