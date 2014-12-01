@@ -1,4 +1,4 @@
-import "../4_almostOnYourOwn.thingml"
+import "../Timer.thingml"
 
 datatype Boolean	
 	@c_type "uint8_t"

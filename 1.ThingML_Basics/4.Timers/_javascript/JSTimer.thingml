@@ -1,4 +1,4 @@
-import "../4_almostOnYourOwn.thingml"
+import "../Timer.thingml"
 
 // Manage a set of software timers.
 thing TimerJS includes Timer

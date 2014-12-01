@@ -1,4 +1,4 @@
-import "../3_simpleDriver.thingml"
+import "../CustomPrinter.thingml"
 
 thing JavaPrinter includes CustomPrinter {
 

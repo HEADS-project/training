@@ -1,4 +1,4 @@
-import "../4_almostOnYourOwn.thingml"
+import "../Timer.thingml"
 
 datatype JThread
 @java_type "Thread";
