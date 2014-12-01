@@ -22,6 +22,10 @@ Learn the basics of ThingML. How to write you first program in a platform indepe
 
 ## 5. HEADS Kervoree runtime management "advanced"
 
+# Quick Links
+
+Installing the HEADS IDE: https://heads-project.github.io/methodology/heads_ide/installation_guide.html
+
 # Reporting issues, getting support, etc
 
 If you encouter any problem, find a bug or have suggestions for additional features, please use the HEADS IDE bug tracker at https://github.com/HEADS-project/heads_ide/issues. This is the best and prefered way of getting in touch with us.
