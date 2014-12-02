@@ -1,4 +1,4 @@
-HEADS IDE Training and Turorials
+HEADS IDE Training and Tutorials
 ================================
 
 ![HEADS](http://heads-project.eu/sites/default/files/heads_large.png)
