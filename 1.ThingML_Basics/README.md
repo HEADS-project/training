@@ -106,7 +106,7 @@ The Javascript compiler produces code which is meant to run with NodeJS. In orde
 
 To run the generated code, go to the generated directory and run:
 
-	nodejs behavior.js
+	node behavior.js
 
 That is it!
 
