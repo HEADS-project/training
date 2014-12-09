@@ -23,9 +23,9 @@ Learn the basics of ThingML. How to write you first program in a platform indepe
 
 ### 0. Installing the HEADS tools for ThingML
 
-To follow this tutorial, you need to have the ThingML editor and compilers. They are released as plugins for the Eclipse IDE. There are two options for installing the ThingML tools: 
+To follow this tutorial, you need to have the ThingML editor and compilers. They are released as plugins for the Eclipse IDE. There are two different options for installing the ThingML tools: 
 
-* Download the latest HEADS IDE Eclipse bundle. This bundle contains all the HEADS plugins already installed. Information on downloading and installing can be found [here](https://github.com/HEADS-project/heads_ide/issues).
+* [Download the latest HEADS IDE Eclipse bundle](http://coreff5.istic.univ-rennes1.fr/jenkins/job/headside/ws/products/target/products/). This bundle contains all the HEADS plugins already installed.
 
 * Install the ThingML plugin in your own installation of Eclipse. [Follow the instructions](http://thingml.org/pmwiki.php?n=Main.OnlineDemo) on how to install the eclipse plugins.
 
