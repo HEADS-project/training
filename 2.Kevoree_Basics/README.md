@@ -1,0 +1,30 @@
+HEADS Kevoree runtime management basics
+===
+
+![HEADS](http://heads-project.eu/sites/default/files/heads_large.png)
+
+Learn the basics of Kevoree. How to write your own components targeting the Kevoree Java or Kevoree JavaScript platforms, and use the different Kevoree tools in order to apply some reconfigurations over your running systems.
+
+
+
+
+**This tutorial covers:**
+
+* Basic Kevoree syntax (through a set of examples)
+* Compiling to 2 different platforms (Java, JavaScript)
+* Running the compiled code on the 2 different platforms (using Kevoree Script)
+* Apply some reconfigurations over your running system (using the Kevoree Web Editor)
+
+**Note:**
+
+* Some documentation on the Kevoree syntax can be found on the [Kevoree Book website](http://kevoree.github.io/kevoree-book/) . It is currently incomplete but might be useful.
+* A lot of Kevoree example programs can be found [here](https://github.com/kevoree/kevoree-library) and also [here](https://github.com/kevoree/kevoree-samples). Be warned that they might be outdated.
+
+
+
+
+### 1.HelloWorld
+[HelloWorld Tutorial](https://github.com/HEADS-project/training/blob/master/2.Kevoree_Basics/1.HelloWorld/README.md)
+
+### 2.TODO
+TODO
