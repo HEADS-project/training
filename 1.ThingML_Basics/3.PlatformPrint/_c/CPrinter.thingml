@@ -1,4 +1,4 @@
-import "../CustomPrint.thingml"
+import "../CustomPrinter.thingml"
 
 thing CPrinter includes CustomPrinter {
 
