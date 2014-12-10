@@ -5,7 +5,13 @@
 	<projects>
 	</projects>
 	<buildSpec>
+		<buildCommand>
+			<name>org.sintef.thingml.resource.thingml.builder</name>
+			<arguments>
+			</arguments>
+		</buildCommand>
 	</buildSpec>
 	<natures>
+		<nature>org.sintef.thingml.resource.thingml.nature</nature>
 	</natures>
 </projectDescription>

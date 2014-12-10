@@ -1,0 +1,66 @@
+/**
+We have seen in the previous samples that we intensively relied on the print statement provided by ThingML.
+Now, imagine ThingML does not provide this statement directly in the language.
+We will detail how we can wrap the print facilities of the different platforms (C, Java, JavaScript) into a platform-independent thing
+that we can use as a replacement of the print statement of ThingML
+*/
+
+datatype String
+@c_type "char *"
+@c_byte_size "*"
+@java_type "String"
+@js_type "String";
+
+datatype Integer	
+	@c_type "int"
+	@c_byte_size "2"
+	@java_type "short"
+	@java_primitive "true"
+	@js_type "short";
+
+
+
+/**
+First, we define our customPrint message that takes a String as parameter.
+Note that we first defined the String datatype, and a mapping to the different plaforms
+*/
+thing fragment CustomPrintMsgs {
+	message customPrintS(myString : String);
+	message customPrintI(myInt : Integer);
+}
+
+/**
+Then, we organize this message into a port.
+Our custom printer will basically receive this message and
+use some system primitives to perform the print.
+However at this point, the thing is still platform indepdent (no C, no Java, no JavaScript here)
+*/
+thing fragment CustomPrinter includes CustomPrintMsgs {
+	
+	//The API (this port) is fully platform-independent	
+	required port Print {
+		receives customPrintS, customPrintI
+	}
+	
+	//The behavior is platform specific and will be implemented in the respective _c, _java and _javascript folders
+}
+
+/**
+This is how we refactor the hello world to use the custom printer.
+Note that despite the fact the CustomPrinter things needs to be implemented for the different platforms,
+the clients of the CustomPrinter can be platform independent, like the one below.
+
+As an analogy, it is like declaring a reference to a Java interface. You can use any method/attribute on that reference
+no matter how it is implemented. 
+*/
+thing fragment CustomPrinterClientPort includes CustomPrintMsgs{
+	
+	provided port Print {
+		sends customPrintS, customPrintI
+	}
+}
+	
+
+/**
+You can go in the respective _c, _java and _javascript folders see how we implemented the platform-specific printers for C, Java and Javascript
+*/
