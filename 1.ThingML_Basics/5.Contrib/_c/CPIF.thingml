@@ -1,0 +1,142 @@
+import "../PrintIncForward.thingml"
+
+datatype Boolean	
+	@c_type "uint8_t"
+	@c_byte_size "2"
+	@java_type "boolean"
+	@java_primitive "true";
+	
+
+thing CPrinter includes CustomPrinter {
+
+	statechart behavior init greetings {
+	
+		state greetings {
+			internal event p : Print?customPrintS
+			action do 
+				'fprintf(stdout, ' & p.myString & ');' //this is how we mix C code and ThingML code
+			end
+			internal event p : Print?customPrintI
+			action do 
+				'fprintf(stdout, " %d ",' & p.myInt & ');' //this is how we mix C code and ThingML code
+			end
+		}
+	
+	}
+
+}
+
+
+thing fragment ClockMsgs {
+	message clock_tick();
+}
+
+thing fragment Clock includes ClockMsgs 
+{
+	readonly property period : Integer = 100 // clock period in ms
+	
+	provided port signal {
+		sends clock_tick
+	}
+}
+
+thing ClockLinux includes Clock 
+@c_headers "#include <sys/time.h>"
+{
+
+	function sleep_ms(timeout_ms : Integer)
+	do
+		'struct timeval tv;
+        tv.tv_sec = '& timeout_ms &'/1000;
+        tv.tv_usec = ('& timeout_ms &'%1000) * 1000;
+        select(0, NULL, NULL, NULL, &tv);'
+	end
+	
+	function start_clock_process()
+	@fork_linux_thread "true"
+	do
+		while (1) do
+			sleep_ms(period)
+            signal!clock_tick()
+		end
+	end
+	
+	statechart ClockImpl init Ticking {
+		on entry do
+            start_clock_process()
+        end
+		state Ticking{}
+	}
+}
+
+thing TimerLinux includes Timer, ClockMsgs 
+@pim "Timer"
+@platform "linux"
+{
+
+	required port clock { receives clock_tick }
+	
+	//To use timer in millisecond, set "millisecond" to true and "period" to the period of the clock
+	readonly property millisecond : Boolean = true
+	readonly property period : Integer = 100
+	
+	statechart ClockTimerImpl init Idle {
+		
+		property remaining : Integer = 0
+		
+        state Idle {
+			transition -> Counting event m : timer?timer_start action remaining = m.delay 
+		}
+		
+		state Counting {
+			transition -> Idle event timer?timer_cancel
+			transition -> Idle event clock?clock_tick guard remaining == 0 action timer!timer_timeout()
+			internal event clock?clock_tick guard remaining > 0 action do 
+				if (not millisecond) remaining = remaining - 1
+				if (millisecond) remaining = remaining - period
+			end 
+			
+		}
+	
+	}
+
+}
+
+configuration CPIF {
+	instance printer : CPrinter
+    instance clock : ClockLinux
+	set clock.period = 100
+	instance timer : TimerLinux
+	connector timer.clock => clock.signal
+    instance starter : PIFStarter
+    connector starter.timer => timer.timer    
+    connector printer.Print => starter.Print
+    instance pif1 : PIFIncDec
+    connector printer.Print => pif1.Print
+    instance pif2 : PIFIncDec
+    connector printer.Print => pif2.Print
+    instance pif3 : PIFIncDec
+    connector printer.Print => pif3.Print
+    instance pif4 : PIFIncDec
+    connector printer.Print => pif4.Print
+    instance pif5 : PIFIncDec
+    connector printer.Print => pif5.Print
+    instance pif6 : PIFIncDec
+    connector printer.Print => pif6.Print
+    instance ender : PIFEnder
+    connector printer.Print => ender.Print
+    connector pif1.from_starter => starter.to_ender     
+    connector pif2.from_starter => pif1.to_ender    
+    connector pif3.from_starter => pif2.to_ender    
+    connector pif4.from_starter => pif3.to_ender    
+    connector pif5.from_starter => pif4.to_ender    
+    connector pif6.from_starter => pif5.to_ender    
+    connector ender.from_starter => pif6.to_ender    
+    connector pif6.from_ender => ender.to_starter    
+    connector pif5.from_ender => pif6.to_starter    
+    connector pif4.from_ender => pif5.to_starter    
+    connector pif3.from_ender => pif4.to_starter    
+    connector pif2.from_ender => pif3.to_starter    
+    connector pif1.from_ender => pif2.to_starter    
+    connector starter.from_ender => pif1.to_starter    
+}

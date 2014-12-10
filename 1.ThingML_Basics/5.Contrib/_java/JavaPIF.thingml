@@ -1,0 +1,102 @@
+import "../PrintIncForward.thingml"
+
+
+thing JavaPrinter includes CustomPrinter {
+
+	statechart behavior init greetings {
+	
+		state greetings {
+			internal event p : Print?customPrintS
+			action do 
+				'System.out.print(' & p.myString & ');' //this is how we mix Java code and ThingML code
+			end
+			internal event p : Print?customPrintI
+			action do 
+				'System.out.print( " " + ' & p.myInt & ' + " ");' //this is how we mix Java code and ThingML code
+			end
+		}
+	
+	}
+
+}
+
+datatype JThread
+@java_type "Thread";
+
+// Manage a set of software timers.
+thing TimerJava includes Timer
+@pim "Timer"
+@platform "java"
+{
+    property timer : JThread
+
+    statechart SoftTimer init default {
+        state default {
+
+          internal start
+            event m : timer?timer_start
+            guard m.delay > 0
+            action do
+             if (not(timer == 'null')) do
+                '' & timer & '.interrupt();'
+             end
+             'Thread t = new Thread(){
+                public void run() {
+				try {
+					Thread.sleep(' & m.delay & ');'
+					timer!timer_timeout()
+				'} catch (Exception ex) {
+				}
+				interrupt();
+			    }
+              };'
+             timer = 't' 
+              '' & timer & '.start();'                
+            end
+            
+          internal cancel
+            event m : timer?timer_cancel
+            action do
+              if (not(timer == 'null')) do
+                '' & timer & '.interrupt();'
+              end
+            end
+        }
+    }
+}
+
+configuration JavaPIF {
+	instance printer : JavaPrinter
+    instance timer : TimerJava
+    instance starter : PIFStarter
+    connector starter.timer => timer.timer    
+    connector printer.Print => starter.Print
+    instance pif1 : PIFIncDec
+    connector printer.Print => pif1.Print
+    instance pif2 : PIFIncDec
+    connector printer.Print => pif2.Print
+    instance pif3 : PIFIncDec
+    connector printer.Print => pif3.Print
+    instance pif4 : PIFIncDec
+    connector printer.Print => pif4.Print
+    instance pif5 : PIFIncDec
+    connector printer.Print => pif5.Print
+    instance pif6 : PIFIncDec
+    connector printer.Print => pif6.Print
+    instance ender : PIFEnder
+    connector printer.Print => ender.Print
+    connector pif1.from_starter => starter.to_ender     
+    connector pif2.from_starter => pif1.to_ender    
+    connector pif3.from_starter => pif2.to_ender    
+    connector pif4.from_starter => pif3.to_ender    
+    connector pif5.from_starter => pif4.to_ender    
+    connector pif6.from_starter => pif5.to_ender    
+    connector ender.from_starter => pif6.to_ender    
+    connector pif6.from_ender => ender.to_starter    
+    connector pif5.from_ender => pif6.to_starter    
+    connector pif4.from_ender => pif5.to_starter    
+    connector pif3.from_ender => pif4.to_starter    
+    connector pif2.from_ender => pif3.to_starter    
+    connector pif1.from_ender => pif2.to_starter    
+    connector starter.from_ender => pif1.to_starter    
+}
