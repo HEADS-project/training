@@ -28,7 +28,7 @@ Learn the basics of Kevoree. How to write your own components targeting the Kevo
 [JavaScript HelloWorld Tutorial](https://github.com/HEADS-project/training/tree/master/2.Kevoree_Basics/1.HelloWorld/js)
 
 ### 2.HelloWorld++
-Java HelloWorld++ Tutorial - TODO  
+[Java HelloWorld++ Tutorial](https://github.com/HEADS-project/training/tree/master/2.Kevoree_Basics/2.HelloWorld++/java)
 [JavaScript HelloWorld++ Tutorial](https://github.com/HEADS-project/training/tree/master/2.Kevoree_Basics/2.HelloWorld++/js)
 
 ### 3.TODO
