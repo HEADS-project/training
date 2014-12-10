@@ -24,11 +24,13 @@ Learn the basics of Kevoree. How to write your own components targeting the Kevo
 
 
 ### 1.HelloWorld
-[Java HelloWorld Tutorial](https://github.com/HEADS-project/training/tree/master/2.Kevoree_Basics/1.HelloWorld/java)  
-[JavaScript HelloWorld Tutorial](https://github.com/HEADS-project/training/tree/master/2.Kevoree_Basics/1.HelloWorld/js)
+[Java Tutorial](https://github.com/HEADS-project/training/tree/master/2.Kevoree_Basics/1.HelloWorld/java)  
+[JavaScript Tutorial](https://github.com/HEADS-project/training/tree/master/2.Kevoree_Basics/1.HelloWorld/js)
 
 ### 2.HelloWorld++
-[Java HelloWorld++ Tutorial](https://github.com/HEADS-project/training/tree/master/2.Kevoree_Basics/2.HelloWorld++/java)  
-[JavaScript HelloWorld++ Tutorial](https://github.com/HEADS-project/training/tree/master/2.Kevoree_Basics/2.HelloWorld++/js)
+[Java Tutorial](https://github.com/HEADS-project/training/tree/master/2.Kevoree_Basics/2.HelloWorld++/java)  
+[JavaScript Tutorial](https://github.com/HEADS-project/training/tree/master/2.Kevoree_Basics/2.HelloWorld++/js)
 
-### 3.TODO
+### 3.Runtime reconfigurations using the Kevoree Web Editor
+Java Tutorial - TODO  
+[JavaScript Tutorial](https://github.com/HEADS-project/training/tree/master/2.Kevoree_Basics/3.Runtime_Reconfigurations/js)
