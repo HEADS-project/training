@@ -1,4 +1,4 @@
-> :warning: This tutorial is the sequel of [1.HelloWorld - JavaScript](https://github.com/HEADS-project/training/tree/master/2.Kevoree_Basics/1.HelloWorld/js), be sure to do the previous tutorial first.
+> :warning: This tutorial is the sequel of [1.HelloWorld - Java](https://github.com/HEADS-project/training/tree/master/2.Kevoree_Basics/1.HelloWorld/java), be sure to do the previous tutorial first.
 
 #### Purpose of the HelloWorld++ component
 Now we want to extend the previous [HelloWorld component](https://github.com/HEADS-project/training/tree/master/2.Kevoree_Basics/1.HelloWorld/js)
