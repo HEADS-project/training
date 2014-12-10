@@ -1,7 +1,7 @@
 > :warning: This tutorial is the sequel of [1.HelloWorld - Java](https://github.com/HEADS-project/training/tree/master/2.Kevoree_Basics/1.HelloWorld/java), be sure to do the previous tutorial first.
 
 #### Purpose of the HelloWorld++ component
-Now we want to extend the previous [HelloWorld component](https://github.com/HEADS-project/training/tree/master/2.Kevoree_Basics/1.HelloWorld/js)
+Now we want to extend the previous [HelloWorld component](https://github.com/HEADS-project/training/tree/master/2.Kevoree_Basics/1.HelloWorld/java)
 so that you can dynamically change the content of the displayed "Hello, world!" message.  
 For that, you will use the Kevoree concept: **dictionary attribute**
 
