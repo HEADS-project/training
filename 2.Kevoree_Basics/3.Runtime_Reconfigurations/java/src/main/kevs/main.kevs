@@ -1,0 +1,10 @@
+// the node that hosts your component
+add node0 : JavaNode
+
+// create and add your HelloWorld component (named "myComp") in "node0"
+add node0.myComp : org.kevoree.example.HelloWorld
+
+// add an instance of WSGroup named "sync"
+add sync : WSGroup
+// attach your host node "node0" to the WSGroup group
+attach node0 sync

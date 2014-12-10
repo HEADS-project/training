@@ -32,5 +32,5 @@ Learn the basics of Kevoree. How to write your own components targeting the Kevo
 [JavaScript Tutorial](https://github.com/HEADS-project/training/tree/master/2.Kevoree_Basics/2.HelloWorld++/js)
 
 ### 3.Runtime reconfigurations using the Kevoree Web Editor
-Java Tutorial - TODO  
+[Java Tutorial](https://github.com/HEADS-project/training/tree/master/2.Kevoree_Basics/3.Runtime_Reconfigurations/java)  
 [JavaScript Tutorial](https://github.com/HEADS-project/training/tree/master/2.Kevoree_Basics/3.Runtime_Reconfigurations/js)
