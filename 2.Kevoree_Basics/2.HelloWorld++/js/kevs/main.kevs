@@ -1,0 +1,11 @@
+// the node that hosts your component
+add node0 : JavascriptNode
+
+// create and add your HelloWorld component (named "myComp") in "node0"
+add node0.myComp : org.kevoree.example.HelloWorld
+
+// change the value of "greetMessage" attribute
+set node0.myComp.greetMessage = 'Hello, HEADS!'
+
+// set the node log level to 'info' so that we do not get the debug logs
+set node0.logLevel = 'info'
