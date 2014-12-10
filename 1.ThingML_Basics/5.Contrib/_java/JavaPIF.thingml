@@ -1,0 +1,73 @@
+import "../PrintIncForward.thingml"
+
+datatype JThread
+@java_type "Thread";
+
+// Manage a set of software timers.
+thing TimerJava includes Timer
+@pim "Timer"
+@platform "java"
+{
+    property timer : JThread
+
+    statechart SoftTimer init default {
+        state default {
+
+          internal start
+            event m : timer?timer_start
+            guard m.delay > 0
+            action do
+             if (not(timer == 'null')) do
+                '' & timer & '.interrupt();'
+             end
+             'Thread t = new Thread(){
+                public void run() {
+				try {
+					Thread.sleep(' & m.delay & ');'
+					timer!timer_timeout()
+				'} catch (Exception ex) {
+				}
+				interrupt();
+			    }
+              };'
+             timer = 't' 
+              '' & timer & '.start();'                
+            end
+            
+          internal cancel
+            event m : timer?timer_cancel
+            action do
+              if (not(timer == 'null')) do
+                '' & timer & '.interrupt();'
+              end
+            end
+        }
+    }
+}
+
+configuration JavaPIF {
+    instance timer : TimerJava
+    instance starter : PIFStarter
+    connector starter.timer => timer.timer    
+    instance pif1 : PIFIncDec
+    instance pif2 : PIFIncDec
+    instance pif3 : PIFIncDec
+    instance pif4 : PIFIncDec
+    instance pif5 : PIFIncDec
+    instance pif6 : PIFIncDec
+    instance ender : PIFEnder
+    connector pif1.from_starter => starter.to_ender     
+    connector pif2.from_starter => pif1.to_ender    
+    connector pif3.from_starter => pif2.to_ender    
+    connector pif4.from_starter => pif3.to_ender    
+    connector pif5.from_starter => pif4.to_ender    
+    connector pif6.from_starter => pif5.to_ender    
+    connector ender.from_starter => pif6.to_ender    
+    connector pif6.from_ender => ender.to_starter    
+    connector pif5.from_ender => pif6.to_starter    
+    connector pif4.from_ender => pif5.to_starter    
+    connector pif3.from_ender => pif4.to_starter    
+    connector pif2.from_ender => pif3.to_starter    
+    connector pif1.from_ender => pif2.to_starter    
+    connector starter.from_ender => pif1.to_starter    
+}
