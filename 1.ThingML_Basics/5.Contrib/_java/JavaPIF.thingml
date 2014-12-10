@@ -12,7 +12,7 @@ thing JavaPrinter includes CustomPrinter {
 			end
 			internal event p : Print?customPrintI
 			action do 
-				'System.out.print(' & p.myInt & ');' //this is how we mix Java code and ThingML code
+				'System.out.print( " " + ' & p.myInt & ' + " ");' //this is how we mix Java code and ThingML code
 			end
 		}
 	
