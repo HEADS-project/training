@@ -9,7 +9,7 @@ It is available at http://editor.kevoree.org
 #### Using Model@Runtime concept
 Kevoree uses the concept of Model@Runtime to apply reconfigurations on running systems.  
 Which means that if you want to modify, for instance, a dictionary attribute value and then apply the modification to an already running component, it will send the new model containing the modification to the targets.  
-This model will then be processed by the host platform (here, the JavascriptNode) and the appropriate actions will be triggered for each impacted components.  
+This model will then be processed by the host platform (here, the JavaNode) and the appropriate actions will be triggered for each impacted components.  
 
 In other word, you change the value of `greetMessage` from `Hello, world!` to `Hello, HEADS!` within the Kevoree Web Editor.
 You save your changes. You click the "Push button" to deploy this model on your running platform... and you watch the reconfigurations happening.
