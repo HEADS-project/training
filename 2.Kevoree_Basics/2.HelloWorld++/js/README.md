@@ -1,5 +1,10 @@
 > :warning: This tutorial is the sequel of [1.HelloWorld - JavaScript](https://github.com/HEADS-project/training/tree/master/2.Kevoree_Basics/1.HelloWorld/js), be sure to do the previous tutorial first.
 
+#### Purpose of the HelloWorld++ component
+Now we want to extend the previous [HelloWorld component](https://github.com/HEADS-project/training/tree/master/2.Kevoree_Basics/1.HelloWorld/js)
+so that you can dynamically change the content of the displayed "Hello, world!" message.  
+For that, you will use the Kevoree concept: **dictionary attribute**
+
 #### Add a dictionary attribute
 In order to give some parameters to a component Kevoree provides a concept called
 **dictionary attributes**.  
@@ -33,7 +38,7 @@ set node0.myComp.greetMessage = "Hello, HEADS!"
 set node0.logLevel = 'info'
 ```
 So now you know that the `set node0.logLevel = 'info'` is modifying the value of the `logLevel` attribute of the JavascriptNode instance.
-Just like you change the value of "greetMessage" to "Hello, HEADS!" in your HelloWorld component instance.
+Just like you changed the value of "greetMessage" to "Hello, HEADS!" in your HelloWorld component instance.
 
 #### Retrieve a dictionary attribute value
 Now that you have defined a new dictionary attribute named `greetMessage` you will want to use it within your component code.
