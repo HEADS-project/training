@@ -1,18 +1,17 @@
 import "../PrintIncForward.thingml"
 
-
-thing JavaPrinter includes CustomPrinter {
+thing JSPrinter includes CustomPrinter {
 
 	statechart behavior init greetings {
 	
 		state greetings {
 			internal event p : Print?customPrintS
 			action do 
-				'System.out.print(' & p.myString & ');' //this is how we mix Java code and ThingML code
+				'console.log(' & p.myString & ');' //this is how we mix Node.JS code and ThingML code
 			end
 			internal event p : Print?customPrintI
 			action do 
-				'System.out.print( " " + ' & p.myInt & ' + " ");' //this is how we mix Java code and ThingML code
+				'console.log(' & p.myInt & ');' //this is how we mix Node.JS code and ThingML code
 			end
 		}
 	
@@ -20,54 +19,48 @@ thing JavaPrinter includes CustomPrinter {
 
 }
 
-datatype JThread
-@java_type "Thread";
-
 // Manage a set of software timers.
-thing TimerJava includes Timer
+thing TimerJS includes Timer
 @pim "Timer"
-@platform "java"
+@platform "javascript"
+@javascript "node browser"
 {
-    property timer : JThread
-
+    function cancel() 
+    do
+        'clearTimeout(this.timer);'
+    end
+    
+    function start(delay : Integer)
+    do
+        print "timer started"
+        'this.timer = setTimeout(onTimeout,' & delay & ');'
+    end
+    
+    function onTimeout() 
+    do
+        timer!timer_timeout()
+    end
+    
     statechart SoftTimer init default {
         state default {
-
+            
           internal start
             event m : timer?timer_start
             guard m.delay > 0
             action do
-             if (not(timer == 'null')) do
-                '' & timer & '.interrupt();'
-             end
-             'Thread t = new Thread(){
-                public void run() {
-				try {
-					Thread.sleep(' & m.delay & ');'
-					timer!timer_timeout()
-				'} catch (Exception ex) {
-				}
-				interrupt();
-			    }
-              };'
-             timer = 't' 
-              '' & timer & '.start();'                
+                start(m.delay)
             end
             
           internal cancel
             event m : timer?timer_cancel
-            action do
-              if (not(timer == 'null')) do
-                '' & timer & '.interrupt();'
-              end
-            end
+            action cancel()    
         }
     }
 }
 
-configuration JavaPIF {
-	instance printer : JavaPrinter
-    instance timer : TimerJava
+configuration JSPIF {
+	instance printer : JSPrinter
+    instance timer : TimerJS
     instance starter : PIFStarter
     connector starter.timer => timer.timer    
     connector printer.Print => starter.Print
@@ -98,5 +91,5 @@ configuration JavaPIF {
     connector pif3.from_ender => pif4.to_starter    
     connector pif2.from_ender => pif3.to_starter    
     connector pif1.from_ender => pif2.to_starter    
-    connector starter.from_ender => pif1.to_starter    
+    connector starter.from_ender => pif1.to_starter     
 }

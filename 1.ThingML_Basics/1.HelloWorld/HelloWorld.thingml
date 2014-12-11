@@ -24,10 +24,10 @@ thing HelloThing {
 /**
 TODO: compile and run this configuration for the different platforms: C/Linux, Java, JavaScript and Arduino (if you have one)
 Right-click on this file (in the Project Explorer on the left) and try:
-ThingML -> Compile Java/JaSM
-ThingML -> Compile JavaScript/behavior
-ThingML -> Compile Posix/C
-ThingML -> Compile Arduino
+HEADS / ThingML -> Plain Java
+HEADS / ThingML -> Javascript for NodeJS
+HEADS / ThingML -> C/C++ for Linux / Posix
+HEADS / ThingML -> C/C++ for Arduino
 **/
 configuration HelloCfg 
 @arduino_stdout "Serial"

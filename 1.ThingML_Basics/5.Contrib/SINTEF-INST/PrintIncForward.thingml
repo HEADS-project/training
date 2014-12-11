@@ -58,12 +58,13 @@ thing fragment PIFEnderPorts includes PrintIncForwardMsgs
 
 thing PIFStarter includes TimerClient,  PIFStarterPorts, CustomPrinterClientPort {
 
-	readonly property period : Integer = 5000
+	readonly property period : Integer = 1000
 	
 	statechart behavior init Init {
 	
 		state Init {
 			on entry do
+                print "starting the timer"
 				timer!timer_start(period)
 			end
 			
@@ -73,15 +74,17 @@ thing PIFStarter includes TimerClient,  PIFStarterPorts, CustomPrinterClientPort
 			action do
 				//TODO: print hello
 				//print "Sender sends token ... "
-				Print!customPrintS("Sender sends token ... ")
+				print("Sender sends token ... \n")
 				to_ender!pif_token(1)
 			end
 		
 		}
 		
 		state Wait {
+            on entry print "Wait"
+    
 			transition -> Init
-			event from_ender?pif_token
+			event m : from_ender?pif_token
 			action do
 				//print " Sender got token back \n"
 				Print!customPrintS(" Sender got token back \n")
@@ -121,7 +124,7 @@ thing PIFIncDec includes PIFIncDecPorts, CustomPrinterClientPort {
 				//print " "
 				Print!customPrintI(tmp)
 				tmp = tmp - 1
-				
+				print "sending token to starter"
 				to_starter!pif_token(tmp)
 			end
 		}
@@ -152,4 +155,3 @@ thing PIFEnder includes PIFEnderPorts, CustomPrinterClientPort {
 	}
 
 }
-
