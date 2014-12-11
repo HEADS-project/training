@@ -64,29 +64,22 @@ thing PIFStarter includes TimerClient,  PIFStarterPorts, CustomPrinterClientPort
 	
 		state Init {
 			on entry do
-                print "starting the timer"
-				timer!timer_start(period)
+                timer!timer_start(period)
 			end
 			
 			transition -> Wait //this will loop on the Init state, and start a new timer
-			//event myPort?myMessage //TODO: make the transition to be triggered by a timer_timeout event received on the timer port
 			event timer?timer_timeout
 			action do
-				//TODO: print hello
-				//print "Sender sends token ... "
-				print("Sender sends token ... \n")
+				Print!customPrintS("Sender sends token ... \n")
 				to_ender!pif_token(1)
 			end
 		
 		}
 		
 		state Wait {
-            on entry print "Wait"
-    
-			transition -> Init
+            transition -> Init
 			event m : from_ender?pif_token
 			action do
-				//print " Sender got token back \n"
 				Print!customPrintS(" Sender got token back \n")
 			end
 		}
@@ -106,12 +99,8 @@ thing PIFIncDec includes PIFIncDecPorts, CustomPrinterClientPort {
 			event m : from_starter?pif_token
 			action do
 				tmp = m.token
-				//'fprintf(stdout, "%d ",' & tmp & ');' 
-				//print tmp
-				//print " "
 				Print!customPrintI(tmp)
-				tmp = tmp + 1
-				
+				tmp = tmp + 1				
 				to_ender!pif_token(tmp)
 			end
 
@@ -119,12 +108,8 @@ thing PIFIncDec includes PIFIncDecPorts, CustomPrinterClientPort {
 			event m : from_ender?pif_token
 			action do
 				tmp = m.token
-				//'fprintf(stdout, "%d ",' & tmp & ');' 
-				//print tmp
-				//print " "
 				Print!customPrintI(tmp)
 				tmp = tmp - 1
-				print "sending token to starter"
 				to_starter!pif_token(tmp)
 			end
 		}
@@ -144,7 +129,6 @@ thing PIFEnder includes PIFEnderPorts, CustomPrinterClientPort {
 			event m : from_starter?pif_token
 			action do
 				tmp = m.token
-				//print " ... Ender returns token ... "
 				Print!customPrintS(" ... Ender returns token ... ")
 				tmp = tmp - 1
 				to_starter!pif_token(tmp)

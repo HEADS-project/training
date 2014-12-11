@@ -32,7 +32,6 @@ thing TimerJS includes Timer
     
     function start(delay : Integer)
     do
-        print "timer started"
         'this.timer = setTimeout(onTimeout,' & delay & ');'
     end
     
