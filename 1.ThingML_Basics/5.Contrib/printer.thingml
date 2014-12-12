@@ -1,0 +1,43 @@
+datatype String
+	@c_type "char *"
+	@c_byte_size "*"
+	@java_type "String"
+	@js_type "String";
+
+ datatype Integer	
+	@c_type "int"
+	@c_byte_size "2"
+	@java_type "short"
+	@java_primitive "true"
+    @scala_type "Short"
+    @SenML_type "Double"
+    @ros_type "int16";
+
+thing fragment PrintMsgs {
+
+	message printOperation(op : String);
+	message printResult(rez : Integer);
+	message parameterz(myparam1 : Integer, myparam2 : Integer);
+	
+}
+
+thing fragment Printer includes PrintMsgs {
+
+	required port Print {
+	
+		receives printOperation, printResult, parameterz
+		
+	}
+
+}
+
+
+thing fragment PrinterClientPort includes PrintMsgs{
+	
+	provided port Print {
+	
+		sends printOperation, printResult, parameterz
+		
+	}
+}
+	

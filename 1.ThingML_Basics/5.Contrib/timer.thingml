@@ -1,0 +1,36 @@
+ datatype Integer	
+	@c_type "int"
+	@c_byte_size "2"
+	@java_type "short"
+	@java_primitive "true"
+    @scala_type "Short"
+    @SenML_type "Double"
+    @ros_type "int16";
+
+
+thing fragment TimerMsgs {
+
+	message timer_start(delay : Integer);
+	message timer_cancel();
+	message timer_timeout();
+}
+
+thing fragment Timer includes TimerMsgs
+{
+	provided port timer
+    {
+		sends timer_timeout
+		receives timer_start, timer_cancel
+	}
+}
+
+thing fragment TimerClient includes TimerMsgs
+{
+	required port timer
+    {
+		receives timer_timeout
+		sends timer_start, timer_cancel
+	}
+    
+}
+

@@ -1,0 +1,212 @@
+import "printer.thingml"
+import "timer.thingml"
+import "random.thingml"
+
+ datatype Integer	
+	@c_type "int"
+	@c_byte_size "2"
+	@java_type "short"
+	@java_primitive "true"
+    @scala_type "Short"
+    @SenML_type "Double"
+    @ros_type "int16";
+    
+datatype String
+	@c_type "char *"
+	@c_byte_size "*"
+	@java_type "String"
+    @js_type "String"
+    @SenML_type "String";
+    
+ thing fragment features {
+
+	message parameters(myparam1 : Integer, myparam2 : Integer);
+	message result(muRes : Integer);
+}
+
+
+ thing calculatorClient includes TimerClient,  RandomUser, PrinterClientPort, features {
+
+	required port addition
+    {
+		sends parameters
+		receives result
+	}
+	
+		required port substraction
+    {
+		sends parameters
+		receives result
+	}
+	
+		required port multiplication
+    {
+		sends parameters
+		receives result
+	}
+	
+		required port division
+    {
+		sends parameters
+		receives result
+	}
+
+	property period : Integer = 3000
+	
+	statechart behavior init Init {
+	
+		state Init {
+		
+			on entry do
+				timer!timer_start(period)
+			end
+			
+			transition -> Handler 
+			
+			event timer?timer_timeout
+		
+		}
+		
+		state Handler {
+		
+			on entry do
+				random!request()
+			end
+			
+			transition -> Addition
+			
+			event m : random?answer
+			
+			action do
+			
+			Print!parameterz(m.val1,m.val2)
+			addition!parameters(m.val1,m.val2)
+			substraction!parameters(m.val1,m.val2)
+			multiplication!parameters(m.val1,m.val2)
+			division!parameters(m.val1,m.val2)
+			
+			end
+		}
+		
+		state Addition {
+		
+			transition -> Substraction
+			
+			event m : addition?result
+			
+			action do
+			
+			Print!printOperation("Addition")
+			Print!printResult(m.muRes)
+			
+			end
+		}
+		
+		state Substraction {
+		
+			transition -> Multiplication
+			
+			event m : substraction?result
+			
+			action do
+			
+			Print!printOperation("Substraction")
+			Print!printResult(m.muRes)
+			
+			end
+		}
+		
+		state Multiplication {
+		
+			transition -> Division
+			
+			event m : multiplication?result
+			
+			action do
+			
+			Print!printOperation("Multiplication")
+			Print!printResult(m.muRes)
+			
+			end
+		}
+		
+		state Division {
+		
+			transition -> Init
+			
+			event m : division?result
+			
+			action do
+			
+			Print!printOperation("Division")
+			Print!printResult(m.muRes)
+			
+			end
+		}
+	
+	}
+
+}
+
+thing calculatorServer includes PrinterClientPort, features {
+
+	provided port addition
+    {
+		receives parameters
+		sends result
+	}
+	
+		provided port substraction
+    {
+		receives parameters
+		sends result
+	}
+	
+		provided port multiplication
+    {
+		receives parameters
+		sends result
+	}
+	
+		provided port division
+    {
+		receives parameters
+		sends result
+	}
+	
+		statechart process init Handler {
+	
+		property tmp : Integer
+		
+		state Handler {
+		
+			on entry do
+			
+			print "\nStart Calculator"
+			
+			end
+			
+			internal event m : addition?parameters
+	
+			action do
+			
+			tmp = (m.myparam1) + (m.myparam2)
+			addition!result(tmp)
+
+			tmp = (m.myparam1) - (m.myparam2)
+			substraction!result(tmp)
+			
+			tmp = (m.myparam1) * (m.myparam2)
+			multiplication!result(tmp)
+			
+			tmp = (m.myparam1) / (m.myparam2)
+			division!result(tmp)
+			end
+			
+		}
+
+}
+		
+		
+		
+}

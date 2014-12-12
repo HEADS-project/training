@@ -1,0 +1,100 @@
+import "../calculator.thingml"
+
+
+
+thing RandomJS includes Random
+{
+
+    statechart Random init generate {
+        state generate {
+          internal waiting
+            event random?request
+            action random!answer('Math.random()','Math.random()')
+        }
+    }
+}
+
+thing JSPrinter includes Printer {
+
+		
+			statechart behavior init greetings {
+	
+		state greetings {
+			internal event p : Print?printOperation
+			action do 
+				'console.log(" Operation = " +' & p.op & ');' 
+			end
+			internal event p : Print?printResult
+			action do 
+				'console.log(" => Result = " + ' & p.rez & ' + " ");' 
+			end
+						internal event p : Print?parameterz
+			action do 
+				'console.log("Parameters : param1 = " + ' & p.myparam1 & ' + " param2 = "+ ' & p.myparam2 & ' + " ");'
+			end
+		}
+	
+	
+	}
+
+}
+
+// Manage a set of software timers.
+thing TimerJS includes Timer
+@pim "Timer"
+@platform "javascript"
+@javascript "node browser"
+{
+    function cancel() 
+    do
+        'clearTimeout(this.timer);'
+    end
+    
+    function start(delay : Integer)
+    do
+        'this.timer = setTimeout(onTimeout,' & delay & ');'
+    end
+    
+    function onTimeout() 
+    do
+        timer!timer_timeout()
+    end
+    
+    statechart SoftTimer init default {
+        state default {
+            
+          internal start
+            event m : timer?timer_start
+            guard m.delay > 0
+            action do
+                start(m.delay)
+            end
+            
+          internal cancel
+            event m : timer?timer_cancel
+            action cancel()    
+        }
+    }
+}
+
+configuration calculatorCfg 
+{
+
+	instance client: calculatorClient
+	instance server: calculatorServer
+	instance printer: JSPrinter
+	instance timer : TimerJS
+	instance rando : RandomJS
+	
+	connector client.addition => server.addition
+	connector client.substraction => server.substraction
+	connector client.division => server.division
+	connector client.multiplication => server.multiplication
+	connector client.timer => timer.timer
+	connector printer.Print => client.Print
+	connector printer.Print => server.Print
+	connector client.random => rando.random
+
+
+	
+}

@@ -1,0 +1,32 @@
+ datatype Integer	
+	@c_type "int"
+	@c_byte_size "2"
+	@java_type "short"
+	@java_primitive "true"
+    @scala_type "Short"
+    @SenML_type "Double"
+    @ros_type "int16";
+
+thing fragment RandomMsg{
+
+	message request();
+	message answer(val1: Integer,val2:Integer);
+}
+
+thing fragment Random includes RandomMsg{
+
+	provided port random {
+	
+		receives request
+		sends answer
+	}
+}
+
+thing fragment RandomUser includes RandomMsg{
+
+	required port random {
+	
+		sends request
+		receives answer
+	}
+}
