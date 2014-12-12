@@ -9,7 +9,7 @@ thing RandomJS includes Random
         state generate {
           internal waiting
             event random?request
-            action random!answer('java.lang.Math.random()','java.lang.Math.random()')
+            action random!answer('Math.random()','Math.random()')
         }
     }
 }
