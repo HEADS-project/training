@@ -1,0 +1,21 @@
+// the node that hosts your component
+add node0 : JavaNode
+
+// create and add your HelloWorld component (named "myComp") in "node0"
+add node0.myComp : org.kevoree.example.HelloWorld
+
+// add an instance of WSGroup named "sync"
+add sync : WSGroup
+// attach your host node "node0" to the WSGroup group
+attach node0 sync
+
+// add an instance of SyncBroadcast named "chan"
+add chan : SyncBroadcast
+// bind the output port "hello" to "chan"
+bind node0.myComp.hello chan
+
+// add an instance of ConsolePrinter named "printer" to the host platform
+add node0.printer : ConsolePrinter
+
+// bind the intput port "input" to chan
+bind node0.printer.input chan
