@@ -1,9 +1,31 @@
 #### First step
-Install the dependencies using `npm` (**npm** comes with **[node.js](http://nodejs.org/download/)**)
+Get `npm` (**npm** comes with **[node.js](http://nodejs.org/download/)**)
+
+Install `Yeoman` ([Yeoman](http://yeoman.io/learning/index.html) is a project scaffolder)
 ```sh
-npm install
+npm i -g yo
 ```
-> This will install the dependency modules in `node_modules/` in the current directory
+
+Install the `Kevoree Yeoman` generator called `generator-kevoree`
+```sh
+npm i -g generator-kevoree
+```
+Scaffold your project where you want
+```sh
+# create a folder for your project
+mkdir /tmp/HelloWorld
+# cd into it
+cd /tmp/HelloWorld
+# ask Yeoman to generate the architecture of your Kevoree JS project
+yo kevoree
+```
+> Follow the instructions:  
+> [?] What kind of entity would you like to create? (comp|chan|group|node) **comp**  
+> [?] Choose a name for this entity? (Java camel case naming convention) **HelloWorld**  
+> [?] Choose a package name for your module? (i.e my.package.name) **my.package**  
+> [?] Choose a module name: **kevoree-comp-helloworld**  
+> [?] Do you plan on using this component with a browser runtime? **No**
+
 
 #### Purpose of the HelloWorld component
 The `HelloWorld` component has a basic behavior to help users understand the concepts and code/project structures of KevoreeJS.
