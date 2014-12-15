@@ -1,0 +1,78 @@
+import "../PIMChat.thingml"
+
+thing fragment CChatClient includes ChatClient {
+
+		
+	statechart behavior init Idle {
+		
+		state Idle {
+			
+			transition -> Chatting 
+			action chatRoom!chat_start("Room1")
+		}
+		
+		state Chatting {
+			
+			internal event chat : chatRoom?chat
+			guard messages < 4
+			action do
+				chatRoom!chat("Chat")
+				messages = messages + 1
+				'fprintf(stdout, "Client: message no: %d, %s \n",' & messages  & ',' & chat.msg & ');'
+			end
+			
+			transition -> Bye
+			event chat : chatRoom?chat
+			guard messages == 4
+			action chatRoom!chat_stop()
+		}
+	
+		state Bye {
+			on entry print "Bye.\n"
+		}
+		
+	}
+}
+
+thing fragment CChatServer includes ChatServer {
+
+		
+	statechart behavior init Idle {
+		
+		state Idle {
+			internal event chatRoom?chat_start
+			action 
+			do
+				chatRoom!chat("Welcome!")
+				participants = participants + 1
+				messages = messages + 1
+				'fprintf(stdout, "Server: message no: %d, Entering Room, participants in chat: %d \n",' & messages  & ',' & participants & ');'
+			end
+			
+			internal event chat : chatRoom?chat
+			action 
+			do 
+				chatRoom!chat(chat.msg)
+				messages = messages + 1
+				'fprintf(stdout, "Server: message no: %d, chat message: %s \n",' & messages & ',' & chat.msg &');'
+			end
+			
+			internal event chat : chatRoom?chat_stop
+			action
+			do 
+				chatRoom!chat_stop()
+				participants = participants - 1				
+				'fprintf(stdout, "Server: Leaving Room, participants in chat: %d \n",' & participants & ');'
+			end
+		}
+	}
+}
+
+configuration ChatServer {
+	instance client1 : CChatClient
+	instance client2 : CChatClient
+	instance server : CChatServer
+	
+	connector client1.chatRoom => server.chatRoom
+	connector client2.chatRoom => server.chatRoom
+}

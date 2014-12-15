@@ -1,0 +1,48 @@
+
+datatype String
+	@c_type "char *"
+	@c_byte_size "*"
+	@java_type "String"
+	@js_type "String";
+
+datatype Integer	
+	@c_type "int"
+	@c_byte_size "2"
+	@java_type "short"
+	@java_primitive "true"
+	@js_type "short";
+
+
+
+thing fragment ChatMsgs {
+	message chat_start(chatGroup : String);
+	message chat(msg : String);
+	message chat_stop();
+}
+
+
+thing fragment ChatClient includes ChatMsgs {
+
+	property messages : Integer = 0
+	required port chatRoom
+    {
+		sends chat, chat_start, chat_stop
+		receives chat, chat_stop
+	}
+	
+	
+}
+
+thing fragment ChatServer includes ChatMsgs {
+
+	property messages : Integer = 0
+	property participants : Integer = 0
+	provided port chatRoom
+    {
+		sends chat, chat_stop
+		receives chat, chat_stop, chat_start
+	}
+	
+	
+}
+
