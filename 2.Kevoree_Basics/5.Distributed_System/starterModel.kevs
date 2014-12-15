@@ -1,0 +1,20 @@
+// =======================================
+// This is just a starter model to have
+// two different platforms sharing the
+// same Kevoree model using a WSGroup
+// =======================================
+
+// create the two platform nodes
+add javaNode : JavaNode
+add jsNode : JavascriptNode
+
+// provide a network way to connect to those nodes
+network javaNode.ip.lo 127.0.0.1
+network jsNode.ip.lo 127.0.0.1
+
+// create a group to share the model between the nodes
+add group : WSGroup
+// set the master node for the group to be the jsNode
+set group.master = 'jsNode'
+// attach the nodes to the group
+attach javaNode, jsNode group

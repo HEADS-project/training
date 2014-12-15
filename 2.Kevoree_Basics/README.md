@@ -40,4 +40,4 @@ Learn the basics of Kevoree. How to write your own components targeting the Kevo
 [JavaScript Tutorial](https://github.com/HEADS-project/training/tree/master/2.Kevoree_Basics/4.Its_About_Sending_A_Message/js)
 
 ### 5.Distributed System
-TODO
+[Tutorial](https://github.com/HEADS-project/training/tree/master/2.Kevoree_Basics/5.Distributed_System)

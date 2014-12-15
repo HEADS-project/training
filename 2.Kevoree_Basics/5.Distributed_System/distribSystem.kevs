@@ -1,0 +1,45 @@
+// =======================================
+// This is the complete distributed model
+// =======================================
+
+// Java Platform
+add javaNode : JavaNode
+add javaNode.ticker : Ticker
+
+// provide a way to connect to this node from outside
+network javaNode.ip.lo 127.0.0.1
+
+
+
+// JavaScript Platform
+add jsNode : JavascriptNode
+add jsNode.printer : ConsolePrinter
+add jsNode.broker : WSMsgBroker
+
+// define on which port the broker will start
+set jsNode.broker.port = '9050'
+
+// provide a way to connect to this node from outside
+network jsNode.ip.lo 127.0.0.1
+
+
+
+// Cross-platform fragments
+add group : WSGroup
+add chan : RemoteWSChan
+
+// set the fragment on javaNode to be the master
+set group.master = 'jsNode'
+
+// give the host:port of the broker to the chan
+set chan.host = "localhost"
+set chan.port = "9050"
+
+// attach all node to the same group so that they share the same model
+attach javaNode, jsNode group
+
+// bind the ticker to the chan
+bind javaNode.ticker.tick chan
+
+// bind the printer to the chan
+bind jsNode.printer.input chan
