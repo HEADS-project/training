@@ -20,8 +20,31 @@ Learn the basics of Kevoree. How to write your own components targeting the Kevo
 * Some documentation on the Kevoree syntax can be found on the [Kevoree Book website](http://kevoree.github.io/kevoree-book/) . It is currently incomplete but might be useful.
 * A lot of Kevoree example programs can be found [here](https://github.com/kevoree/kevoree-library) and also [here](https://github.com/kevoree/kevoree-samples). Be warned that they might be outdated.
 
+### 0.General features of the HEADS IDE
+  - **New Kevoree Java Project**
+    - *From existing sources*: **File** > **Import** > **Maven** > **Existing Maven Project**  
+      - Select a java tutorial folder like  `path/to/2.Kevoree_Basics/1.HelloWorld/java` and import it  
+      - **Right-click** on the project name > **Configure** > Then be sure it says *Remove Kevoree nature*  
+        If it says *Add Kevoree nature*, then click on it, otherwise you are good to go.
+    - *From scratch*: **File** > **New** > **Project** > **Kevoree** > **New Kevoree Project** > **Next**  
+      - Give a project name
+      - [optional] Set the location of your new project
+      - Click **Finish**
 
 
+  - **New Kevoree JavaScript Project**  
+    - *From existing sources*: **File** > **New** > **Project** > **Kevoree** > **Kevoree JS Project**  
+      - Set the project name
+      - Set the location of your sources
+      - Click **Finish**
+    - *From scratch*:
+      - Follow the [first step](https://github.com/HEADS-project/training/tree/master/2.Kevoree_Basics/1.HelloWorld/js) of the Kevoree JavaScript Tutorial n°1
+      - Now use the same process as for *From existing sources*
+
+
+> Nb: if you have imported your project and it is still not recognized as a Kevoree project (i.e the orange Kevoree Logo), then right-click on the project name  `Configure > Add Kevoree Nature`
+
+> Nb2: if the right-click on `package.json > Run as > npm install` throws an exception, then be sure that `Nodeclipse` is well configured.
 
 ### 1.HelloWorld
 [Java Tutorial](https://github.com/HEADS-project/training/tree/master/2.Kevoree_Basics/1.HelloWorld/java)  
