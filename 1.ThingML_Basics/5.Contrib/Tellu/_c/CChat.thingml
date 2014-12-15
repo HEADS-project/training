@@ -1,78 +1,32 @@
 import "../PIMChat.thingml"
 
-thing fragment CChatClient includes ChatClient {
+thing CPrinter includes CustomPrinter {
 
-		
-	statechart behavior init Idle {
-		
-		state Idle {
-			
-			transition -> Chatting 
-			action chatRoom!chat_start("Room1")
-		}
-		
-		state Chatting {
-			
-			internal event chat : chatRoom?chat
-			guard messages < 4
-			action do
-				chatRoom!chat("Chat")
-				messages = messages + 1
-				'fprintf(stdout, "Client: message no: %d, %s \n",' & messages  & ',' & chat.msg & ');'
+	statechart behavior init idle {
+	
+		state idle {
+			internal event p : Print?customPrint
+			action do 
+				'fprintf(stdout, "%s : %s, %d, %d \n",' & p.msg  & ',' & p.chatMsg & ',' & p.clientno & ',' & p.msgno &');'
 			end
-			
-			transition -> Bye
-			event chat : chatRoom?chat
-			guard messages == 4
-			action chatRoom!chat_stop()
 		}
 	
-		state Bye {
-			on entry print "Bye.\n"
-		}
-		
 	}
-}
 
-thing fragment CChatServer includes ChatServer {
-
-		
-	statechart behavior init Idle {
-		
-		state Idle {
-			internal event chatRoom?chat_start
-			action 
-			do
-				chatRoom!chat("Welcome!")
-				participants = participants + 1
-				messages = messages + 1
-				'fprintf(stdout, "Server: message no: %d, Entering Room, participants in chat: %d \n",' & messages  & ',' & participants & ');'
-			end
-			
-			internal event chat : chatRoom?chat
-			action 
-			do 
-				chatRoom!chat(chat.msg)
-				messages = messages + 1
-				'fprintf(stdout, "Server: message no: %d, chat message: %s \n",' & messages & ',' & chat.msg &');'
-			end
-			
-			internal event chat : chatRoom?chat_stop
-			action
-			do 
-				chatRoom!chat_stop()
-				participants = participants - 1				
-				'fprintf(stdout, "Server: Leaving Room, participants in chat: %d \n",' & participants & ');'
-			end
-		}
-	}
 }
 
 configuration ChatServer {
-	instance client1 : CChatClient
-	instance client2 : CChatClient
-	instance server : CChatServer
+	instance client1 : ChatClient
+	set client1.clientno = 1
+	instance client2 : ChatClient
+	set client2.clientno = 2
+	instance server : ChatServer
+	instance printer : CPrinter
 	
 	connector client1.chatRoom => server.chatRoom
 	connector client2.chatRoom => server.chatRoom
+	connector client1.Print => printer.Print
+	connector client2.Print => printer.Print
+	connector server.Print => printer.Print
 }
+

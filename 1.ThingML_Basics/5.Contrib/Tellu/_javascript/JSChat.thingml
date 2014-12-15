@@ -1,77 +1,31 @@
 import "../PIMChat.thingml"
 
-thing fragment JSChatClient includes ChatClient {
+thing JSPrinter includes CustomPrinter {
 
-		
-	statechart behavior init Idle {
-		
-		state Idle {
-			
-			transition -> Chatting 
-			action chatRoom!chat_start("Room1")
-		}
-		
-		state Chatting {
-			
-			internal event chat : chatRoom?chat
-			guard messages < 4
-			action do
-				chatRoom!chat("Chat")
-				messages = messages + 1
-				'console.log( "Client: message no:"+' & messages  & '+", "+' & chat.msg & '+"\n");'
+	statechart behavior init idle {
+	
+		state idle {
+			internal event p : Print?customPrint
+			action do 
+				'console.log(' & p.msg  & '+", "+' & p.chatMsg & '+", "+' & p.clientno & '+", "+' & p.msgno & '+"\n");' 
 			end
-			
-			transition -> Bye
-			event chat : chatRoom?chat
-			guard messages == 4
-			action chatRoom!chat_stop()
 		}
 	
-		state Bye {
-			on entry print "Bye.\n"
-		}
-		
 	}
-}
 
-thing fragment JSChatServer includes ChatServer {
-
-		
-	statechart behavior init Idle {
-		
-		state Idle {
-			internal event chatRoom?chat_start
-			action 
-			do
-				chatRoom!chat("Welcome!")
-				participants = participants + 1
-				messages = messages + 1
-				'console.log( "Server: Entering Room, participants in chat: "+' & participants & '+"\n");'
-			end
-			
-			internal event chat : chatRoom?chat
-			action do 
-				chatRoom!chat(chat.msg)
-				messages = messages + 1
-				'console.log( "Server: message no:"+' & messages  & '+", message: "+' & chat.msg & '+"\n");'
-			end
-			
-			internal event chat : chatRoom?chat_stop
-			action
-			do 
-				chatRoom!chat_stop()
-				participants = participants - 1
-				'console.log( "Server: Leaving Room, participants in chat: "+' & participants & '+"\n");'
-			end
-		}
-	}
 }
 
 configuration ChatServer {
-	instance client1 : JSChatClient
-	instance client2 : JSChatClient
-	instance server : JSChatServer
+	instance client1 : ChatClient
+	set client1.clientno = 1
+	instance client2 : ChatClient
+	set client2.clientno = 2
+	instance server : ChatServer
+	instance printer : JSPrinter
 	
 	connector client1.chatRoom => server.chatRoom
 	connector client2.chatRoom => server.chatRoom
+	connector client1.Print => printer.Print
+	connector client2.Print => printer.Print
+	connector server.Print => printer.Print
 }
