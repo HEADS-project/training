@@ -29,7 +29,7 @@ Learn the basics of ThingML. How to write you first program in a platform indepe
 
 ### 2. HEADS Kevoree runtime management basics
 
-[o to the tutorial](https://github.com/HEADS-project/training/tree/master/2.Kevoree_Basics)
+[Go to the tutorial](https://github.com/HEADS-project/training/tree/master/2.Kevoree_Basics)
 
 ### 3. HEADS From design time to runtime (ThingML + Kevoree)
 
