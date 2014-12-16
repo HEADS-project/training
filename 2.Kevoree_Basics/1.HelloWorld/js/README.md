@@ -62,7 +62,13 @@ module.exports = HelloWorld;
 ```
 
 #### How to run the project
-You need [GruntJS](http://gruntjs.com/getting-started) to be installed
+> - If you have not used `yeoman` to scaffold the project, then you **must** run `npm install` in order to install your project dependencies.  
+>   In the HEADS IDA,  right-click on `package.json` and click `npm install`  
+>   In a console, just `cd` to your project, and run `npm install`
+> - You need [GruntJS](http://gruntjs.com/getting-started) to be installed:  
+>   `npm i -g grunt-cli`
+
+When you have `grunt` installed, do:
 ```sh
 grunt kevoree
 ```

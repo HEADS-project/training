@@ -3,3 +3,6 @@
 .deploy_units/
 node_modules/
 kevlib.json
+.project
+.settings/
+.classpath
