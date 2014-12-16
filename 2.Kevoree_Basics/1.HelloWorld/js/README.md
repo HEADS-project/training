@@ -70,8 +70,13 @@ module.exports = HelloWorld;
 
 When you have `grunt` installed, do:
 ```sh
+# from the command-line
 grunt kevoree
 ```
+
+**or in the HEADS IDE:**  
+Right-click on `kevs/main.kevs` > Compile and Run as Kevoree Script
+
 This command ask for `grunt` to run the `kevoree`  task.
 The `kevoree` task is a way to automatically run a project using the `kevoree-nodejs-runtime` using a **KevScript** (and some tricks to allow you to test your code while developing it).  
 By default, it will use the KevScript `kevs/main.kevs`.  
