@@ -1,9 +1,6 @@
 package org.kevoree.example;
 
-import org.kevoree.annotation.ComponentType;
-import org.kevoree.annotation.Param;
-import org.kevoree.annotation.Start;
-import org.kevoree.annotation.Stop;
+import org.kevoree.annotation.*;
 import org.kevoree.log.Log;
 
 @ComponentType

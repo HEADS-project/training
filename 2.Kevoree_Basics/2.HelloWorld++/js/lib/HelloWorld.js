@@ -7,6 +7,7 @@ var AbstractComponent = require('kevoree-entities').AbstractComponent;
 var HelloWorld = AbstractComponent.extend({
     toString: 'HelloWorld',
 
+    
     /**
      * Dictionary attribute named "greetMessage"
      */
