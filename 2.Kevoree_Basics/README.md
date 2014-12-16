@@ -64,3 +64,6 @@ Learn the basics of Kevoree. How to write your own components targeting the Kevo
 
 ### 5.Distributed System
 [Tutorial](https://github.com/HEADS-project/training/tree/master/2.Kevoree_Basics/5.Distributed_System)
+
+### 6.Contrib
+[DIY](https://github.com/HEADS-project/training/tree/master/2.Kevoree_Basics/6.Contrib)
