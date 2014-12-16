@@ -3,7 +3,7 @@ HEADS IDE Training and Tutorials
 
 ![HEADS](http://heads-project.eu/sites/default/files/heads_large.png)
 
-This repository contains a set of tutorials to get started with the technologies developed in the [HEADS research project](http://heads-project.eu/). 
+This repository contains a set of tutorials to get started with the technologies developed in the [HEADS research project](http://heads-project.eu/).
 
 These tutorials are currently used internally in the HEADS project in order to evaluate the initial release of the HEADS IDE. However, these tutorial can be followed by external developers with no prior knoledge of the HEADS technologies. Do not hesitate to contact us if you have any enquiry or would like more information.
 
@@ -29,7 +29,7 @@ Learn the basics of ThingML. How to write you first program in a platform indepe
 
 ### 2. HEADS Kevoree runtime management basics
 
-To be released around 15/12/2014.
+[o to the tutorial](https://github.com/HEADS-project/training/tree/master/2.Kevoree_Basics)
 
 ### 3. HEADS From design time to runtime (ThingML + Kevoree)
 
