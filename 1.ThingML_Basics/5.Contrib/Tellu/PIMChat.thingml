@@ -17,23 +17,66 @@ datatype Integer
 thing fragment ChatMsgs {
 	message chat_start(chatGroup : String);
 	message chat(msg : String);
-	message chat_stop();
+	message chat_stop(msg : String);
+}
+
+thing fragment CustomPrintMsgs {
+	message customPrint(msg : String, chatMsg : String,  clientno : Integer, msgno : Integer);
+}
+
+thing fragment CustomPrinter includes CustomPrintMsgs {
+	provided port Print {
+		receives customPrint
+	}
 }
 
 
-thing fragment ChatClient includes ChatMsgs {
+thing fragment ChatClient includes ChatMsgs, CustomPrintMsgs {
 
 	property messages : Integer = 0
+	readonly property clientno : Integer = 0
 	required port chatRoom
     {
 		sends chat, chat_start, chat_stop
 		receives chat, chat_stop
 	}
 	
+	required port Print
+    {
+		sends customPrint
+	}
 	
+	statechart behavior init Idle {
+		
+		state Idle {
+			
+			transition -> Chatting 
+			action chatRoom!chat_start("Room1")
+		}
+		
+		state Chatting {
+			
+			internal event chat : chatRoom?chat
+			guard messages < 4
+			action do
+				chatRoom!chat("Chat")
+				messages = messages + 1
+				Print!customPrint("Client: message no:", chat.msg, clientno, messages)
+			end
+			
+			transition -> Bye
+			event chat : chatRoom?chat
+			guard messages == 4
+			action chatRoom!chat_stop("Bye")
+		}
+	
+		state Bye {
+			on entry print "Client: Bye.\n"
+		}
+	}
 }
 
-thing fragment ChatServer includes ChatMsgs {
+thing fragment ChatServer includes ChatMsgs, CustomPrintMsgs {
 
 	property messages : Integer = 0
 	property participants : Integer = 0
@@ -43,6 +86,38 @@ thing fragment ChatServer includes ChatMsgs {
 		receives chat, chat_stop, chat_start
 	}
 	
+	required port Print
+    {
+		sends customPrint
+	}
 	
+	statechart behavior init Idle {
+		
+		state Idle {
+			internal event chat : chatRoom?chat_start
+			action 
+			do
+				chatRoom!chat("Welcome!")
+				participants = participants + 1
+				messages = messages + 1
+				Print!customPrint("Server: Entering Room, participants in chat: ", chat.chatGroup, 0, participants)
+			end
+			
+			internal event chat : chatRoom?chat
+			action do 
+				chatRoom!chat(chat.msg)
+				messages = messages + 1
+				Print!customPrint("Server: message no: ", chat.msg, 0, messages)
+			end
+			
+			internal event chat : chatRoom?chat_stop
+			action
+			do 
+				chatRoom!chat_stop(chat.msg)
+				participants = participants - 1
+				Print!customPrint("Server: Leaving Room, participants in chat:", chat.msg, 0, participants)
+			end
+		}
+	}
 }
 
