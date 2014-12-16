@@ -15,11 +15,11 @@
         "comp"
     ],
     "dependencies": {
-        "kevoree-entities": "^5.0.0"
+        "kevoree-entities": "^7.0.0"
     },
     "devDependencies": {
         "grunt": "^0.4.1",
-        "grunt-kevoree": "^4.0.0",
+        "grunt-kevoree": "^5.0.0",
         "grunt-kevoree-genmodel" : "^2.0.0",
         "grunt-kevoree-registry" : "^2.0.0"
     }
