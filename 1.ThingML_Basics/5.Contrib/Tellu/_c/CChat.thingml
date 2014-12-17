@@ -15,7 +15,7 @@ thing CPrinter includes CustomPrinter {
 
 }
 
-configuration ChatServer {
+configuration CChatServer {
 	instance client1 : ChatClient
 	set client1.clientno = 1
 	instance client2 : ChatClient
@@ -29,4 +29,3 @@ configuration ChatServer {
 	connector client2.Print => printer.Print
 	connector server.Print => printer.Print
 }
-
