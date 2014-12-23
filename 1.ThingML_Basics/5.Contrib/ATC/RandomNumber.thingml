@@ -1,0 +1,43 @@
+datatype String
+@c_type "char *"
+@c_byte_size "*"
+@java_type "String"
+@js_type "String";
+
+thing fragment RandomMsgs {
+	message random();
+}
+
+thing fragment RandomGenerator includes RandomMsgs {
+	
+	provided port Random {
+		receives random
+	}
+}
+
+thing RandomGeneratorClient includes RandomMsgs{
+	
+	required port Random {
+		sends random
+	}
+	
+	statechart behavior init Greetings {
+		
+		state Greetings {
+			
+			transition -> Bye 
+			action Random!random()
+			
+		}
+	
+		state Bye {
+			on entry print "Bye."
+		}
+	
+		
+	}
+}
+
+/**
+You can go in the respective _c, _java and _javascript folders see how we implemented the platform-specific printers for C, Java and Javascript
+*/

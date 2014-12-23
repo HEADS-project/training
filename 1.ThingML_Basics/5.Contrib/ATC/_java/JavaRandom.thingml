@@ -1,0 +1,24 @@
+import "../RandomNumber.thingml"
+
+thing JavaRandomGenerator includes RandomGenerator {
+
+	statechart behavior init greetings {
+	
+		state greetings {
+			internal event p : Random?random
+			action do 
+				'System.out.println(new java.util.Random().nextInt(100));'
+			end
+		}
+	
+	}
+
+}
+
+//TODO: Compile and run for the Java platform
+configuration RandomJava {
+	instance client : RandomGeneratorClient
+	instance printer : JavaRandomGenerator
+	
+	connector client.Random => printer.Random
+}
