@@ -1,11 +1,12 @@
-datatype String
-@c_type "char *"
-@c_byte_size "*"
-@java_type "String"
-@js_type "String";
+datatype Integer	
+	@c_type "int"
+	@c_byte_size "2"
+	@java_type "short"
+	@java_primitive "true"
+	@js_type "short";
 
 thing fragment RandomMsgs {
-	message random();
+	message random(maxNumber: Integer);
 }
 
 thing fragment RandomGenerator includes RandomMsgs {
@@ -21,12 +22,12 @@ thing RandomGeneratorClient includes RandomMsgs{
 		sends random
 	}
 	
-	statechart behavior init Greetings {
+	statechart RandomServerMachine init Active {
 		
-		state Greetings {
+		state Active {
 			
 			transition -> Bye 
-			action Random!random()
+			action Random!random(200)
 			
 		}
 	

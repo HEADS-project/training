@@ -7,7 +7,7 @@ thing JavaRandomGenerator includes RandomGenerator {
 		state greetings {
 			internal event p : Random?random
 			action do 
-				'System.out.println(new java.util.Random().nextInt(100));'
+				'System.out.println(new java.util.Random().nextInt(' & p.maxNumber & '));'
 			end
 		}
 	
