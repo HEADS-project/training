@@ -1,0 +1,24 @@
+import "../RandomNumber.thingml"
+
+thing JsRandomGenerator includes RandomGenerator {
+
+	statechart behavior init greetings {
+	
+		state greetings {
+			internal event p : Random?random
+			action do 
+				'console.log(Math.floor((Math.random() * ' & p.maxNumber & ')) );' //this is how we mix Node.JS code and ThingML code
+			end
+		}
+	
+	}
+
+}
+
+//TODO: Compile and run for the JavaScript platform
+configuration RandomJS {
+	instance client : RandomGeneratorClient
+	instance printer : JsRandomGenerator
+	
+	connector client.Random => printer.Random
+}

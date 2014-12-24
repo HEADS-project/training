@@ -28,7 +28,6 @@ thing RandomGeneratorClient includes RandomMsgs{
 			
 			transition -> Bye 
 			action Random!random(200)
-			
 		}
 	
 		state Bye {
