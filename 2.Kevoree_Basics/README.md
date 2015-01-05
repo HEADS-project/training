@@ -5,7 +5,7 @@ HEADS Kevoree runtime management basics
 
 Learn the basics of Kevoree. How to write your own components targeting the Kevoree Java or Kevoree JavaScript platforms, and use the different Kevoree tools in order to apply some reconfigurations over your running systems.
 
-
+> You need a **JDK 8** in order to compile and run Kevoree for **Java**
 
 
 **This tutorial covers:**
