@@ -26,7 +26,7 @@ public class HelloWorld {
         scheduledThreadPool.scheduleAtFixedRate(new Runnable() {
             @Override
             public void run() {
-                hello.send(greetMessage);
+                hello.send(greetMessage, null);
             }
         }, 0, 5, TimeUnit.SECONDS);
     }
