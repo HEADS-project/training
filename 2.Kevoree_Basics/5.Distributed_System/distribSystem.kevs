@@ -26,7 +26,7 @@ network jsNode.ip.lo 127.0.0.1
 
 // Cross-platform fragments
 add group : WSGroup
-add chan : RemoteWSChan
+add chan : WSChan
 
 // set the fragment on javaNode to be the master
 set group.master = 'jsNode'

@@ -13,9 +13,9 @@ The distributed system you are about to build and run is composed of:
       - **Ticker**: to send a random message every X seconds to ConsolePrinter
   - **JavascriptNode**: to host a ConsolePrinter and a WSMsgBroker
       - **ConsolePrinter**: to display the received message from Ticker to the console
-      - **WSMsgBroker**: to start the server that RemoteWSChan will connect to  
+      - **WSMsgBroker**: to start the server that WSChan will connect to  
         This component starts a server that acts as a message broker
-  - **RemoteWSChan**: to relay the messages between the 2 components  
+  - **WSChan**: to relay the messages between the 2 components  
     This channel creates a client that connects to the specified server (in its dictionary attributes)
 
 #### The big picture
@@ -41,7 +41,7 @@ network jsNode.ip.lo 127.0.0.1
 // create a group to share the model between the nodes
 add group : WSGroup
 // set the master node for the group to be the jsNode
-group.master = 'jsNode'
+set group.master = 'jsNode'
 // attach the nodes to the group
 attach javaNode, jsNode group
 ```
@@ -98,17 +98,17 @@ Click on the editor menu **KevScript**, remove the content (or append to it)
 
 ```txt
 // add the Ticker on the Java platform
-add javaNode.ticker : Ticker
+add javaNode.ticker : Ticker/5.2.2
 
 // add the ConsolePrinter and the WSMsgBroker on the JS platform
-add jsNode.printer : ConsolePrinter
+add jsNode.printer : ConsolePrinter/5.2.2
 add jsNode.broker : WSMsgBroker
 
 // define on which port the broker will start
 set jsNode.broker.port = '9050'
 
-// add a RemoteWSChan to transmit the messages between the Ticker and the ConsolePrinter
-add chan : RemoteWSChan
+// add a WSChan to transmit the messages between the Ticker and the ConsolePrinter
+add chan : WSChan/5.2.2
 
 // give the host:port of the broker to the chan
 set chan.host = "localhost"
