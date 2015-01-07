@@ -4,7 +4,7 @@
 
 // Java Platform
 add javaNode : JavaNode
-add javaNode.ticker : Ticker/5.2.2
+add javaNode.ticker : Ticker
 
 // provide a way to connect to this node from outside
 network javaNode.ip.lo 127.0.0.1
@@ -12,8 +12,8 @@ network javaNode.ip.lo 127.0.0.1
 
 
 // JavaScript Platform
-add jsNode : JavascriptNode
-add jsNode.printer : ConsolePrinter/5.2.2
+add jsNode : JavascriptNode/4.0.0-SNAPSHOT
+add jsNode.printer : ConsolePrinter
 add jsNode.broker : WSMsgBroker
 
 // define on which port the broker will start
@@ -26,7 +26,7 @@ network jsNode.ip.lo 127.0.0.1
 
 // Cross-platform fragments
 add group : WSGroup
-add chan : WSChan
+add chan : WSChan/5.2.3-SNAPSHOT
 
 // set the fragment on javaNode to be the master
 set group.master = 'jsNode'
