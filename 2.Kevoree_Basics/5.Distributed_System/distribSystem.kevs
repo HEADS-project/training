@@ -4,7 +4,7 @@
 
 // Java Platform
 add javaNode : JavaNode
-add javaNode.ticker : Ticker
+add javaNode.ticker : Ticker/5.2.2
 
 // provide a way to connect to this node from outside
 network javaNode.ip.lo 127.0.0.1
@@ -13,7 +13,7 @@ network javaNode.ip.lo 127.0.0.1
 
 // JavaScript Platform
 add jsNode : JavascriptNode
-add jsNode.printer : ConsolePrinter
+add jsNode.printer : ConsolePrinter/5.2.2
 add jsNode.broker : WSMsgBroker
 
 // define on which port the broker will start

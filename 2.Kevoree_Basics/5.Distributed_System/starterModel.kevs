@@ -6,7 +6,7 @@
 
 // create the two platform nodes
 add javaNode : JavaNode
-add jsNode : JavascriptNode
+add jsNode : JavascriptNode/4.0.0-SNAPSHOT
 
 // provide a network way to connect to those nodes
 network javaNode.ip.lo 127.0.0.1
