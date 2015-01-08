@@ -88,6 +88,9 @@ Let's use this **.jar** to run the **javaNode** from your KevScript `starterMode
 java -Dnode.name=javaNode -Dnode.bootstrap=/path/to/starterModel.kevs -jar kevoree.jar
 ```
 
+> N.B: if you use Windows, then you will probably have to enclose the arguments within double quotes '"'  
+> `"-Dnode.name=javaNode"`
+
 #### Use your distributed system
 Now that you have 2 Kevoree runtimes running on your machine, you can visualize them using the Kevoree Web Editor  
 http://editor.kevoree.org/?host=127.0.0.1
@@ -108,7 +111,7 @@ add jsNode.broker : WSMsgBroker
 set jsNode.broker.port = '9050'
 
 // add a WSChan to transmit the messages between the Ticker and the ConsolePrinter
-add chan : WSChan
+add chan : WSChan/5.2.3-SNAPSHOT
 
 // give the host:port of the broker to the chan
 set chan.host = "localhost"
