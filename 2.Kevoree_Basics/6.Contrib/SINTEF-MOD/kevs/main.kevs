@@ -1,0 +1,17 @@
+// create the two platform nodes
+add javaNode : JavaNode
+add node0 : JavascriptNode
+
+// provide a network way to connect to those nodes
+network javaNode.ip.lo 127.0.0.1
+network node0.ip.lo 127.0.0.1
+
+// create a group to share the model between the nodes
+add group : WSGroup
+// set the master node for the group to be the jsNode
+set group.master = 'node0'
+// attach the nodes to the group
+attach javaNode, node0 group
+
+add node0.blinker : my.package.BlinkLED
+

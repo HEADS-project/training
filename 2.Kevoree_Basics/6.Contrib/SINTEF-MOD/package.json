@@ -1,0 +1,27 @@
+{
+    "name": "kevoree-comp-blinkled",
+    "version": "0.1.0",
+    "main": "./lib/BlinkLED.js",
+    "kevoree": {
+        "package": "my.package"
+    },
+    "scripts": {
+        "prepublish": "grunt",
+        "postpublish": "grunt publish"
+    },
+    "keywords": [
+        "kevoree",
+        "library",
+        "comp"
+    ],
+    "dependencies": {
+        "kevoree-entities": "^7.0.0",
+	"mraa":"^0.5.4"
+    },
+    "devDependencies": {
+        "grunt": "^0.4.1",
+        "grunt-kevoree": "^5.0.0",
+        "grunt-kevoree-genmodel" : "^2.0.0",
+        "grunt-kevoree-registry" : "^2.0.0"
+    }
+}
