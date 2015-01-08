@@ -10,6 +10,12 @@ Install the `Kevoree Yeoman` generator called `generator-kevoree`
 ```sh
 npm i -g generator-kevoree
 ```
+
+Install `GruntJS` to handle task automation
+```sh
+npm i -g grunt-cli
+```
+
 Scaffold your project where you want
 ```sh
 # create a folder for your project
