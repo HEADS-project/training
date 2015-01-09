@@ -36,7 +36,7 @@ Learn the basics of Kevoree. How to write your own components targeting the Kevo
   - **New Kevoree JavaScript Project**  
     - *From existing sources*: **File** > **New** > **Project** > **Kevoree** > **Kevoree JS Project**  
       - Set the project name
-      - Set the location of your sources
+      - Set the location of your sources (**unckeck Default location and specify the proper path**)
       - Click **Finish**
     - *From scratch*:
       - Follow the [first step](https://github.com/HEADS-project/training/tree/master/2.Kevoree_Basics/1.HelloWorld/js) of the Kevoree JavaScript Tutorial n°1
