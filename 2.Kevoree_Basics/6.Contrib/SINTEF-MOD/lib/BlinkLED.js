@@ -8,6 +8,12 @@ var mraa = require('mraa');
 var BlinkLED = AbstractComponent.extend({
     toString: 'BlinkLED',
 	
+	construct: function() {
+		this.myLed = null;
+		this.ledState = true;
+		this.timer = null;
+	},
+	
 	periodicActivity: function() {
 		this.timer = setInterval(function(){
 			if (this.myLed != null) {
