@@ -2,15 +2,14 @@ datatype Integer
 	@c_type "int"
 	@c_byte_size "2"
 	@java_type "short"
-	@java_primitive "true"
-    @scala_type "Short"
-    @SenML_type "Double"
-    @ros_type "int16";
+    @js_type "short"
+	@java_primitive "true";
     
 datatype Long
 	@c_type "int"
 	@c_byte_size "4"
 	@java_type "int"
+    @js_type "int"
 	@java_primitive "true";
 
 /*****************************************************************************
