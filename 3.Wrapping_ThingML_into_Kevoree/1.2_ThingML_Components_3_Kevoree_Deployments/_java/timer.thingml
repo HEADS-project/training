@@ -92,6 +92,3 @@ of both components individually (e.g. the client can be changed dynamically).
 configuration TimerClientJ {
     instance client : SimpleTimerClient    
 }*/
-
-
-

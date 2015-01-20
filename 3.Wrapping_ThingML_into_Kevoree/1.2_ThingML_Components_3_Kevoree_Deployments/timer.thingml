@@ -6,6 +6,12 @@ datatype Integer
     @scala_type "Short"
     @SenML_type "Double"
     @ros_type "int16";
+    
+datatype Long
+	@c_type "int"
+	@c_byte_size "4"
+	@java_type "int"
+	@java_primitive "true";
 
 /*****************************************************************************
  * Definition of the built-in things and messages
