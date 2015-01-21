@@ -1,0 +1,61 @@
+0 info it worked if it ends with ok
+1 verbose cli [ 'c:\\Program Files\\nodejs\\node.exe',
+1 verbose cli   'c:\\Program Files\\nodejs\\node_modules\\npm\\bin\\npm-cli.js',
+1 verbose cli   'install' ]
+2 info using npm@1.4.28
+3 info using node@v0.10.32
+4 warn package.json kevoree-comp-timerjs@0.1.0 No repository field.
+5 verbose readDependencies using package.json deps
+6 verbose install where, deps [ 'c:\\Users\\bmori\\dev\\heads\\training\\3.Wrapping_ThingML_into_Kevoree\\3.2_Manually_Wrapping_JS_Code\\Deployment 3\\TimerJS',
+6 verbose install   [ 'kevoree-entities',
+6 verbose install     'state.js',
+6 verbose install     'grunt',
+6 verbose install     'grunt-kevoree',
+6 verbose install     'grunt-kevoree-genmodel',
+6 verbose install     'grunt-kevoree-registry' ] ]
+7 info preinstall kevoree-comp-timerjs@0.1.0
+8 verbose readDependencies using package.json deps
+9 verbose already installed skipping kevoree-entities@^7.0.0 c:\Users\bmori\dev\heads\training\3.Wrapping_ThingML_into_Kevoree\3.2_Manually_Wrapping_JS_Code\Deployment 3\TimerJS
+10 verbose already installed skipping state.js@^4.1.5 c:\Users\bmori\dev\heads\training\3.Wrapping_ThingML_into_Kevoree\3.2_Manually_Wrapping_JS_Code\Deployment 3\TimerJS
+11 verbose already installed skipping grunt@^0.4.1 c:\Users\bmori\dev\heads\training\3.Wrapping_ThingML_into_Kevoree\3.2_Manually_Wrapping_JS_Code\Deployment 3\TimerJS
+12 verbose already installed skipping grunt-kevoree@^5.0.0 c:\Users\bmori\dev\heads\training\3.Wrapping_ThingML_into_Kevoree\3.2_Manually_Wrapping_JS_Code\Deployment 3\TimerJS
+13 verbose already installed skipping grunt-kevoree-genmodel@^2.0.0 c:\Users\bmori\dev\heads\training\3.Wrapping_ThingML_into_Kevoree\3.2_Manually_Wrapping_JS_Code\Deployment 3\TimerJS
+14 verbose already installed skipping grunt-kevoree-registry@^2.0.0 c:\Users\bmori\dev\heads\training\3.Wrapping_ThingML_into_Kevoree\3.2_Manually_Wrapping_JS_Code\Deployment 3\TimerJS
+15 silly resolved []
+16 info build c:\Users\bmori\dev\heads\training\3.Wrapping_ThingML_into_Kevoree\3.2_Manually_Wrapping_JS_Code\Deployment 3\TimerJS
+17 verbose linkStuff [ false,
+17 verbose linkStuff   false,
+17 verbose linkStuff   false,
+17 verbose linkStuff   'c:\\Users\\bmori\\dev\\heads\\training\\3.Wrapping_ThingML_into_Kevoree\\3.2_Manually_Wrapping_JS_Code\\Deployment 3' ]
+18 info linkStuff kevoree-comp-timerjs@0.1.0
+19 verbose linkBins kevoree-comp-timerjs@0.1.0
+20 verbose linkMans kevoree-comp-timerjs@0.1.0
+21 verbose rebuildBundles kevoree-comp-timerjs@0.1.0
+22 verbose rebuildBundles [ 'grunt',
+22 verbose rebuildBundles   'grunt-kevoree',
+22 verbose rebuildBundles   'grunt-kevoree-genmodel',
+22 verbose rebuildBundles   'grunt-kevoree-registry',
+22 verbose rebuildBundles   'kevoree-entities',
+22 verbose rebuildBundles   'state.js' ]
+23 info install kevoree-comp-timerjs@0.1.0
+24 info postinstall kevoree-comp-timerjs@0.1.0
+25 info prepublish kevoree-comp-timerjs@0.1.0
+26 verbose unsafe-perm in lifecycle true
+27 info kevoree-comp-timerjs@0.1.0 Failed to exec prepublish script
+28 error kevoree-comp-timerjs@0.1.0 prepublish: `grunt`
+28 error Exit status 1
+29 error Failed at the kevoree-comp-timerjs@0.1.0 prepublish script.
+29 error This is most likely a problem with the kevoree-comp-timerjs package,
+29 error not with npm itself.
+29 error Tell the author that this fails on your system:
+29 error     grunt
+29 error You can get their info via:
+29 error     npm owner ls kevoree-comp-timerjs
+29 error There is likely additional logging output above.
+30 error System Windows_NT 6.1.7601
+31 error command "c:\\Program Files\\nodejs\\node.exe" "c:\\Program Files\\nodejs\\node_modules\\npm\\bin\\npm-cli.js" "install"
+32 error cwd c:\Users\bmori\dev\heads\training\3.Wrapping_ThingML_into_Kevoree\3.2_Manually_Wrapping_JS_Code\Deployment 3\TimerJS
+33 error node -v v0.10.32
+34 error npm -v 1.4.28
+35 error code ELIFECYCLE
+36 verbose exit [ 1, true ]

@@ -1,0 +1,27 @@
+{
+    "name": "kevoree-comp-timerjs",
+    "version": "0.1.0",
+    "main": "./lib/KTimerJS.js",
+    "kevoree": {
+        "package": "my.package"
+    },
+    "scripts": {
+        "prepublish": "grunt",
+        "postpublish": "grunt publish"
+    },
+    "keywords": [
+        "kevoree",
+        "library",
+        "comp"
+    ],
+    "dependencies": {
+        "kevoree-entities": "^7.0.0",
+		"state.js": "^4.1.5"
+    },
+    "devDependencies": {
+        "grunt": "^0.4.1",
+        "grunt-kevoree": "^5.0.0",
+        "grunt-kevoree-genmodel" : "^2.0.0",
+        "grunt-kevoree-registry" : "^2.0.0"
+    }
+}
