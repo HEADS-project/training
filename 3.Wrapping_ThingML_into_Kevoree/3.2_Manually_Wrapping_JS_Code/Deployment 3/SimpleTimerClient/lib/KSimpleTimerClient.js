@@ -15,7 +15,7 @@ var KSimpleTimerClient = AbstractComponent.extend({
     //  optional: true,
     //  defaultValue: false
     //},
-	
+
 	//ADDED: Reference to the wrapped things
 	construct: function() {
 		this.TestTimerJS_client = null;
@@ -32,12 +32,12 @@ var KSimpleTimerClient = AbstractComponent.extend({
 		//TODO: instances should be accessed with this.X
 		this.TestTimerJS_client = new SimpleTimerClient(1000, 5000);
 		this.TestTimerJS_client.setThis(this.TestTimerJS_client);
-		
+
 		//register listeners to allow wrapped things to send on Kevoree ports
 		this.TestTimerJS_client.getTimerListeners().push(this.out_TestTimerJS_client_timer_out.bind(this));
-		
+
 		this.TestTimerJS_client._init();
-        
+
 		this.log.debug(this.toString(), 'STARTED!');
             done();
         }.bind(this));
@@ -51,14 +51,14 @@ var KSimpleTimerClient = AbstractComponent.extend({
         this._super(function () {
 			//ADDED: On SIG-INT hook
             this.log.debug(this.toString(), 'STOPPING!');
-			TestTimerJS_client._stop();
+			this.TestTimerJS_client._stop();
 			this.log.debug(this.toString(), 'STOPPED!');
             done();
         }.bind(this));
     },
-	
+
 	//TODO: Generate ports that are not connected
-	
+
 	in_TestTimerJS_client_timer_in: function (msg) {
         console.log(this.getName() + '>' + msg);
 		var json = JSON.parse(msg);
@@ -66,9 +66,9 @@ var KSimpleTimerClient = AbstractComponent.extend({
 			if (json.message === "timer_timeout") {
 				this.TestTimerJS_client.receivetimer_timeoutOntimer();
 			}
-		} //else another port        
+		} //else another port
     },
-	
+
 	out_TestTimerJS_client_timer_out: function (msg) { /* This will be overwritten @runtime by Kevoree JS */ }
 });
 
