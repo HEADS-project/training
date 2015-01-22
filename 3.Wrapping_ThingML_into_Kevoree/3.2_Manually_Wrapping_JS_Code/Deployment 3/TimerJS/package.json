@@ -2,6 +2,7 @@
     "name": "kevoree-comp-timerjs",
     "version": "0.1.0",
     "main": "./lib/KTimerJS.js",
+    "private": true,
     "kevoree": {
         "package": "my.package"
     },

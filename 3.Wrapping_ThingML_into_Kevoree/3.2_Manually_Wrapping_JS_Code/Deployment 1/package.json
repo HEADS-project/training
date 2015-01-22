@@ -2,6 +2,7 @@
     "name": "kevoree-comp-testtimerjs",
     "version": "0.1.0",
     "main": "./lib/TestTimerJS.js",
+    "private": true,
     "kevoree": {
         "package": "my.package"
     },

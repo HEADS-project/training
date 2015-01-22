@@ -2,6 +2,7 @@
     "name": "kevoree-comp-simpletimerclient",
     "version": "0.1.0",
     "main": "./lib/KSimpleTimerClient.js",
+    "private": true,
     "kevoree": {
         "package": "my.package"
     },
