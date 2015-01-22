@@ -14,6 +14,8 @@ In this first exercise, you will be using the ThingML to Kevoree/Java compiler a
 - compile the default Java behavior, as you did in Tutorial 1
 - compile the Kevoree wrapper
 
+Open the `_java/timer.thingML` file in the HEADS IDE and compile the three different configurations using this procedure. Then import the result in the Kevoree editor and deploy it! It is recommended you look at the code in the `kevoree` package to understand how we map ThingML configurations to Kevoree deployment models. 
+
 ### How ThingML configurations map to Kevoree deployment model?
 
 Though the timer application is trivial, it is complex enough to understand the different mappings between a ThingML configuration and a Kevoree deployment model.
