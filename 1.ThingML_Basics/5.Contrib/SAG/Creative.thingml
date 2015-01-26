@@ -1,0 +1,104 @@
+ 
+
+
+datatype String
+	@java_type "String"
+	@js_type "String";
+
+datatype Integer	
+	@java_type "short"
+	@js_type "short";
+
+
+
+thing fragment SensorMsgs {
+	message sensor_value(motionValue : Integer);
+	
+}
+
+thing fragment CustomPrintMsgs {
+	message customPrint(myString : String);
+}
+
+thing fragment CustomPrinter includes CustomPrintMsgs {
+	
+	//The API (this port) is fully platform-independent	
+	provided port Print {
+		receives customPrint
+	}
+	
+	 
+}
+
+thing fragment  MotionSensor includes SensorMsgs,CustomPrintMsgs{
+
+	required port motion_port {
+ 			sends sensor_value
+	}
+	
+	required port Print{
+	
+		sends customPrint
+	}
+	
+	
+	statechart start init MotionValue {
+	
+	on entry Print!customPrint("Motion Sensor Start")
+	
+		state MotionValue{
+		
+			transition -> idle
+			action motion_port!sensor_value(12)
+		
+		}
+	
+	
+	state idle{
+	 on entry motion_port!sensor_value(8)
+		
+	}
+	
+}
+
+}
+
+thing fragment  LightActuator includes SensorMsgs,CustomPrintMsgs{
+	 
+	 provided port motion_ports {
+ 			receives sensor_value
+	}
+	
+	required port Print{
+	
+		sends customPrint
+	}
+	
+	statechart behaviour init ActuatorStart{
+	on entry Print!customPrint("Light Actuator Start")
+	state ActuatorStart{
+			internal event val: motion_ports?sensor_value
+			action 
+			do
+				if(val.motionValue >10)do
+						
+					Print!customPrint("Light is ON")
+				
+				end
+			
+				if(val.motionValue <10)do
+					
+					Print!customPrint("Light is OFF")
+				
+				end
+			end
+			
+			
+	}
+	
+	
+	}
+	
+	
+}
+
