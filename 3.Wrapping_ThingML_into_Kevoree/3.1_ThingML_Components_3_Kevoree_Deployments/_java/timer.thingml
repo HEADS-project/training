@@ -46,6 +46,43 @@ thing TimerJava includes Timer
 }
 
 /**
+ * In this configuration, we only have a timer.
+ * Generate the Java code and execute it...
+ * It should do pretty much nothing (since no one is asking the timer to 
+ * start and no one is waiting for a timer timeout).
+ * In this exercice, we will use the public API generated for the timer
+ * and programmatically use the timer from a simple Java program.
+ * 
+ * Once you have generated the code, go into org.thingml.generated.Main and:
+ * - register a listener on TimerJava_Deployment0_timer
+ 
+ * Java code to insert in the main
+ * TimerJava_Deployment0_timer.registerOnTimer(new ITimerJava_timerClient() {
+        @Override
+        public void timer_timeout_from_timer() {
+            DO SOMETHING (like a println)
+        }
+   });
+   
+   - send a timer_start message to the timer (after the timer has been initialized)
+   Java code to insert in the main
+   TimerJava_Deployment0_timer.timer_start_via_timer((short)2000);
+   
+ You can now run your updated main, and after 2 seconds, your code should be called
+   
+*/
+
+configuration Deployment0 {
+    instance timer : TimerJava
+}
+
+
+/**
+
+Now, we will wrap different ThingML configurations into Kevoree/Java components
+The automated wrapping basically uses the public APIs generated.
+
+
 In this configuration, all the things are already connected.
 Everything will be managed by ThingML, resulting in a single Kevoree 
 component, with no exposed port.
@@ -53,11 +90,11 @@ The dynamic adaptation capabilities of this configuration will be limited
 to changing the value of parameters. It is not possible to change the way
 timer and client will communicate, or to replace the client by an alternative client. 
 */
-configuration Deployment1 {
+/*configuration Deployment1 {
     instance timer : TimerJava
     instance client : SimpleTimerClient
     connector client.timer => timer.timer    
-}
+}*/
 
 
 

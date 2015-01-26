@@ -38,8 +38,40 @@ thing TimerJS includes Timer
     }
 }
 
-configuration TestTimerJS {
+/**
+ * Same exercise as in Java.
+ * - register a listener
+ 
+ * JS code to add in main.js
+ * Deployment0JS_timer.getTimerListeners().push(function(msg){DO SOMETHING (like a console.log)});
+ * 
+ * - call timer_start
+ 
+   JS code to add in main.js
+ * Deployment0JS_timer.receivetimer_startOntimer(2000);
+
+ * then:
+ * npm install
+ * node main.js
+ * 
+ * After two seconds, your logic should be called
+
+ */
+
+configuration Deployment0JS {
+    instance timer : TimerJS
+}
+
+/**
+The ThingML to Kevoree/JS transformation is not implemented yet.
+However it is possible to manually wrap the JS code generated from ThingML
+into Kevoree/JS components.
+
+See 3.2_Manually_Wrapping_JS_Code to see how we did it,
+and run the different deployments. You should obtain the same results as in Java
+*/
+/*configuration TestTimerJS {
     instance timer : TimerJS
     instance client : SimpleTimerClient
     connector client.timer => timer.timer    
-}
+}*/
