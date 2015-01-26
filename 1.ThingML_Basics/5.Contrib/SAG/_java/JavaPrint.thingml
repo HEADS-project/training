@@ -1,0 +1,29 @@
+import "../Creative.thingml"
+
+thing JavaPrinter includes CustomPrinter {
+
+	statechart behavior init idle {
+	
+		state idle {
+			internal event p : Print?customPrint
+			action do 
+				'System.out.print(' & p.myString    & '+"\n");' 
+			end
+		}
+	
+	}
+
+}
+
+
+configuration Server{
+	instance motionSensorClien : MotionSensor
+ 
+	instance lightActuator : LightActuator
+	 
+ 	instance printer : JavaPrinter
+	
+	connector motionSensorClien.motion_port => lightActuator.motion_ports
+ 	connector motionSensorClien.Print => printer.Print
+ 	connector lightActuator.Print => printer.Print
+}
