@@ -8,6 +8,8 @@ Now that you have learned the basics of ThingML and Kevoree (tutorial 1 and 2), 
 ThingML is the HEADS modelling language dedicated to the implementation of your HD-services. It provides a white-box view on your services.
 Kevoree manages these implementations as black-boxes and will deploy and dynamically manage the HD-services.
 
+> First update your HEADS IDE (assuming you have downloaded [one of that versions before](http://coreff5.istic.univ-rennes1.fr/jenkins/job/headside/ws/products.minimal/target/products/)). In `Help -> Install New Sofware...` add the ThingML update site (http://dist.thingml.org/update) and install ThingML. This will actually perform an update. Next time, simply go in `Help -> Check for Updates`
+
 ###This tutorial covers
 
 A set of simple exercises to:
