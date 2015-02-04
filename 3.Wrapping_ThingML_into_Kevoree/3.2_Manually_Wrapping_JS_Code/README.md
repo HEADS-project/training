@@ -69,3 +69,5 @@ After two seconds, you should see a timeout message in the console.
 
 > The ThingML to Kevoree/JavaScript transformation is not yet implemented. But you can look at Deployment 1, 2 and 3 to see
 the code we plan to generate, and execute this code using the Kevoree/JS runtime.
+
+> Actually, an initial proof-of-concept has just been implemented. Please try it and report on bugs, etc. **Always generate the "normal" JavaScript code before generating the Kevoree/JS code**. Indeed, the ThingML-to-Kevoree transformation will modify some of the pre-generated files, such as the `package.json` to add the proper dependencies, etc. To generate the Kevoree code: `right click on ThingML file -> ThingML (Deprecated) -> Compile JS Kevoree`. (Note that the transformation in itself is not deprecated, only the way it is currently integrated is).
