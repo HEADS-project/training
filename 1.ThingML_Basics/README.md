@@ -25,7 +25,7 @@ Learn the basics of ThingML. How to write you first program in a platform indepe
 
 To follow this tutorial, you need to have the ThingML editor and compilers. They are released as plugins for the Eclipse IDE. There are two different options for installing the ThingML tools: 
 
-* [Download the latest HEADS IDE Eclipse bundle](http://coreff5.istic.univ-rennes1.fr/jenkins/job/headside/ws/products/target/products/). This bundle contains all the HEADS plugins already installed.
+* [Download the latest HEADS IDE Eclipse bundle](http://coreff5.istic.univ-rennes1.fr/jenkins/job/headside/ws/products.minimal/target/products/). This bundle contains all the HEADS plugins already installed.
 
 * Install the ThingML plugin in your own installation of Eclipse. [Follow the instructions](http://thingml.org/pmwiki.php?n=Main.OnlineDemo) on how to install the eclipse plugins.
 
@@ -35,7 +35,7 @@ To check if the ThingML editor is properly installed, open a sample ".thingml" f
 
 ### 1. Hello World!
 
-The first step of this totorial is a simple Hello Wold example in ThingML. This examples shows the smallest possible ThingML program. It is composed of a "Thing" which defines a component type: 
+The first step of this tutorial is a simple Hello World example in ThingML. This examples shows the smallest possible ThingML program. It is composed of a "Thing" which defines a component type: 
 
 	thing HelloThing {
 		statechart HelloWorld init Greetings {
@@ -62,7 +62,7 @@ This configuration can now be compiled for different platforms and executed. The
 
 * Right-Click on the ThingML file to compile (it should be the file which contains the Configuration to be compiled)
 * Select the target platform in the "HEADS / ThingML" context menu
-* Check for any output message or errors in the ThingML Console (You might need to show the Eclispe Console View if it is hidden, select Window- > Show View -> Others... -> General -> Console).
+* Check for any output message or errors in the ThingML Console (You might need to show the Eclipse Console View if it is hidden, select Window- > Show View -> Others... -> General -> Console).
 * The code will be generated in an src-gen folder within the same eclipse project as the ThingML source file. One sub-folder is created for each different target platform and an additional sub-folder is created for each configuration 
 
 #### Generating to Java, Building and running with Maven
@@ -118,7 +118,7 @@ As for the `Hello World` example, this `Ping Pong` program is fully platform ind
 
 ### 3. Platform independent vs. platform specific
 
-This example presents a simple example of how statements or APIs of the target platforms can be used withing ThingML components.
+This example presents a simple example of how statements or APIs of the target platforms can be used within ThingML components.
 
 ### 4. Defining Timers for different platforms
 
