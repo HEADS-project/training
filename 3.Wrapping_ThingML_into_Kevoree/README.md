@@ -1,4 +1,4 @@
-HEADS ThingML modelling language basics
+HEADS: ThingML and Kevoree working together
 ===
 
 ![HEADS](http://heads-project.eu/sites/default/files/heads_large.png)
