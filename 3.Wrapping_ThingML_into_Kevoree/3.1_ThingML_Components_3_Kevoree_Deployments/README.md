@@ -102,6 +102,8 @@ core classes) and update the pom.xml with the required dependencies.
 Long answer: **better read the following sub-sections first** to understand the different mappings between ThingML
 configuration and Kevoree deployment models!
 
+> **Always generate the "normal" Java code before generating the Kevoree/Java code**. Indeed, the ThingML-to-Kevoree transformation will modify some of the pre-generated files, such as the `pom.xml` to add the proper dependencies, etc. To generate the Kevoree code: `right click on ThingML file -> ThingML (Deprecated) -> Compile Java Kevoree`. (Note that the transformation in itself is not deprecated, only the way it is currently integrated is).
+
 #### All components are defined and connected in the ThingML configuration
 
 If all your components are defined in a single ThingML configuration, and if all the ports are connected, it will generate a single Kevoree component with no exposed port. Everything will be internally managed by ThingML and seen as a black box by Kevoree. 
