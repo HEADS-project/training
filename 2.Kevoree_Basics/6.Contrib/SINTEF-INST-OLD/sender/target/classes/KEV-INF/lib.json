@@ -1,5 +1,5 @@
 
-{"class":"root:org.kevoree.ContainerRoot@77677191423213600527","generated_KMF_ID":"77677191423213600527","nodes":[],"repositories":[
+{"class":"root:org.kevoree.ContainerRoot@123066961423154500384","generated_KMF_ID":"123066961423154500384","nodes":[],"repositories":[
 {"class":"org.kevoree.Repository@http:%2F%2Frepomavenapacheorg%2Fmaven2","url":"http://repo.maven.apache.org/maven2"}
 ],"hubs":[],"mBindings":[],"groups":[],"packages":[
 {"class":"org.kevoree.Package@org","name":"org","packages":[
@@ -17,20 +17,8 @@
 ]}
 ,
 {"class":"org.kevoree.Package@example","name":"example","packages":[],"typeDefinitions":[
-{"class":"org.kevoree.ComponentType@name=Trunkdemux,version=0.0.1-SNAPSHOT","name":"Trunkdemux","abstract":"false","version":"0.0.1-SNAPSHOT","deployUnits":["/packages[org]/packages[kevoree]/packages[example]/deployUnits[hashcode=,name=sender,version=0.0.1-SNAPSHOT]"],"superTypes":[],"dictionaryType":[],"metaData":[
-{"class":"org.kevoree.Value@java.class","name":"java.class","value":"org.kevoree.example.Trunkdemux"}
-],"required":[
-{"class":"org.kevoree.PortTypeRef@out2","noDependency":"false","name":"out2","optional":"true","ref":[],"mappings":[]}
-,
-{"class":"org.kevoree.PortTypeRef@out3","noDependency":"false","name":"out3","optional":"true","ref":[],"mappings":[]}
-,
-{"class":"org.kevoree.PortTypeRef@out1","noDependency":"false","name":"out1","optional":"true","ref":[],"mappings":[]}
-],"provided":[
-{"class":"org.kevoree.PortTypeRef@muxin","noDependency":"false","name":"muxin","optional":"true","ref":[],"mappings":[]}
-]}
-,
 {"class":"org.kevoree.ComponentType@name=Sender,version=0.0.1-SNAPSHOT","name":"Sender","abstract":"false","version":"0.0.1-SNAPSHOT","deployUnits":["/packages[org]/packages[kevoree]/packages[example]/deployUnits[hashcode=,name=sender,version=0.0.1-SNAPSHOT]"],"superTypes":[],"dictionaryType":[
-{"class":"org.kevoree.DictionaryType@84471311423213600706","generated_KMF_ID":"84471311423213600706","attributes":[
+{"class":"org.kevoree.DictionaryType@288921221423154500481","generated_KMF_ID":"288921221423154500481","attributes":[
 {"class":"org.kevoree.DictionaryAttribute@greetMessage","datatype":"STRING","defaultValue":"Hedef0","name":"greetMessage","fragmentDependant":"false","optional":"true","state":"false","genericTypes":[]}
 ]}
 ],"metaData":[
@@ -38,18 +26,6 @@
 ],"required":[
 {"class":"org.kevoree.PortTypeRef@hello","noDependency":"false","name":"hello","optional":"true","ref":[],"mappings":[]}
 ],"provided":[]}
-,
-{"class":"org.kevoree.ComponentType@name=Trunkmux,version=0.0.1-SNAPSHOT","name":"Trunkmux","abstract":"false","version":"0.0.1-SNAPSHOT","deployUnits":["/packages[org]/packages[kevoree]/packages[example]/deployUnits[hashcode=,name=sender,version=0.0.1-SNAPSHOT]"],"superTypes":[],"dictionaryType":[],"metaData":[
-{"class":"org.kevoree.Value@java.class","name":"java.class","value":"org.kevoree.example.Trunkmux"}
-],"required":[
-{"class":"org.kevoree.PortTypeRef@muxout","noDependency":"false","name":"muxout","optional":"true","ref":[],"mappings":[]}
-],"provided":[
-{"class":"org.kevoree.PortTypeRef@in2","noDependency":"false","name":"in2","optional":"true","ref":[],"mappings":[]}
-,
-{"class":"org.kevoree.PortTypeRef@in1","noDependency":"false","name":"in1","optional":"true","ref":[],"mappings":[]}
-,
-{"class":"org.kevoree.PortTypeRef@in3","noDependency":"false","name":"in3","optional":"true","ref":[],"mappings":[]}
-]}
 ],"deployUnits":[
 {"class":"org.kevoree.DeployUnit@hashcode=,name=sender,version=0.0.1-SNAPSHOT","hashcode":"","name":"sender","version":"0.0.1-SNAPSHOT","url":"","requiredLibs":["/packages[org]/packages[kevoree]/deployUnits[hashcode=,name=org.kevoree.annotation.api,version=5.2.1]","/packages[org]/packages[kevoree]/deployUnits[hashcode=,name=org.kevoree.api,version=5.2.1]"],"filters":[
 {"class":"org.kevoree.Value@platform","name":"platform","value":"java"}
