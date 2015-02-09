@@ -1,0 +1,27 @@
+// the node that hosts your component
+add node0 : JavaNode
+
+// create and add your JavaChat component (named "myComp") in "node0"
+add node0.myComp0 : org.kevoree.example.JavaChat
+set node0.myComp0.name = 'Node 1'
+
+// create and add your JavaChat component (named "myComp") in "node1"
+add node0.myComp1 : org.kevoree.example.JavaChat
+set node0.myComp1.name = 'Node 2'
+
+// add an instance of WSGroup named "sync"
+add sync : WSGroup
+// attach your host node "node0" to the WSGroup group
+attach node0 sync
+
+// add an instance of SyncBroadcast named "chan1"
+add chan1 : SyncBroadcast
+// bind the ports to "chan1"
+bind node0.myComp0.messageOut chan1
+bind node0.myComp1.messageIn chan1
+
+// add an instance of SyncBroadcast named "chan1"
+add chan2 : SyncBroadcast
+// bind the ports to "chan2"
+bind node0.myComp0.messageIn chan2
+bind node0.myComp1.messageOut chan2
