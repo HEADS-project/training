@@ -54,6 +54,7 @@ public class MoveMessage {
 	@Update
 	public void update() {
 		Log.info("Update: {}", nodeId);
+		outQueue.send(nodeId, null);
 	}
 
 	@Stop

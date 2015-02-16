@@ -1,7 +1,7 @@
 //sample of KevScript configuration
-repo "http://repo1.maven.org/maven2"
-include mvn:org.kevoree.library.java:org.kevoree.library.java.javaNode:release
-include mvn:org.kevoree.library.java:org.kevoree.library.java.ws:release
+// repo "http://repo1.maven.org/maven2"
+// include mvn:org.kevoree.library.java:org.kevoree.library.java.javaNode:release
+// include mvn:org.kevoree.library.java:org.kevoree.library.java.ws:release
 
 // create the nodes
 add node0 : JavaNode
@@ -28,10 +28,19 @@ attach node2 sync
 attach node1 sync
 attach node0 sync
 
-// add an instance of SyncBroadcast named "chan"
-add chan0 : SyncBroadcast
-add chan1 : SyncBroadcast
-add chan2 : SyncBroadcast
+// add instances of WSChan 
+add chan0 : WSChan
+add chan1 : WSChan
+add chan2 : WSChan
+
+// give the host:port of the broker to the chan
+set chan0.host = "localhost"
+set chan0.port = "9050"
+set chan1.host = "localhost"
+set chan1.port = "9050"
+set chan2.host = "localhost"
+set chan2.port = "9050"
+
 
 // bind the output port "outQueue" to "chan"
 bind node0.myComp.outQueue chan0
