@@ -1,0 +1,44 @@
+//sample of KevScript configuration
+repo "http://repo1.maven.org/maven2"
+include mvn:org.kevoree.library.java:org.kevoree.library.java.javaNode:release
+include mvn:org.kevoree.library.java:org.kevoree.library.java.ws:release
+
+// create the nodes
+add node0 : JavaNode
+add node1 : JavaNode
+add node2 : JavaNode
+
+// create and add your component (named "myComp") in each node
+add node0.myComp : com.softwareag.research.heads.tutorial.MoveMessage
+add node1.myComp : com.softwareag.research.heads.tutorial.MoveMessage
+add node2.myComp : com.softwareag.research.heads.tutorial.MoveMessage
+
+// set the content of the dictionary attribute 'nodeId' to a unique value for each node.
+set node0.myComp.nodeId = 'A'
+set node1.myComp.nodeId = 'B'
+set node2.myComp.nodeId = 'C'
+
+// add an instance of WSGroup named "sync"
+add sync : WSGroup
+// set the master node for the group to be the jsNode
+set sync.master = 'node0'
+
+// attach your host nodes to the WSGroup group
+attach node2 sync
+attach node1 sync
+attach node0 sync
+
+// add an instance of SyncBroadcast named "chan"
+add chan0 : SyncBroadcast
+add chan1 : SyncBroadcast
+add chan2 : SyncBroadcast
+
+// bind the output port "outQueue" to "chan"
+bind node0.myComp.outQueue chan0
+bind node1.myComp.outQueue chan1
+bind node2.myComp.outQueue chan2
+
+// bind the input port "outQueue" to "chan"
+bind node0.myComp.inQueue chan2
+bind node1.myComp.inQueue chan0
+bind node2.myComp.inQueue chan1
