@@ -1,0 +1,319 @@
+[INFO] Scanning for projects...
+[INFO] 
+[INFO] Using the builder org.apache.maven.lifecycle.internal.builder.singlethreaded.SingleThreadedBuilder with a thread count of 1
+[INFO]                                                                         
+[INFO] ------------------------------------------------------------------------
+[INFO] Building Kevoree :: SAG 1.0.0-SNAPSHOT
+[INFO] ------------------------------------------------------------------------
+[INFO] 
+[INFO] --- maven-clean-plugin:2.5:clean (default-clean) @ movemessage ---
+[INFO] Deleting D:\Users\mask\git\skorsky\training\2.Kevoree_Basics\6.Contrib\SAG\target
+[INFO] 
+[INFO] --- maven-resources-plugin:2.6:resources (default-resources) @ movemessage ---
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] skip non existing resourceDirectory D:\Users\mask\git\skorsky\training\2.Kevoree_Basics\6.Contrib\SAG\src\main\resources
+[INFO] 
+[INFO] --- maven-compiler-plugin:3.0:compile (default-compile) @ movemessage ---
+[INFO] Changes detected - recompiling the module!
+[INFO] Compiling 1 source file to D:\Users\mask\git\skorsky\training\2.Kevoree_Basics\6.Contrib\SAG\target\classes
+[INFO] 
+[INFO] --- maven-resources-plugin:2.6:testResources (default-testResources) @ movemessage ---
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] skip non existing resourceDirectory D:\Users\mask\git\skorsky\training\2.Kevoree_Basics\6.Contrib\SAG\src\test\resources
+[INFO] 
+[INFO] --- maven-compiler-plugin:3.0:testCompile (default-testCompile) @ movemessage ---
+[INFO] Changes detected - recompiling the module!
+[INFO] 
+[INFO] --- maven-surefire-plugin:2.12.4:test (default-test) @ movemessage ---
+[INFO] 
+[INFO] --- org.kevoree.tools.mavenplugin:5.2.5:generate (default) @ movemessage ---
+[INFO] 
+[INFO] --- maven-jar-plugin:2.4:jar (default-jar) @ movemessage ---
+[INFO] Building jar: D:\Users\mask\git\skorsky\training\2.Kevoree_Basics\6.Contrib\SAG\target\movemessage-1.0.0-SNAPSHOT.jar
+[INFO] 
+[INFO] --- maven-install-plugin:2.4:install (default-install) @ movemessage ---
+[INFO] Installing D:\Users\mask\git\skorsky\training\2.Kevoree_Basics\6.Contrib\SAG\target\movemessage-1.0.0-SNAPSHOT.jar to D:\Users\mask\.m2\repository\com\softwareag\research\heads\tutorial\movemessage\1.0.0-SNAPSHOT\movemessage-1.0.0-SNAPSHOT.jar
+[INFO] Installing D:\Users\mask\git\skorsky\training\2.Kevoree_Basics\6.Contrib\SAG\pom.xml to D:\Users\mask\.m2\repository\com\softwareag\research\heads\tutorial\movemessage\1.0.0-SNAPSHOT\movemessage-1.0.0-SNAPSHOT.pom
+[INFO] 
+[INFO] --- org.kevoree.tools.mavenplugin:5.2.5:run (default-cli) @ movemessage ---
+[INFO] Manually install file:D:\Users\mask\git\skorsky\training\2.Kevoree_Basics\6.Contrib\SAG\target\classes for mvn:com.softwareag.research.heads.tutorial:movemessage:1.0.0-SNAPSHOT
+00:00 INFO: Bootstrap Kevoree node : node0, version 5.2.5
+00:00 INFO: Load Bootstrap model from D:\Users\mask\git\skorsky\training\2.Kevoree_Basics\6.Contrib\SAG\target\classes\KEV-INF\lib.json
+00:00 INFO: Request=JavaNode,JavaNode,JavaNode,com.softwareag.research.heads.tutorial.MoveMessage,com.softwareag.research.heads.tutorial.MoveMessage,com.softwareag.research.heads.tutorial.MoveMessage,WSGroup,WSChan,WSChan,WSChan,
+00:01 INFO: Resolved 69 typeDefinitions from Kevoree Registry http://registry.kevoree.org/v5/ (JavaNode/5.2.0,WSGroup/5.2.1-SNAPSHOT,JavaNode/5.0.3,JavaNode/5.2.1,JavaNode/5.0.4,JavaNode/5.2.2,JavaNode/5.0.5,JavaNode/5.2.3,WSGroup/5.2.4-SNAPSHOT,WSGroup/5.0.8-SNAPSHOT,JavaNode/5.0.6-SNAPSHOT,JavaNode/5.2.4,JavaNode/5.0.6,WSGroup/5.0.5-SNAPSHOT,JavaNode/5.0.7,JavaNode/5.1.4-SNAPSHOT,JavaNode/5.2.2-SNAPSHOT,WSChan/5.2.3-SNAPSHOT,JavaNode/5.2.5-SNAPSHOT,WSGroup/5.1.2,WSGroup/5.1.3,WSGroup/5.1.4,WSGroup/5.1.0,WSGroup/5.1.1,JavaNode/5.0.3-SNAPSHOT,JavaNode/5.1.1-SNAPSHOT,WSChan/5.1.4-SNAPSHOT,JavaNode/5.1.2-SNAPSHOT,WSGroup/5.2.2-SNAPSHOT,WSGroup/5.0.7,WSGroup/5.2.3-SNAPSHOT,WSChan/5.2.4-SNAPSHOT,WSGroup/5.1.2-SNAPSHOT,WSGroup/5.0.7-SNAPSHOT,JavaNode/5.2.3-SNAPSHOT,JavaNode/5.1.0,JavaNode/5.0.7-SNAPSHOT,JavaNode/5.1.1,JavaNode/5.1.2,JavaNode/5.1.3,JavaNode/5.2.1-SNAPSHOT,WSGroup/0.1.0,WSGroup/5.0.3,WSGroup/5.2.1,WSGroup/5.2.2,WSGroup/5.0.4,WSGroup/5.0.3-SNAPSHOT,WSGroup/5.0.5,WSGroup/5.2.3,WSGroup/5.0.6,WSGroup/5.2.4,WSChan/2.2.3-SNAPSHOT,WSGroup/5.1.1-SNAPSHOT,WSGroup/5.2.0,JavaNode/5.0.8-SNAPSHOT,JavaNode/5.2.4-SNAPSHOT,WSChan/5.2.5-SNAPSHOT,WSChan/5.2.4,WSChan/5.2.3,WSChan/5.2.2,WSChan/5.2.1,WSChan/5.2.0,WSChan/5.2.2-SNAPSHOT,WSGroup/5.2.5-SNAPSHOT,WSGroup/5.1.4-SNAPSHOT,JavaNode/5.0.5-SNAPSHOT,WSGroup/5.0.4-SNAPSHOT,JavaNode/5.0.4-SNAPSHOT,WSChan/5.2.1-SNAPSHOT)
+00:01 WARN: Try to select snapshot in best effort mode for com.softwareag.research.heads.tutorial.MoveMessage
+00:01 WARN: Founded: MoveMessage:1.0.0-SNAPSHOT
+00:01 WARN: Try to select snapshot in best effort mode for com.softwareag.research.heads.tutorial.MoveMessage
+00:01 WARN: Founded: MoveMessage:1.0.0-SNAPSHOT
+00:01 WARN: Try to select snapshot in best effort mode for com.softwareag.research.heads.tutorial.MoveMessage
+00:01 WARN: Founded: MoveMessage:1.0.0-SNAPSHOT
+00:01 INFO: Resolving ............. /packages[org]/packages[kevoree]/packages[library]/packages[java]/deployUnits[hashcode=,name=org.kevoree.library.java.javaNode,version=5.2.4]
+00:01 INFO: Resolved in 2ms
+00:01 INFO: JavaNode, changing LOG level to INFO
+00:01 INFO: Starting node type of node0
+00:01 INFO: Resolving ............. /packages[org]/packages[kevoree]/packages[library]/packages[java]/deployUnits[hashcode=,name=org.kevoree.library.java.ws,version=5.2.4]
+00:02 INFO: Resolved in 2ms
+00:02 INFO: Resolving ............. /packages[io]/packages[undertow]/deployUnits[hashcode=,name=undertow-core,version=1.2.0.Beta8]
+00:02 INFO: Resolved in 1ms
+00:02 INFO: Resolving ............. /packages[org]/packages[jboss]/packages[xnio]/deployUnits[hashcode=,name=xnio-nio,version=3.3.0.Final]
+00:02 INFO: Resolved in 4ms
+00:02 INFO: Resolving ............. /packages[org]/packages[jboss]/packages[xnio]/deployUnits[hashcode=,name=xnio-api,version=3.3.0.Final]
+00:02 INFO: Resolved in 2ms
+00:02 INFO: Resolving ............. /packages[org]/packages[jboss]/packages[logging]/deployUnits[hashcode=,name=jboss-logging,version=3.1.4.GA]
+00:02 INFO: Resolved in 2ms
+00:02 INFO: Resolving ............. /packages[fr]/packages[braindead]/deployUnits[hashcode=,name=wsmsgbroker-client,version=1.0.2]
+00:02 INFO: Resolved in 2ms
+00:02 INFO: Resolving ............. /packages[com]/packages[google]/packages[code]/packages[gson]/deployUnits[hashcode=,name=gson,version=2.3]
+00:02 INFO: Resolved in 2ms
+00:02 INFO: Resolving ............. /packages[org]/packages[java-websocket]/deployUnits[hashcode=,name=Java-WebSocket,version=1.3.0]
+00:02 INFO: Resolved in 2ms
+00:02 INFO: Add instance /nodes[node0]/components[myComp]
+00:02 INFO: Add instance /groups[sync]
+00:02 INFO: Add instance /hubs[chan2]
+00:02 INFO: Add instance /hubs[chan0]
+00:02 INFO: Bind /nodes[node0]/components[myComp]/provided[inQueue] /hubs[chan2]
+00:02 INFO: Bind /nodes[node0]/components[myComp]/required[outQueue] /hubs[chan0]
+00:02 INFO: Starting /nodes[node0]/components[myComp]
+00:02 INFO: Start with node Id A, myComp, node0
+00:02 INFO: Starting /groups[sync]
+00:02 INFO: WSGroup "sync" listen on 9000
+00:02 INFO: Starting /hubs[chan2]
+00:02 INFO: Starting /hubs[chan0]
+00:02 INFO: JavaNode Update completed in 857 ms
+00:02 INFO: End deploy result=true-867
+00:02 INFO: Bootstrap completed
+00:03 INFO: /nodes[node0]/components[myComp]/provided[inQueue]_chan2 registered on remote server
+00:31 INFO: New client registered "node1". Merging his model with mine...
+00:32 INFO: Broadcasting merged model to all connected clients
+00:32 INFO: JavaNode received a new Model to apply from /groups[sync]
+00:32 INFO: Bind /nodes[node0]/components[myComp]/provided[inQueue] /hubs[chan2]
+00:32 INFO: Bind /nodes[node0]/components[myComp]/required[outQueue] /hubs[chan0]
+00:32 INFO: Update: A
+00:33 INFO: JavaNode Update completed in 1660 ms
+00:33 ERROR: Connection closed by remote server for /nodes[node0]/components[myComp]/provided[inQueue]_chan2
+00:33 INFO: End deploy result=true-1702
+00:34 INFO: Merge model result: true
+00:34 ERROR: Connection closed by remote server for /nodes[node0]/components[myComp]/provided[inQueue]_chan2
+00:34 ERROR: Connection closed by remote server for /nodes[node0]/components[myComp]/provided[inQueue]_chan2
+00:36 ERROR: Connection closed by remote server for /nodes[node0]/components[myComp]/provided[inQueue]_chan2
+00:36 ERROR: Connection closed by remote server for /nodes[node0]/components[myComp]/provided[inQueue]_chan2
+00:39 ERROR: Connection closed by remote server for /nodes[node0]/components[myComp]/provided[inQueue]_chan2
+00:39 ERROR: Connection closed by remote server for /nodes[node0]/components[myComp]/provided[inQueue]_chan2
+00:42 ERROR: Connection closed by remote server for /nodes[node0]/components[myComp]/provided[inQueue]_chan2
+00:42 ERROR: Connection closed by remote server for /nodes[node0]/components[myComp]/provided[inQueue]_chan2
+00:45 ERROR: Connection closed by remote server for /nodes[node0]/components[myComp]/provided[inQueue]_chan2
+00:45 ERROR: Connection closed by remote server for /nodes[node0]/components[myComp]/provided[inQueue]_chan2
+00:47 INFO: New client registered "node2". Merging his model with mine...
+00:47 INFO: Broadcasting merged model to all connected clients
+00:47 INFO: JavaNode received a new Model to apply from /groups[sync]
+00:48 INFO: Bind /nodes[node0]/components[myComp]/provided[inQueue] /hubs[chan2]
+00:48 INFO: Bind /nodes[node0]/components[myComp]/required[outQueue] /hubs[chan0]
+00:48 INFO: Update: A
+00:48 WARN: Unable to send message, no connection established for /nodes[node0]/components[myComp]/required[outQueue]_chan0
+00:48 WARN: Unable to send message, no connection established for /nodes[node0]/components[myComp]/required[outQueue]_chan0
+00:48 WARN: Unable to send message, no connection established for /nodes[node0]/components[myComp]/required[outQueue]_chan0
+00:48 WARN: Unable to send message, no connection established for /nodes[node0]/components[myComp]/required[outQueue]_chan0
+00:48 WARN: Unable to send message, no connection established for /nodes[node0]/components[myComp]/required[outQueue]_chan0
+00:48 WARN: Unable to send message, no connection established for /nodes[node0]/components[myComp]/required[outQueue]_chan0
+00:48 INFO: JavaNode Update completed in 169 ms
+00:48 INFO: End deploy result=true-83
+00:48 INFO: Merge model result: true
+00:48 ERROR: Connection closed by remote server for /nodes[node0]/components[myComp]/provided[inQueue]_chan2
+00:49 ERROR: Connection closed by remote server for /nodes[node0]/components[myComp]/provided[inQueue]_chan2
+00:49 ERROR: Connection closed by remote server for /nodes[node0]/components[myComp]/provided[inQueue]_chan2
+00:49 ERROR: Connection closed by remote server for /nodes[node0]/components[myComp]/provided[inQueue]_chan2
+00:49 ERROR: Connection closed by remote server for /nodes[node0]/components[myComp]/provided[inQueue]_chan2
+00:51 ERROR: Connection closed by remote server for /nodes[node0]/components[myComp]/provided[inQueue]_chan2
+00:52 ERROR: Connection closed by remote server for /nodes[node0]/components[myComp]/provided[inQueue]_chan2
+00:52 ERROR: Connection closed by remote server for /nodes[node0]/components[myComp]/provided[inQueue]_chan2
+00:52 ERROR: Connection closed by remote server for /nodes[node0]/components[myComp]/provided[inQueue]_chan2
+00:54 ERROR: Connection closed by remote server for /nodes[node0]/components[myComp]/provided[inQueue]_chan2
+00:55 ERROR: Connection closed by remote server for /nodes[node0]/components[myComp]/provided[inQueue]_chan2
+00:55 ERROR: Connection closed by remote server for /nodes[node0]/components[myComp]/provided[inQueue]_chan2
+00:55 ERROR: Connection closed by remote server for /nodes[node0]/components[myComp]/provided[inQueue]_chan2
+00:57 ERROR: Connection closed by remote server for /nodes[node0]/components[myComp]/provided[inQueue]_chan2
+00:58 ERROR: Connection closed by remote server for /nodes[node0]/components[myComp]/provided[inQueue]_chan2
+00:58 ERROR: Connection closed by remote server for /nodes[node0]/components[myComp]/provided[inQueue]_chan2
+00:58 ERROR: Connection closed by remote server for /nodes[node0]/components[myComp]/provided[inQueue]_chan2
+01:00 ERROR: Connection closed by remote server for /nodes[node0]/components[myComp]/provided[inQueue]_chan2
+01:01 ERROR: Connection closed by remote server for /nodes[node0]/components[myComp]/provided[inQueue]_chan2
+01:01 ERROR: Connection closed by remote server for /nodes[node0]/components[myComp]/provided[inQueue]_chan2
+01:01 ERROR: Connection closed by remote server for /nodes[node0]/components[myComp]/provided[inQueue]_chan2
+01:03 ERROR: Connection closed by remote server for /nodes[node0]/components[myComp]/provided[inQueue]_chan2
+01:04 ERROR: Connection closed by remote server for /nodes[node0]/components[myComp]/provided[inQueue]_chan2
+01:04 ERROR: Connection closed by remote server for /nodes[node0]/components[myComp]/provided[inQueue]_chan2
+01:04 ERROR: Connection closed by remote server for /nodes[node0]/components[myComp]/provided[inQueue]_chan2
+01:06 ERROR: Connection closed by remote server for /nodes[node0]/components[myComp]/provided[inQueue]_chan2
+01:07 ERROR: Connection closed by remote server for /nodes[node0]/components[myComp]/provided[inQueue]_chan2
+01:07 ERROR: Connection closed by remote server for /nodes[node0]/components[myComp]/provided[inQueue]_chan2
+01:07 ERROR: Connection closed by remote server for /nodes[node0]/components[myComp]/provided[inQueue]_chan2
+01:09 ERROR: Connection closed by remote server for /nodes[node0]/components[myComp]/provided[inQueue]_chan2
+01:10 ERROR: Connection closed by remote server for /nodes[node0]/components[myComp]/provided[inQueue]_chan2
+01:10 ERROR: Connection closed by remote server for /nodes[node0]/components[myComp]/provided[inQueue]_chan2
+01:10 ERROR: Connection closed by remote server for /nodes[node0]/components[myComp]/provided[inQueue]_chan2
+01:12 ERROR: Connection closed by remote server for /nodes[node0]/components[myComp]/provided[inQueue]_chan2
+01:13 ERROR: Connection closed by remote server for /nodes[node0]/components[myComp]/provided[inQueue]_chan2
+01:13 ERROR: Connection closed by remote server for /nodes[node0]/components[myComp]/provided[inQueue]_chan2
+01:13 ERROR: Connection closed by remote server for /nodes[node0]/components[myComp]/provided[inQueue]_chan2
+01:15 ERROR: Connection closed by remote server for /nodes[node0]/components[myComp]/provided[inQueue]_chan2
+01:16 ERROR: Connection closed by remote server for /nodes[node0]/components[myComp]/provided[inQueue]_chan2
+01:16 ERROR: Connection closed by remote server for /nodes[node0]/components[myComp]/provided[inQueue]_chan2
+01:16 ERROR: Connection closed by remote server for /nodes[node0]/components[myComp]/provided[inQueue]_chan2
+01:18 ERROR: Connection closed by remote server for /nodes[node0]/components[myComp]/provided[inQueue]_chan2
+01:19 ERROR: Connection closed by remote server for /nodes[node0]/components[myComp]/provided[inQueue]_chan2
+01:19 ERROR: Connection closed by remote server for /nodes[node0]/components[myComp]/provided[inQueue]_chan2
+01:19 ERROR: Connection closed by remote server for /nodes[node0]/components[myComp]/provided[inQueue]_chan2
+01:21 ERROR: Connection closed by remote server for /nodes[node0]/components[myComp]/provided[inQueue]_chan2
+01:22 ERROR: Connection closed by remote server for /nodes[node0]/components[myComp]/provided[inQueue]_chan2
+01:22 ERROR: Connection closed by remote server for /nodes[node0]/components[myComp]/provided[inQueue]_chan2
+01:22 ERROR: Connection closed by remote server for /nodes[node0]/components[myComp]/provided[inQueue]_chan2
+01:24 ERROR: Connection closed by remote server for /nodes[node0]/components[myComp]/provided[inQueue]_chan2
+01:25 ERROR: Connection closed by remote server for /nodes[node0]/components[myComp]/provided[inQueue]_chan2
+01:25 ERROR: Connection closed by remote server for /nodes[node0]/components[myComp]/provided[inQueue]_chan2
+01:25 ERROR: Connection closed by remote server for /nodes[node0]/components[myComp]/provided[inQueue]_chan2
+01:27 ERROR: Connection closed by remote server for /nodes[node0]/components[myComp]/provided[inQueue]_chan2
+01:28 ERROR: Connection closed by remote server for /nodes[node0]/components[myComp]/provided[inQueue]_chan2
+01:28 ERROR: Connection closed by remote server for /nodes[node0]/components[myComp]/provided[inQueue]_chan2
+01:28 ERROR: Connection closed by remote server for /nodes[node0]/components[myComp]/provided[inQueue]_chan2
+01:30 ERROR: Connection closed by remote server for /nodes[node0]/components[myComp]/provided[inQueue]_chan2
+01:31 ERROR: Connection closed by remote server for /nodes[node0]/components[myComp]/provided[inQueue]_chan2
+01:31 ERROR: Connection closed by remote server for /nodes[node0]/components[myComp]/provided[inQueue]_chan2
+01:31 ERROR: Connection closed by remote server for /nodes[node0]/components[myComp]/provided[inQueue]_chan2
+01:33 ERROR: Connection closed by remote server for /nodes[node0]/components[myComp]/provided[inQueue]_chan2
+01:34 ERROR: Connection closed by remote server for /nodes[node0]/components[myComp]/provided[inQueue]_chan2
+01:34 ERROR: Connection closed by remote server for /nodes[node0]/components[myComp]/provided[inQueue]_chan2
+01:34 ERROR: Connection closed by remote server for /nodes[node0]/components[myComp]/provided[inQueue]_chan2
+01:36 ERROR: Connection closed by remote server for /nodes[node0]/components[myComp]/provided[inQueue]_chan2
+01:37 ERROR: Connection closed by remote server for /nodes[node0]/components[myComp]/provided[inQueue]_chan2
+01:37 ERROR: Connection closed by remote server for /nodes[node0]/components[myComp]/provided[inQueue]_chan2
+01:37 ERROR: Connection closed by remote server for /nodes[node0]/components[myComp]/provided[inQueue]_chan2
+01:39 ERROR: Connection closed by remote server for /nodes[node0]/components[myComp]/provided[inQueue]_chan2
+01:40 ERROR: Connection closed by remote server for /nodes[node0]/components[myComp]/provided[inQueue]_chan2
+01:40 ERROR: Connection closed by remote server for /nodes[node0]/components[myComp]/provided[inQueue]_chan2
+01:40 ERROR: Connection closed by remote server for /nodes[node0]/components[myComp]/provided[inQueue]_chan2
+01:42 ERROR: Connection closed by remote server for /nodes[node0]/components[myComp]/provided[inQueue]_chan2
+01:43 ERROR: Connection closed by remote server for /nodes[node0]/components[myComp]/provided[inQueue]_chan2
+01:43 ERROR: Connection closed by remote server for /nodes[node0]/components[myComp]/provided[inQueue]_chan2
+01:43 ERROR: Connection closed by remote server for /nodes[node0]/components[myComp]/provided[inQueue]_chan2
+01:45 ERROR: Connection closed by remote server for /nodes[node0]/components[myComp]/provided[inQueue]_chan2
+01:46 ERROR: Connection closed by remote server for /nodes[node0]/components[myComp]/provided[inQueue]_chan2
+01:46 ERROR: Connection closed by remote server for /nodes[node0]/components[myComp]/provided[inQueue]_chan2
+01:46 ERROR: Connection closed by remote server for /nodes[node0]/components[myComp]/provided[inQueue]_chan2
+01:48 ERROR: Connection closed by remote server for /nodes[node0]/components[myComp]/provided[inQueue]_chan2
+01:49 ERROR: Connection closed by remote server for /nodes[node0]/components[myComp]/provided[inQueue]_chan2
+01:49 ERROR: Connection closed by remote server for /nodes[node0]/components[myComp]/provided[inQueue]_chan2
+01:49 ERROR: Connection closed by remote server for /nodes[node0]/components[myComp]/provided[inQueue]_chan2
+01:51 ERROR: Connection closed by remote server for /nodes[node0]/components[myComp]/provided[inQueue]_chan2
+01:52 ERROR: Connection closed by remote server for /nodes[node0]/components[myComp]/provided[inQueue]_chan2
+01:52 ERROR: Connection closed by remote server for /nodes[node0]/components[myComp]/provided[inQueue]_chan2
+01:52 ERROR: Connection closed by remote server for /nodes[node0]/components[myComp]/provided[inQueue]_chan2
+01:54 ERROR: Connection closed by remote server for /nodes[node0]/components[myComp]/provided[inQueue]_chan2
+01:55 ERROR: Connection closed by remote server for /nodes[node0]/components[myComp]/provided[inQueue]_chan2
+01:55 ERROR: Connection closed by remote server for /nodes[node0]/components[myComp]/provided[inQueue]_chan2
+01:55 ERROR: Connection closed by remote server for /nodes[node0]/components[myComp]/provided[inQueue]_chan2
+01:57 ERROR: Connection closed by remote server for /nodes[node0]/components[myComp]/provided[inQueue]_chan2
+01:58 ERROR: Connection closed by remote server for /nodes[node0]/components[myComp]/provided[inQueue]_chan2
+01:58 ERROR: Connection closed by remote server for /nodes[node0]/components[myComp]/provided[inQueue]_chan2
+01:58 ERROR: Connection closed by remote server for /nodes[node0]/components[myComp]/provided[inQueue]_chan2
+02:00 ERROR: Connection closed by remote server for /nodes[node0]/components[myComp]/provided[inQueue]_chan2
+02:01 ERROR: Connection closed by remote server for /nodes[node0]/components[myComp]/provided[inQueue]_chan2
+02:01 ERROR: Connection closed by remote server for /nodes[node0]/components[myComp]/provided[inQueue]_chan2
+02:01 ERROR: Connection closed by remote server for /nodes[node0]/components[myComp]/provided[inQueue]_chan2
+02:03 ERROR: Connection closed by remote server for /nodes[node0]/components[myComp]/provided[inQueue]_chan2
+02:04 ERROR: Connection closed by remote server for /nodes[node0]/components[myComp]/provided[inQueue]_chan2
+02:04 ERROR: Connection closed by remote server for /nodes[node0]/components[myComp]/provided[inQueue]_chan2
+02:04 ERROR: Connection closed by remote server for /nodes[node0]/components[myComp]/provided[inQueue]_chan2
+02:06 ERROR: Connection closed by remote server for /nodes[node0]/components[myComp]/provided[inQueue]_chan2
+02:07 ERROR: Connection closed by remote server for /nodes[node0]/components[myComp]/provided[inQueue]_chan2
+02:07 ERROR: Connection closed by remote server for /nodes[node0]/components[myComp]/provided[inQueue]_chan2
+02:07 ERROR: Connection closed by remote server for /nodes[node0]/components[myComp]/provided[inQueue]_chan2
+02:09 ERROR: Connection closed by remote server for /nodes[node0]/components[myComp]/provided[inQueue]_chan2
+02:10 ERROR: Connection closed by remote server for /nodes[node0]/components[myComp]/provided[inQueue]_chan2
+02:10 ERROR: Connection closed by remote server for /nodes[node0]/components[myComp]/provided[inQueue]_chan2
+02:10 ERROR: Connection closed by remote server for /nodes[node0]/components[myComp]/provided[inQueue]_chan2
+02:12 ERROR: Connection closed by remote server for /nodes[node0]/components[myComp]/provided[inQueue]_chan2
+02:13 ERROR: Connection closed by remote server for /nodes[node0]/components[myComp]/provided[inQueue]_chan2
+02:13 ERROR: Connection closed by remote server for /nodes[node0]/components[myComp]/provided[inQueue]_chan2
+02:13 ERROR: Connection closed by remote server for /nodes[node0]/components[myComp]/provided[inQueue]_chan2
+02:15 ERROR: Connection closed by remote server for /nodes[node0]/components[myComp]/provided[inQueue]_chan2
+02:16 ERROR: Connection closed by remote server for /nodes[node0]/components[myComp]/provided[inQueue]_chan2
+02:16 ERROR: Connection closed by remote server for /nodes[node0]/components[myComp]/provided[inQueue]_chan2
+02:16 ERROR: Connection closed by remote server for /nodes[node0]/components[myComp]/provided[inQueue]_chan2
+02:18 ERROR: Connection closed by remote server for /nodes[node0]/components[myComp]/provided[inQueue]_chan2
+02:19 ERROR: Connection closed by remote server for /nodes[node0]/components[myComp]/provided[inQueue]_chan2
+02:19 ERROR: Connection closed by remote server for /nodes[node0]/components[myComp]/provided[inQueue]_chan2
+02:19 ERROR: Connection closed by remote server for /nodes[node0]/components[myComp]/provided[inQueue]_chan2
+02:21 ERROR: Connection closed by remote server for /nodes[node0]/components[myComp]/provided[inQueue]_chan2
+02:22 ERROR: Connection closed by remote server for /nodes[node0]/components[myComp]/provided[inQueue]_chan2
+02:22 ERROR: Connection closed by remote server for /nodes[node0]/components[myComp]/provided[inQueue]_chan2
+02:22 ERROR: Connection closed by remote server for /nodes[node0]/components[myComp]/provided[inQueue]_chan2
+02:24 ERROR: Connection closed by remote server for /nodes[node0]/components[myComp]/provided[inQueue]_chan2
+02:25 ERROR: Connection closed by remote server for /nodes[node0]/components[myComp]/provided[inQueue]_chan2
+02:25 ERROR: Connection closed by remote server for /nodes[node0]/components[myComp]/provided[inQueue]_chan2
+02:25 ERROR: Connection closed by remote server for /nodes[node0]/components[myComp]/provided[inQueue]_chan2
+02:27 ERROR: Connection closed by remote server for /nodes[node0]/components[myComp]/provided[inQueue]_chan2
+02:28 ERROR: Connection closed by remote server for /nodes[node0]/components[myComp]/provided[inQueue]_chan2
+02:28 ERROR: Connection closed by remote server for /nodes[node0]/components[myComp]/provided[inQueue]_chan2
+02:28 ERROR: Connection closed by remote server for /nodes[node0]/components[myComp]/provided[inQueue]_chan2
+02:30 ERROR: Connection closed by remote server for /nodes[node0]/components[myComp]/provided[inQueue]_chan2
+02:31 ERROR: Connection closed by remote server for /nodes[node0]/components[myComp]/provided[inQueue]_chan2
+02:31 ERROR: Connection closed by remote server for /nodes[node0]/components[myComp]/provided[inQueue]_chan2
+02:31 ERROR: Connection closed by remote server for /nodes[node0]/components[myComp]/provided[inQueue]_chan2
+02:33 ERROR: Connection closed by remote server for /nodes[node0]/components[myComp]/provided[inQueue]_chan2
+02:34 ERROR: Connection closed by remote server for /nodes[node0]/components[myComp]/provided[inQueue]_chan2
+02:34 ERROR: Connection closed by remote server for /nodes[node0]/components[myComp]/provided[inQueue]_chan2
+02:34 ERROR: Connection closed by remote server for /nodes[node0]/components[myComp]/provided[inQueue]_chan2
+02:36 ERROR: Connection closed by remote server for /nodes[node0]/components[myComp]/provided[inQueue]_chan2
+02:37 ERROR: Connection closed by remote server for /nodes[node0]/components[myComp]/provided[inQueue]_chan2
+02:37 ERROR: Connection closed by remote server for /nodes[node0]/components[myComp]/provided[inQueue]_chan2
+02:37 ERROR: Connection closed by remote server for /nodes[node0]/components[myComp]/provided[inQueue]_chan2
+02:39 ERROR: Connection closed by remote server for /nodes[node0]/components[myComp]/provided[inQueue]_chan2
+02:40 ERROR: Connection closed by remote server for /nodes[node0]/components[myComp]/provided[inQueue]_chan2
+02:40 ERROR: Connection closed by remote server for /nodes[node0]/components[myComp]/provided[inQueue]_chan2
+02:40 ERROR: Connection closed by remote server for /nodes[node0]/components[myComp]/provided[inQueue]_chan2
+02:42 ERROR: Connection closed by remote server for /nodes[node0]/components[myComp]/provided[inQueue]_chan2
+02:43 ERROR: Connection closed by remote server for /nodes[node0]/components[myComp]/provided[inQueue]_chan2
+02:43 ERROR: Connection closed by remote server for /nodes[node0]/components[myComp]/provided[inQueue]_chan2
+02:43 ERROR: Connection closed by remote server for /nodes[node0]/components[myComp]/provided[inQueue]_chan2
+02:45 ERROR: Connection closed by remote server for /nodes[node0]/components[myComp]/provided[inQueue]_chan2
+02:46 ERROR: Connection closed by remote server for /nodes[node0]/components[myComp]/provided[inQueue]_chan2
+02:46 ERROR: Connection closed by remote server for /nodes[node0]/components[myComp]/provided[inQueue]_chan2
+02:46 ERROR: Connection closed by remote server for /nodes[node0]/components[myComp]/provided[inQueue]_chan2
+02:48 ERROR: Connection closed by remote server for /nodes[node0]/components[myComp]/provided[inQueue]_chan2
+02:49 ERROR: Connection closed by remote server for /nodes[node0]/components[myComp]/provided[inQueue]_chan2
+02:49 ERROR: Connection closed by remote server for /nodes[node0]/components[myComp]/provided[inQueue]_chan2
+02:49 ERROR: Connection closed by remote server for /nodes[node0]/components[myComp]/provided[inQueue]_chan2
+02:51 ERROR: Connection closed by remote server for /nodes[node0]/components[myComp]/provided[inQueue]_chan2
+02:52 ERROR: Connection closed by remote server for /nodes[node0]/components[myComp]/provided[inQueue]_chan2
+02:52 ERROR: Connection closed by remote server for /nodes[node0]/components[myComp]/provided[inQueue]_chan2
+02:52 ERROR: Connection closed by remote server for /nodes[node0]/components[myComp]/provided[inQueue]_chan2
+02:54 ERROR: Connection closed by remote server for /nodes[node0]/components[myComp]/provided[inQueue]_chan2
+02:55 ERROR: Connection closed by remote server for /nodes[node0]/components[myComp]/provided[inQueue]_chan2
+02:55 ERROR: Connection closed by remote server for /nodes[node0]/components[myComp]/provided[inQueue]_chan2
+02:55 ERROR: Connection closed by remote server for /nodes[node0]/components[myComp]/provided[inQueue]_chan2
+02:57 ERROR: Connection closed by remote server for /nodes[node0]/components[myComp]/provided[inQueue]_chan2
+02:58 ERROR: Connection closed by remote server for /nodes[node0]/components[myComp]/provided[inQueue]_chan2
+02:58 ERROR: Connection closed by remote server for /nodes[node0]/components[myComp]/provided[inQueue]_chan2
+02:58 ERROR: Connection closed by remote server for /nodes[node0]/components[myComp]/provided[inQueue]_chan2
+03:00 ERROR: Connection closed by remote server for /nodes[node0]/components[myComp]/provided[inQueue]_chan2
+03:01 ERROR: Connection closed by remote server for /nodes[node0]/components[myComp]/provided[inQueue]_chan2
+03:01 ERROR: Connection closed by remote server for /nodes[node0]/components[myComp]/provided[inQueue]_chan2
+03:01 ERROR: Connection closed by remote server for /nodes[node0]/components[myComp]/provided[inQueue]_chan2
+03:03 ERROR: Connection closed by remote server for /nodes[node0]/components[myComp]/provided[inQueue]_chan2
+03:04 ERROR: Connection closed by remote server for /nodes[node0]/components[myComp]/provided[inQueue]_chan2
+03:04 ERROR: Connection closed by remote server for /nodes[node0]/components[myComp]/provided[inQueue]_chan2
+03:04 ERROR: Connection closed by remote server for /nodes[node0]/components[myComp]/provided[inQueue]_chan2
+03:06 ERROR: Connection closed by remote server for /nodes[node0]/components[myComp]/provided[inQueue]_chan2
+03:07 ERROR: Connection closed by remote server for /nodes[node0]/components[myComp]/provided[inQueue]_chan2
+03:07 ERROR: Connection closed by remote server for /nodes[node0]/components[myComp]/provided[inQueue]_chan2
+03:07 ERROR: Connection closed by remote server for /nodes[node0]/components[myComp]/provided[inQueue]_chan2
+03:07 INFO: Stopping Kevoree
+03:07 INFO: Stopping /nodes[node0]/components[myComp]
+03:07 INFO: Stop node A
+03:07 INFO: Stopping /groups[sync]
+03:07 INFO: Stopping /hubs[chan2]
+03:07 INFO: Stopping /hubs[chan0]
+03:07 INFO: Stopping node type of node0
+03:07 INFO: Kevoree core stopped 
+03:07 INFO: Stopped.
+Terminate batch job (Y/N)? 

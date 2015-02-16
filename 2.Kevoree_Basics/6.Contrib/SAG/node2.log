@@ -1,0 +1,119 @@
+[INFO] Scanning for projects...
+[INFO] 
+[INFO] Using the builder org.apache.maven.lifecycle.internal.builder.singlethreaded.SingleThreadedBuilder with a thread count of 1
+[INFO]                                                                         
+[INFO] ------------------------------------------------------------------------
+[INFO] Building Kevoree :: SAG 1.0.0-SNAPSHOT
+[INFO] ------------------------------------------------------------------------
+[INFO] 
+[INFO] --- org.kevoree.tools.mavenplugin:5.2.5:run (default-cli) @ movemessage ---
+[INFO] Manually install file:D:\Users\mask\git\skorsky\training\2.Kevoree_Basics\6.Contrib\SAG\target\classes for mvn:com.softwareag.research.heads.tutorial:movemessage:1.0.0-SNAPSHOT
+00:00 INFO: Bootstrap Kevoree node : node2, version 5.2.5
+00:00 INFO: Load Bootstrap model from D:\Users\mask\git\skorsky\training\2.Kevoree_Basics\6.Contrib\SAG\target\classes\KEV-INF\lib.json
+00:00 INFO: Request=JavaNode,JavaNode,JavaNode,com.softwareag.research.heads.tutorial.MoveMessage,com.softwareag.research.heads.tutorial.MoveMessage,com.softwareag.research.heads.tutorial.MoveMessage,WSGroup,WSChan,WSChan,WSChan,
+00:01 INFO: Resolved 69 typeDefinitions from Kevoree Registry http://registry.kevoree.org/v5/ (JavaNode/5.2.0,WSGroup/5.2.1-SNAPSHOT,JavaNode/5.0.3,JavaNode/5.2.1,JavaNode/5.0.4,JavaNode/5.2.2,JavaNode/5.0.5,JavaNode/5.2.3,WSGroup/5.2.4-SNAPSHOT,WSGroup/5.0.8-SNAPSHOT,JavaNode/5.0.6-SNAPSHOT,JavaNode/5.2.4,JavaNode/5.0.6,WSGroup/5.0.5-SNAPSHOT,JavaNode/5.0.7,JavaNode/5.1.4-SNAPSHOT,JavaNode/5.2.2-SNAPSHOT,WSChan/5.2.3-SNAPSHOT,JavaNode/5.2.5-SNAPSHOT,WSGroup/5.1.2,WSGroup/5.1.3,WSGroup/5.1.4,WSGroup/5.1.0,WSGroup/5.1.1,JavaNode/5.0.3-SNAPSHOT,JavaNode/5.1.1-SNAPSHOT,WSChan/5.1.4-SNAPSHOT,JavaNode/5.1.2-SNAPSHOT,WSGroup/5.2.2-SNAPSHOT,WSGroup/5.0.7,WSGroup/5.2.3-SNAPSHOT,WSChan/5.2.4-SNAPSHOT,WSGroup/5.1.2-SNAPSHOT,WSGroup/5.0.7-SNAPSHOT,JavaNode/5.2.3-SNAPSHOT,JavaNode/5.1.0,JavaNode/5.0.7-SNAPSHOT,JavaNode/5.1.1,JavaNode/5.1.2,JavaNode/5.1.3,JavaNode/5.2.1-SNAPSHOT,WSGroup/0.1.0,WSGroup/5.0.3,WSGroup/5.2.1,WSGroup/5.2.2,WSGroup/5.0.4,WSGroup/5.0.3-SNAPSHOT,WSGroup/5.0.5,WSGroup/5.2.3,WSGroup/5.0.6,WSGroup/5.2.4,WSChan/2.2.3-SNAPSHOT,WSGroup/5.1.1-SNAPSHOT,WSGroup/5.2.0,JavaNode/5.0.8-SNAPSHOT,JavaNode/5.2.4-SNAPSHOT,WSChan/5.2.5-SNAPSHOT,WSChan/5.2.4,WSChan/5.2.3,WSChan/5.2.2,WSChan/5.2.1,WSChan/5.2.0,WSChan/5.2.2-SNAPSHOT,WSGroup/5.2.5-SNAPSHOT,WSGroup/5.1.4-SNAPSHOT,JavaNode/5.0.5-SNAPSHOT,WSGroup/5.0.4-SNAPSHOT,JavaNode/5.0.4-SNAPSHOT,WSChan/5.2.1-SNAPSHOT)
+00:01 WARN: Try to select snapshot in best effort mode for com.softwareag.research.heads.tutorial.MoveMessage
+00:01 WARN: Founded: MoveMessage:1.0.0-SNAPSHOT
+00:01 WARN: Try to select snapshot in best effort mode for com.softwareag.research.heads.tutorial.MoveMessage
+00:01 WARN: Founded: MoveMessage:1.0.0-SNAPSHOT
+00:01 WARN: Try to select snapshot in best effort mode for com.softwareag.research.heads.tutorial.MoveMessage
+00:01 WARN: Founded: MoveMessage:1.0.0-SNAPSHOT
+00:01 INFO: Resolving ............. /packages[org]/packages[kevoree]/packages[library]/packages[java]/deployUnits[hashcode=,name=org.kevoree.library.java.javaNode,version=5.2.4]
+00:01 INFO: Resolved in 3ms
+00:01 INFO: JavaNode, changing LOG level to INFO
+00:01 INFO: Starting node type of node2
+00:01 INFO: Resolving ............. /packages[org]/packages[kevoree]/packages[library]/packages[java]/deployUnits[hashcode=,name=org.kevoree.library.java.ws,version=5.2.4]
+00:01 INFO: Resolved in 10ms
+00:01 INFO: Resolving ............. /packages[io]/packages[undertow]/deployUnits[hashcode=,name=undertow-core,version=1.2.0.Beta8]
+00:01 INFO: Resolved in 0ms
+00:01 INFO: Resolving ............. /packages[org]/packages[jboss]/packages[xnio]/deployUnits[hashcode=,name=xnio-nio,version=3.3.0.Final]
+00:01 INFO: Resolved in 1ms
+00:01 INFO: Resolving ............. /packages[org]/packages[jboss]/packages[xnio]/deployUnits[hashcode=,name=xnio-api,version=3.3.0.Final]
+00:01 INFO: Resolved in 1ms
+00:01 INFO: Resolving ............. /packages[org]/packages[jboss]/packages[logging]/deployUnits[hashcode=,name=jboss-logging,version=3.1.4.GA]
+00:01 INFO: Resolved in 0ms
+00:01 INFO: Resolving ............. /packages[fr]/packages[braindead]/deployUnits[hashcode=,name=wsmsgbroker-client,version=1.0.2]
+00:01 INFO: Resolved in 0ms
+00:01 INFO: Resolving ............. /packages[com]/packages[google]/packages[code]/packages[gson]/deployUnits[hashcode=,name=gson,version=2.3]
+00:01 INFO: Resolved in 0ms
+00:02 INFO: Resolving ............. /packages[org]/packages[java-websocket]/deployUnits[hashcode=,name=Java-WebSocket,version=1.3.0]
+00:02 INFO: Resolved in 0ms
+00:02 INFO: Add instance /nodes[node2]/components[myComp]
+00:02 INFO: Add instance /groups[sync]
+00:02 INFO: Add instance /hubs[chan1]
+00:02 INFO: Add instance /hubs[chan2]
+00:02 INFO: Bind /nodes[node2]/components[myComp]/provided[inQueue] /hubs[chan1]
+00:02 INFO: Bind /nodes[node2]/components[myComp]/required[outQueue] /hubs[chan2]
+00:02 INFO: Starting /nodes[node2]/components[myComp]
+00:02 INFO: Start with node Id C, myComp, node2
+00:02 INFO: Starting /groups[sync]
+00:02 INFO: Starting /hubs[chan1]
+00:02 INFO: Starting /hubs[chan2]
+00:02 INFO: JavaNode Update completed in 258 ms
+00:02 INFO: End deploy result=true-278
+00:02 INFO: Bootstrap completed
+00:03 ERROR: Connection closed by remote server for /nodes[node2]/components[myComp]/provided[inQueue]_chan1
+00:06 ERROR: Connection closed by remote server for /nodes[node2]/components[myComp]/provided[inQueue]_chan1
+00:09 ERROR: Connection closed by remote server for /nodes[node2]/components[myComp]/provided[inQueue]_chan1
+00:11 INFO: Master connection opened on 127.0.0.1:9000
+00:12 ERROR: Connection closed by remote server for /nodes[node2]/components[myComp]/provided[inQueue]_chan1
+00:12 INFO: JavaNode received a new Model to apply from /groups[sync]
+00:12 INFO: Bind /nodes[node2]/components[myComp]/provided[inQueue] /hubs[chan1]
+00:12 INFO: Bind /nodes[node2]/components[myComp]/provided[inQueue] /hubs[chan1]
+00:12 INFO: Bind /nodes[node2]/components[myComp]/required[outQueue] /hubs[chan2]
+00:12 INFO: Bind /nodes[node2]/components[myComp]/required[outQueue] /hubs[chan2]
+00:12 INFO: JavaNode Update completed in 107 ms
+00:12 INFO: End deploy result=true-48
+00:12 INFO: WSGroup "sync" update result: true
+00:15 ERROR: Connection closed by remote server for /nodes[node2]/components[myComp]/provided[inQueue]_chan1
+00:18 ERROR: Connection closed by remote server for /nodes[node2]/components[myComp]/provided[inQueue]_chan1
+00:21 ERROR: Connection closed by remote server for /nodes[node2]/components[myComp]/provided[inQueue]_chan1
+00:24 ERROR: Connection closed by remote server for /nodes[node2]/components[myComp]/provided[inQueue]_chan1
+00:27 ERROR: Connection closed by remote server for /nodes[node2]/components[myComp]/provided[inQueue]_chan1
+00:30 ERROR: Connection closed by remote server for /nodes[node2]/components[myComp]/provided[inQueue]_chan1
+00:33 ERROR: Connection closed by remote server for /nodes[node2]/components[myComp]/provided[inQueue]_chan1
+00:36 ERROR: Connection closed by remote server for /nodes[node2]/components[myComp]/provided[inQueue]_chan1
+00:39 ERROR: Connection closed by remote server for /nodes[node2]/components[myComp]/provided[inQueue]_chan1
+00:42 ERROR: Connection closed by remote server for /nodes[node2]/components[myComp]/provided[inQueue]_chan1
+00:45 ERROR: Connection closed by remote server for /nodes[node2]/components[myComp]/provided[inQueue]_chan1
+00:48 ERROR: Connection closed by remote server for /nodes[node2]/components[myComp]/provided[inQueue]_chan1
+00:51 ERROR: Connection closed by remote server for /nodes[node2]/components[myComp]/provided[inQueue]_chan1
+00:54 ERROR: Connection closed by remote server for /nodes[node2]/components[myComp]/provided[inQueue]_chan1
+00:57 ERROR: Connection closed by remote server for /nodes[node2]/components[myComp]/provided[inQueue]_chan1
+01:00 ERROR: Connection closed by remote server for /nodes[node2]/components[myComp]/provided[inQueue]_chan1
+01:03 ERROR: Connection closed by remote server for /nodes[node2]/components[myComp]/provided[inQueue]_chan1
+01:06 ERROR: Connection closed by remote server for /nodes[node2]/components[myComp]/provided[inQueue]_chan1
+01:09 ERROR: Connection closed by remote server for /nodes[node2]/components[myComp]/provided[inQueue]_chan1
+01:12 ERROR: Connection closed by remote server for /nodes[node2]/components[myComp]/provided[inQueue]_chan1
+01:15 ERROR: Connection closed by remote server for /nodes[node2]/components[myComp]/provided[inQueue]_chan1
+01:18 ERROR: Connection closed by remote server for /nodes[node2]/components[myComp]/provided[inQueue]_chan1
+01:21 ERROR: Connection closed by remote server for /nodes[node2]/components[myComp]/provided[inQueue]_chan1
+01:24 ERROR: Connection closed by remote server for /nodes[node2]/components[myComp]/provided[inQueue]_chan1
+01:27 ERROR: Connection closed by remote server for /nodes[node2]/components[myComp]/provided[inQueue]_chan1
+01:30 ERROR: Connection closed by remote server for /nodes[node2]/components[myComp]/provided[inQueue]_chan1
+01:33 ERROR: Connection closed by remote server for /nodes[node2]/components[myComp]/provided[inQueue]_chan1
+01:36 ERROR: Connection closed by remote server for /nodes[node2]/components[myComp]/provided[inQueue]_chan1
+01:39 ERROR: Connection closed by remote server for /nodes[node2]/components[myComp]/provided[inQueue]_chan1
+01:42 ERROR: Connection closed by remote server for /nodes[node2]/components[myComp]/provided[inQueue]_chan1
+01:45 ERROR: Connection closed by remote server for /nodes[node2]/components[myComp]/provided[inQueue]_chan1
+01:48 ERROR: Connection closed by remote server for /nodes[node2]/components[myComp]/provided[inQueue]_chan1
+01:51 ERROR: Connection closed by remote server for /nodes[node2]/components[myComp]/provided[inQueue]_chan1
+01:54 ERROR: Connection closed by remote server for /nodes[node2]/components[myComp]/provided[inQueue]_chan1
+01:57 ERROR: Connection closed by remote server for /nodes[node2]/components[myComp]/provided[inQueue]_chan1
+02:00 ERROR: Connection closed by remote server for /nodes[node2]/components[myComp]/provided[inQueue]_chan1
+02:03 ERROR: Connection closed by remote server for /nodes[node2]/components[myComp]/provided[inQueue]_chan1
+02:06 ERROR: Connection closed by remote server for /nodes[node2]/components[myComp]/provided[inQueue]_chan1
+02:09 ERROR: Connection closed by remote server for /nodes[node2]/components[myComp]/provided[inQueue]_chan1
+02:12 ERROR: Connection closed by remote server for /nodes[node2]/components[myComp]/provided[inQueue]_chan1
+02:15 ERROR: Connection closed by remote server for /nodes[node2]/components[myComp]/provided[inQueue]_chan1
+02:18 ERROR: Connection closed by remote server for /nodes[node2]/components[myComp]/provided[inQueue]_chan1
+02:18 INFO: Stopping Kevoree
+02:18 INFO: Stopping /nodes[node2]/components[myComp]
+02:18 INFO: Stop node C
+02:18 INFO: Stopping /groups[sync]
+02:18 INFO: Stopping /hubs[chan1]
+02:18 INFO: Stopping /hubs[chan2]
+02:18 INFO: Stopping node type of node2
+02:18 INFO: Kevoree core stopped 
+02:18 INFO: Stopped.
+Terminate batch job (Y/N)? 
