@@ -1,0 +1,25 @@
+add chatserver : JavascriptNode
+add chatclient0 : JavaNode
+
+// provide a network way to connect to those nodes
+network chatserver.ip.lo 127.0.0.1
+network chatclient0.ip.lo 127.0.0.1
+
+add group : WSGroup
+set group.master = 'chatclient0'
+attach chatserver, chatclient0 group
+
+// create and add ChatServer component (named "server") in "chatserver"
+add chatclient0.client : no.tellu.ChatClient
+
+add chan: WSChan
+set chan.port = "9050"
+set chan.host = "localhost"
+
+add chan1: WSChan
+set chan1.port = "9050"
+set chan1.host = "localhost"
+
+bind chatclient0.client.chatServerOut chan
+bind chatclient0.client.in chan1
+

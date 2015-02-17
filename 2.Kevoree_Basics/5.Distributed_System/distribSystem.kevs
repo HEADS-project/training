@@ -12,7 +12,7 @@ network javaNode.ip.lo 127.0.0.1
 
 
 // JavaScript Platform
-add jsNode : JavascriptNode/4.0.0-SNAPSHOT
+add jsNode : JavascriptNode
 add jsNode.printer : ConsolePrinter
 add jsNode.broker : WSMsgBroker
 

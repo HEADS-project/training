@@ -1,0 +1,65 @@
+// the nodes to host components
+add node0 : JavaNode
+
+// create and add your Sender components (named "sendX")
+add node0.send1 : org.kevoree.example.Sender
+add node0.send2 : org.kevoree.example.Sender
+add node0.send3 : org.kevoree.example.Sender
+// create and add your mux component
+add node0.mux : org.kevoree.example.Trunkmux
+
+// init the senders message
+set node0.send1.greetMessage = "Short text 1"
+set node0.send2.greetMessage = "A medium essay from 2"
+set node0.send3.greetMessage = "The long and tedious text witout any meaning from 3"
+
+// add an instance of WSGroup named "sync"l
+add sync : WSGroup
+// attach your nodes to the WSGroup group
+set sync.master = 'node0'
+attach node0 sync
+
+// add instances of SyncBroadcast for communication
+add sendchan1 : SyncBroadcast
+add sendchan2 : SyncBroadcast
+add sendchan3 : SyncBroadcast
+
+add trunkchan : SyncBroadcast
+
+add printchan1 : SyncBroadcast
+add printchan2 : SyncBroadcast
+add printchan3 : SyncBroadcast
+
+// bind the output sendport "hello" to "sendchan#"
+bind node0.send1.hello sendchan1
+bind node0.send2.hello sendchan2
+bind node0.send3.hello sendchan3
+
+// bind the input sendport "in#" to "sendchan#"
+bind node0.mux.in1 sendchan1
+bind node0.mux.in2 sendchan2
+bind node0.mux.in3 sendchan3
+
+
+// create and add instance of demux component
+add node0.demux : org.kevoree.example.Trunkdemux
+// create and add instance of ConsolePrinter components named "printer#" 
+add node0.printer1 : ConsolePrinter
+add node0.printer2 : ConsolePrinter
+add node0.printer3 : ConsolePrinter
+
+// bind the "trunkchan" between "mux" and "demux"
+bind node0.mux.muxout trunkchan
+bind node0.demux.muxin trunkchan
+
+
+// bind the output port "out#" to "printchan#"
+bind node0.demux.out1 printchan1
+bind node0.demux.out2 printchan2
+bind node0.demux.out3 printchan3
+
+// bind the input port "input" to "printchan#"
+bind node0.printer1.input printchan1
+bind node0.printer2.input printchan2
+bind node0.printer3.input printchan3
+
