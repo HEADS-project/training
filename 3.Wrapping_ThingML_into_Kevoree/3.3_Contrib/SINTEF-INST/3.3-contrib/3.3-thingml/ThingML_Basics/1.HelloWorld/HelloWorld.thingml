@@ -1,0 +1,38 @@
+/**
+This is the ThingML hello world example!
+It basically prints Hello World! and then Bye.
+You can see that this thing is Platform-Independent: we are not using any C, Java or JavaScript code here.
+*/
+thing HelloThing {
+
+	statechart HelloWorld init Greetings {
+	
+		state Greetings {
+			
+			transition -> Bye 
+			action print "Hello World!\n"
+			
+		}
+	
+		state Bye {
+			on entry print "Bye.\n"
+		}
+	
+	}
+}
+
+/**
+TODO: compile and run this configuration for the different platforms: C/Linux, Java, JavaScript and Arduino (if you have one)
+Right-click on this file (in the Project Explorer on the left) and try:
+ThingML -> Compile Java/JaSM
+ThingML -> Compile JavaScript/behavior
+ThingML -> Compile Posix/C
+ThingML -> Compile Arduino
+**/
+configuration HelloCfg 
+@arduino_stdout "Serial"
+{
+
+	instance my_instance: HelloThing
+
+}

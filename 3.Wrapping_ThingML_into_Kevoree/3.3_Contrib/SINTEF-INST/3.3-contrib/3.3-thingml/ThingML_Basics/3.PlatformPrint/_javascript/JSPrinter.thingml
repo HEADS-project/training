@@ -1,0 +1,24 @@
+import "../CustomPrinter.thingml"
+
+thing JSPrinter includes CustomPrinter {
+
+	statechart behavior init greetings {
+	
+		state greetings {
+			internal event p : Print?customPrint
+			action do 
+				'console.log(' & p.myString & ');' //this is how we mix Node.JS code and ThingML code
+			end
+		}
+	
+	}
+
+}
+
+//TODO: Compile and run for the JavaScript platform
+configuration CustomPrintJS {
+	instance client : CustomPrinterClient
+	instance printer : JSPrinter
+	
+	connector client.Print => printer.Print
+}

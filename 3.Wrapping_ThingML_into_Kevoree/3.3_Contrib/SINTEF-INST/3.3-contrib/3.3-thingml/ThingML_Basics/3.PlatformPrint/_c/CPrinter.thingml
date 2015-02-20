@@ -1,0 +1,24 @@
+import "../CustomPrint.thingml"
+
+thing CPrinter includes CustomPrinter {
+
+	statechart behavior init greetings {
+	
+		state greetings {
+			internal event p : Print?customPrint
+			action do 
+				'fprintf(stdout, ' & p.myString & ');' //this is how we mix C code and ThingML code
+			end
+		}
+	
+	}
+
+}
+
+//TODO: Compile and run for the C platform
+configuration CustomPrintC {
+	instance client : CustomPrinterClient
+	instance printer : CPrinter
+	
+	connector client.Print => printer.Print
+}

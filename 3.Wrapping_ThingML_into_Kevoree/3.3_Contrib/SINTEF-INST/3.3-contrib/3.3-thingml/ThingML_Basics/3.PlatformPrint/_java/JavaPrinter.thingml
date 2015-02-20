@@ -1,0 +1,24 @@
+import "../CustomPrinter.thingml"
+
+thing JavaPrinter includes CustomPrinter {
+
+	statechart behavior init greetings {
+	
+		state greetings {
+			internal event p : Print?customPrint
+			action do 
+				'System.out.print(' & p.myString & ');' //this is how we mix Java code and ThingML code
+			end
+		}
+	
+	}
+
+}
+
+//TODO: Compile and run for the Java platform
+configuration CustomPrintJava {
+	instance client : CustomPrinterClient
+	instance printer : JavaPrinter
+	
+	connector client.Print => printer.Print
+}

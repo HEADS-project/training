@@ -1,0 +1,48 @@
+// the nodes to host components
+add node0 : JavaNode
+
+// create and add your Sender components (named "sendX")
+// create and add your mux component
+add node0.mux : org.kevoree.example.Trunkmux
+add node0.demux : org.kevoree.example.Trunkdemux
+add node0.JavaPIF : org.thingml.generated.kevoree.KJavaPIF
+
+// init the senders message
+
+// add an instance of WSGroup named "sync"l
+add sync : WSGroup
+// attach your nodes to the WSGroup group
+set sync.master = 'node0'
+attach node0 sync
+
+
+
+add sendChan1: SyncBroadcast
+bind node0.JavaPIF.JavaPIF_starter1_to_enderPort_out sendChan1
+bind node0.mux.in1 sendChan1
+
+add sendChan2: SyncBroadcast
+bind node0.JavaPIF.JavaPIF_starter2_to_enderPort_out sendChan2
+bind node0.mux.in2 sendChan2
+
+add sendChan3: SyncBroadcast
+bind node0.JavaPIF.JavaPIF_starter3_to_enderPort_out sendChan3
+bind node0.mux.in3 sendChan3
+
+add trunkChan: SyncBroadcast
+bind node0.mux.muxout trunkChan
+bind node0.demux.muxin trunkChan
+
+add endChan1: SyncBroadcast
+bind node0.demux.out1 endChan1
+bind node0.JavaPIF.JavaPIF_ender1_from_starterPort endChan1
+
+add endChan2: SyncBroadcast
+bind node0.demux.out1 endChan2
+bind node0.JavaPIF.JavaPIF_ender2_from_starterPort endChan2
+
+add endChan3: SyncBroadcast
+bind node0.demux.out1 endChan3
+bind node0.JavaPIF.JavaPIF_ender3_from_starterPort endChan3
+
+

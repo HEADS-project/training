@@ -1,0 +1,127 @@
+import "../SendEnd.thingml"
+
+
+thing JavaPrinter includes CustomPrinter {
+
+	statechart behavior init greetings {
+	
+		state greetings {
+			internal event p : Print?customPrintS
+			action do 
+				'System.out.print(' & p.myString & ');' //this is how we mix Java code and ThingML code
+			end
+			internal event p : Print?customPrintI
+			action do 
+				'System.out.print( " " + ' & p.myInt & ' + " ");' //this is how we mix Java code and ThingML code
+			end
+			internal event p : Print?customPrintSI
+			action do 
+				'System.out.print( ' & p.myString & ' + ' & p.myInt & ' + " ");' //this is how we mix Java code and ThingML code
+			end
+			internal event p : Print?customPrintSISI
+			action do 
+				'System.out.print( ' & p.myString1 & ' + ' & p.myInt1 & ' + ' & p.myString2 & ' + ' & p.myInt2 & ' + " ");' //this is how we mix Java code and ThingML code
+			end
+		}
+	
+	}
+
+}
+
+datatype JThread
+@java_type "Thread";
+
+// Manage a set of software timers.
+thing TimerJava includes Timer
+@pim "Timer"
+@platform "java"
+{
+    property timer : JThread
+
+    statechart SoftTimer init default {
+        state default {
+
+          internal start
+            event m : timer?timer_start
+            guard m.delay > 0
+            action do
+             /*if (not(timer == 'null')) do
+                '' & timer & '.interrupt();'
+             end*/
+             'Thread t = new Thread(){
+                public void run() {
+				try {
+					sleep(' & m.delay & ');'
+					timer!timer_timeout()
+				'} catch (InterruptedException ex) {
+                    System.err.println("WARNING: " + ex.getMessage() + ". If you did not explicitly cancelled the timer, then it is a bug.");                   
+				}  catch (Exception ex) {
+                    ex.printStackTrace();
+				} finally {
+                    yield();
+                    interrupt();
+                }
+				    
+			    }
+              };'
+             timer = 't' 
+              '' & timer & '.start();'                
+            end
+            
+          internal cancel
+            event m : timer?timer_cancel
+            action do
+              if (not(timer == 'null')) do
+                'try {'
+                '' & timer & '.interrupt();'
+                '} catch (SecurityException ex) {
+                    System.err.println("WARNING: " + ex.getMessage());                   
+				}  catch (Exception ex) {
+                    ex.printStackTrace();
+				}'
+              end
+            end
+        }
+    }
+}
+
+configuration JavaPIF {
+	instance printer : JavaPrinter
+    instance timer1 : TimerJava
+    instance timer2 : TimerJava
+    instance timer3 : TimerJava
+
+    instance starter1 : PIFStarter
+    set starter1.mynum = 1
+    set starter1.period = 3000
+    connector starter1.timer => timer1.timer    
+    connector printer.Print => starter1.Print
+    
+    instance starter2 : PIFStarter
+    set starter2.mynum = 2
+    set starter2.period = 4000
+    connector starter2.timer => timer2.timer    
+    connector printer.Print => starter2.Print
+    
+    instance starter3 : PIFStarter
+    set starter3.mynum = 3
+    set starter3.period = 5000
+    connector starter3.timer => timer3.timer    
+    connector printer.Print => starter3.Print
+
+    instance ender1 : PIFEnder 
+    set ender1.mynum = 1
+    connector printer.Print => ender1.Print
+    
+    instance ender2 : PIFEnder 
+    set ender2.mynum = 2
+    connector printer.Print => ender2.Print
+    
+    instance ender3 : PIFEnder 
+    set ender3.mynum = 3
+    connector printer.Print => ender3.Print
+
+    //connector ender1.from_starter => starter1.to_ender    
+    //connector ender2.from_starter => starter2.to_ender    
+    //connector ender3.from_starter => starter3.to_ender    
+}

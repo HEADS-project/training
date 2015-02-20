@@ -1,0 +1,99 @@
+import "Timer.thingml"
+import "CustomPrinter.thingml"
+
+
+thing fragment PrintIncForwardMsgs {
+	// Number token
+	message pif_token(token : Integer);
+}
+
+/**
+Second, organize your messages into a port. The timer can receive a timer_start and a timer_cancel,
+and will eventually send a timer_timeout
+*/
+thing fragment PIFIncDecPorts includes PrintIncForwardMsgs
+{
+	required port from_starter
+	@public "true"
+    {
+		receives pif_token
+	}
+	provided port to_ender
+	@public "true"
+    {
+		sends pif_token
+	}
+}
+
+thing fragment PIFStarterPorts includes PrintIncForwardMsgs
+{
+	provided port to_ender
+	@public "true"
+    {
+		sends pif_token
+	}
+}
+
+thing fragment PIFEnderPorts includes PrintIncForwardMsgs
+{
+	required port from_starter
+	@public "true"
+    {
+		receives  pif_token
+	}
+}
+
+
+thing PIFStarter includes TimerClient,  PIFStarterPorts, CustomPrinterClientPort {
+
+	readonly property period : Integer = 5000
+	property count : Integer = 1
+	property mynum : Integer = 0
+	
+	statechart behavior init Init {
+	
+		state Init {
+			on entry do
+				//Print!customPrintS("Sender entry Init ... ")
+				timer!timer_start(period)
+			end
+			
+			transition -> Init //this will loop on the Init state, and start a new timer
+			event timer?timer_timeout
+			action do
+				count = count + 1
+				Print!customPrintSISI("\nSender:", mynum, " sends token:", count)
+				to_ender!pif_token(count)
+			end
+		
+		}
+	
+	}
+
+}
+
+
+thing PIFEnder includes PIFEnderPorts, CustomPrinterClientPort {
+
+	property mynum : Integer = 0
+
+	statechart behavior init Init {
+	
+		state Init {
+			on entry do
+				//Print!customPrintS("Ender entry Init ... ")
+			end
+			
+			
+			transition -> Init
+			event m : from_starter?pif_token
+			action do
+				Print!customPrintSISI("\nEnder:", mynum, " got token:", m.token)
+			end
+		
+		}
+	
+	}
+
+}
+
