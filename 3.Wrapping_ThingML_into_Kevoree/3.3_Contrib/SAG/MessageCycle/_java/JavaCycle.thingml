@@ -1,0 +1,31 @@
+import "../MessageCycle.thingml"
+
+thing JavaCycle includes Cycle {
+
+	statechart behavior init Sender {
+		on entry print "Cycle started!\n"
+		state Sender {
+			transition -> Receiver
+			event input?input
+			action do 
+				output!output()
+				print "output"
+			end  
+		}
+		state Receiver {
+			on entry print "Receiver"
+			transition -> Sender
+		}
+	}
+}
+
+configuration JavaConfig {
+	instance node0: JavaCycle
+	instance node1: JavaCycle
+	instance node2: JavaCycle
+	
+	connector node0.output => node1.input 
+	connector node1.output => node2.input 
+	connector node2.output => node0.input 
+
+}
