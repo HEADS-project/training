@@ -1,0 +1,15 @@
+thing fragment Cycle
+{
+	message input();
+	message output();
+
+	required port output
+    {
+		sends output
+	}
+
+	provided port input
+    {
+		receives input
+	}
+}
