@@ -1,0 +1,62 @@
+import "../Sensor.thingml"
+
+datatype Analog
+    @js_type "var";
+
+thing SensorJS includes Sensor
+@pim "Sensor"
+@platform "javascript"
+@javascript "node browser"
+{
+
+    function initialize() 
+    do
+        'var m = require(\'mraa\');
+         console.log(\'MRAA Version: \' + m.getVersion());'
+         analogPin0 = 'new m.Aio(0);'
+    end
+    
+    function read() : Integer
+    do
+       'var analogValue = ' & analogPin0 & '.read();
+        console.log(\'Field Node reading: \' +analogValue); '
+        return 'analogValue'
+    end
+    
+    property value : Integer = 0
+    property analogPin0 : Analog
+    
+    statechart SensorMachine init Idle {
+
+		state Idle {
+			on entry initialize() 
+			
+			internal event sensor_service?read
+			action do
+				value = read()
+				sensor_service!reading(value)
+			end		
+			
+			transition -> PeriodicReading
+			event t : sensor_service?start_periodic_reading
+			action do
+				delay = t.delay
+				timer!timer_start(delay)
+			end
+			
+		}
+		
+		state PeriodicReading {
+			internal event timer?timer_timeout
+			action do				
+				value = read()
+				sensor_service!reading(value)
+				timer!timer_start(delay)
+			end
+			
+			transition -> Idle
+			event sensor_service?reading_cancel
+			action timer!timer_cancel()
+		}
+	}
+}

@@ -1,0 +1,30 @@
+import "Sensor.thingml"
+
+
+thing SensorServer includes SensorMsgs {
+
+	property delay : Integer = 1000
+
+	required port sensor_service {
+		sends start_periodic_reading, reading_cancel, read 
+		receives reading 
+	}
+	
+	 statechart Server init start {
+	 
+	  on entry print "Server!\n"
+        
+        state start {
+        
+        	on entry sensor_service!start_periodic_reading(delay)
+            
+        	internal idle          	
+            event reading : sensor_service?reading
+            action do
+                print "Sensor reading"
+                print reading.value
+            end           
+         
+        }
+    }
+}

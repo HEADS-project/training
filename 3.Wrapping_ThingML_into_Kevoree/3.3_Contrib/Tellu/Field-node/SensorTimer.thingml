@@ -1,0 +1,35 @@
+datatype Integer	
+	@c_type "int"
+	@c_byte_size "2"
+	@java_type "short"
+    @js_type "short"
+	@java_primitive "true";
+    
+datatype Long
+	@c_type "int"
+	@c_byte_size "4"
+	@java_type "int"
+    @js_type "int"
+	@java_primitive "true";
+
+/*****************************************************************************
+ * Definition of the built-in things and messages
+ *****************************************************************************/
+ 
+thing fragment TimerMsgs {
+	// Start the Timer
+	message timer_start(delay : Integer);
+	// Cancel the Timer
+	message timer_cancel();
+	// Notification that the timer has expired
+	message timer_timeout();
+}
+
+thing fragment SensorTimer includes TimerMsgs
+{
+	provided port timer @public "true"
+    {
+		sends timer_timeout
+		receives timer_start, timer_cancel
+	}
+}
