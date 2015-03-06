@@ -1,0 +1,35 @@
+import "../CustomPrinter.thingml"
+
+thing ArduinoPrinter includes CustomPrinter
+{
+
+	statechart behavior init greetings {
+	
+		state greetings {
+			/**
+				The code between '' will be left unchanged by the thingml parser
+				we need to add an on entry action in order to initialize the Serial port
+			*/
+			
+			on entry do
+				'Serial.begin(9600);' //this is how we mix arduino code and ThingML code
+			end
+			internal event p : Print?customPrint
+			action do 
+				'Serial.print(' & p.myString & ');' //this is how we mix arduino code and ThingML code
+			end
+		}
+	
+	}
+
+}
+
+//TODO: Compile and run for the C platform
+configuration CustomPrintArduino 
+//@arduino_stdout "Serial"
+{
+	instance client : CustomPrinterClient
+	instance printer : ArduinoPrinter
+	
+	connector client.Print => printer.Print
+}
