@@ -21,6 +21,6 @@ thing Receiver includes NewsMsgs {
 	}
 }
 
-configuration Sender {
+configuration Receiver {
     instance receiver : Receiver
 }

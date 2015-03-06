@@ -24,13 +24,11 @@ thing Sender includes TimerClient, NewsMsgs {
 			event timer?timer_timeout
 			
 			action do
-				print "Sender: New item\n"
 				news!news_item("hello")
 			end
 		}
 	}
 }
-
 
 configuration Sender {
     instance sender : Sender

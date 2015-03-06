@@ -12,6 +12,7 @@ import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathFactory;
 
 import org.kevoree.annotation.ComponentType;
+import org.kevoree.annotation.Input;
 import org.kevoree.annotation.Output;
 import org.kevoree.annotation.Param;
 import org.kevoree.annotation.Start;
@@ -47,9 +48,18 @@ public class Sender {
 	@Output
 	private Port newsPort;
 	
+	@Input
+	private void poll(Object msg) {
+		List<NewsMLItem> items = getNewsML(newsUrl);
+		for(NewsMLItem item: items) {
+			String message = String.format("%s-%s", item.getTopic(), item.getNewsItemId());
+			newsPort.send(message);
+		}
+	}
+	
 	private final String USER_AGENT = "Mozilla/5.0";
 	
-	public List<NewsMLItem> getNewsML(String url) {
+	private List<NewsMLItem> getNewsML(String url) {
 		try {
 			URL obj = new URL(url);
 			HttpURLConnection con = (HttpURLConnection) obj.openConnection();

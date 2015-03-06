@@ -29,7 +29,6 @@
 			<version>4.10</version>
 			<scope>test</scope>
 		</dependency>
-        
     </dependencies>
 	
 	<build>
@@ -47,8 +46,12 @@
                     </execution>
                 </executions>
                 <configuration>
+					<mergeLocalLibraries>
+						<mergeLocalLibrary>C:\Users\KGiannakakis\Documents\GitHub\training\3.Wrapping_ThingML_into_Kevoree\3.3_Contrib\ATC\ThingML\Timer\thingml-gen\java\target\classes</mergeLocalLibrary>
+						<mergeLocalLibrary>C:\Users\KGiannakakis\Documents\GitHub\training\3.Wrapping_ThingML_into_Kevoree\3.3_Contrib\ATC\ThingML\Receiver\thingml-gen\java\target\classes</mergeLocalLibrary>
+					</mergeLocalLibraries>
                     <nodename>node0</nodename>
-                    <model>src/main/kevs/main.kevs</model>
+                    <model>src/main/kevs/main.kevs</model>                    
                 </configuration>
             </plugin>
 			<plugin>
@@ -75,5 +78,6 @@
 			<url>http://oss.sonatype.org/content/groups/public/</url>
 		</repository>
 	</repositories>	
+
 </project>
 		
