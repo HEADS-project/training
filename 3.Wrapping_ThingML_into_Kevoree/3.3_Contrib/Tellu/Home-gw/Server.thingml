@@ -1,0 +1,42 @@
+import "../Field-node/Sensor.thingml"
+
+
+thing SensorServer includes SensorMsgs {
+
+	property delay : Integer = 1000
+
+	required port sensor_service 
+	@public "true" 
+	{
+		sends start_periodic_reading, reading_cancel, read 
+		receives reading, ready
+	}
+	
+	 statechart Server init reading {
+        
+        /*state idle {
+            
+            transition -> reading 
+            event sensor_service?ready
+            action do
+            	print "Fieldnode online\n"
+            	sensor_service!start_periodic_reading(delay)
+            end
+        }*/
+        
+        state reading {
+        
+         	on entry print "Server starting!\n"
+        
+        	internal event reading : sensor_service?reading
+            action do
+                print "Sensor reading"
+                print reading.value
+            end     
+        }
+    }
+}
+
+configuration HomeGW {
+    instance server : SensorServer   
+}

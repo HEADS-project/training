@@ -9,7 +9,7 @@ thing FieldNodeJS {
 configuration FieldNode {
     instance timer : SensorTimerJS
     instance sensor : SensorJS
-    instance server : SensorServer
+    //instance server : SensorServer
     connector sensor.timer => timer.timer  
-    connector server.sensor_service => sensor.sensor_service       
+    //connector server.sensor_service => sensor.sensor_service       
 }

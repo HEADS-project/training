@@ -10,6 +10,9 @@ thing SensorJS includes Sensor
 {
 
     function initialize() 
+    /*do
+    	print "initialize"
+    end*/
     do
         'var m = require(\'mraa\');
          console.log(\'MRAA Version: \' + m.getVersion());'
@@ -17,6 +20,11 @@ thing SensorJS includes Sensor
     end
     
     function read() : Integer
+	 /*   do
+	    	print "read"
+	    	return 1
+	    end
+	    */
     do
        'var analogValue = ' & analogPin0 & '.read();
         console.log(\'Field Node reading: \' +analogValue); '
@@ -29,7 +37,11 @@ thing SensorJS includes Sensor
     statechart SensorMachine init Idle {
 
 		state Idle {
-			on entry initialize() 
+			on entry do 
+				initialize()
+				print "Sensor Ready"
+				timer!timer_start(delay)
+			end
 			
 			internal event sensor_service?read
 			action do
@@ -37,16 +49,13 @@ thing SensorJS includes Sensor
 				sensor_service!reading(value)
 			end		
 			
-			transition -> PeriodicReading
-			event t : sensor_service?start_periodic_reading
+			internal event t : sensor_service?start_periodic_reading
 			action do
 				delay = t.delay
+				timer!timer_cancel()
 				timer!timer_start(delay)
 			end
 			
-		}
-		
-		state PeriodicReading {
 			internal event timer?timer_timeout
 			action do				
 				value = read()
@@ -54,9 +63,9 @@ thing SensorJS includes Sensor
 				timer!timer_start(delay)
 			end
 			
-			transition -> Idle
-			event sensor_service?reading_cancel
+			internal event sensor_service?reading_cancel
 			action timer!timer_cancel()
+			
 		}
 	}
 }

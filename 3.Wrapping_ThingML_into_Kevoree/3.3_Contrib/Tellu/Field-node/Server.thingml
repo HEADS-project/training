@@ -12,7 +12,7 @@ thing SensorServer includes SensorMsgs {
 	
 	 statechart Server init start {
 	 
-	  on entry print "Server!\n"
+	  on entry print "Server starting!\n"
         
         state start {
         

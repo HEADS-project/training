@@ -10,14 +10,16 @@ thing fragment SensorMsgs {
 	message reading_cancel();
 	// Notification that the timer has expired
 	message reading(value : Long);
+	// Notification that sensor is online
+	message ready();
 }
 
 thing Sensor includes TimerMsgs, SensorMsgs {
 
-	property delay : Integer = 0
+	property delay : Integer = 1000
 
-	provided port sensor_service {
-		sends reading
+	provided port sensor_service @public "true" {
+		sends reading, ready
 		receives start_periodic_reading, reading_cancel, read 
 	}
 	
