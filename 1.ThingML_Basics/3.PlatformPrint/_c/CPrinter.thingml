@@ -1,6 +1,7 @@
 import "../CustomPrinter.thingml"
 
-thing CPrinter includes CustomPrinter {
+thing CPrinter includes CustomPrinter
+{
 
 	statechart behavior init greetings {
 	
@@ -16,7 +17,8 @@ thing CPrinter includes CustomPrinter {
 }
 
 //TODO: Compile and run for the C platform
-configuration CustomPrintC {
+configuration CustomPrintC 
+{
 	instance client : CustomPrinterClient
 	instance printer : CPrinter
 	

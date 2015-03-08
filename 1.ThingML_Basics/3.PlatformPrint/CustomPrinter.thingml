@@ -6,10 +6,10 @@ that we can use as a replacement of the print statement of ThingML
 */
 
 datatype String
-@c_type "char *"
-@c_byte_size "*"
-@java_type "String"
-@js_type "String";
+	@c_type "char *"
+	@c_byte_size "2"
+	@java_type "String"
+	@js_type "String";
 
 
 /**
@@ -26,10 +26,13 @@ Our custom printer will basically receive this message and
 use some system primitives to perform the print.
 However at this point, the thing is still platform indepdent (no C, no Java, no JavaScript here)
 */
-thing fragment CustomPrinter includes CustomPrintMsgs {
+thing fragment CustomPrinter includes CustomPrintMsgs 
+{
 	
 	//The API (this port) is fully platform-independent	
-	provided port Print {
+	provided port Print 
+	@sync_send "true"
+	{
 		receives customPrint
 	}
 	
@@ -46,7 +49,9 @@ no matter how it is implemented.
 */
 thing CustomPrinterClient includes CustomPrintMsgs{
 	
-	required port Print {
+	required port Print 
+	@sync_send "true"
+	{
 		sends customPrint
 	}
 	

@@ -6,7 +6,7 @@ datatype String
 	@js_type "String";
 
 datatype Integer	
-	@java_type "short"
+	@java_type "int"
 	@js_type "short";
 
 
