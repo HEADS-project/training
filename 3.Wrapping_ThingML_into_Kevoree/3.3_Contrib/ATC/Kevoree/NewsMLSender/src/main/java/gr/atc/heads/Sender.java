@@ -33,6 +33,7 @@ public class Sender {
 	@Start
 	public void start() {
 		Log.info("Sender starts");
+		timer.send("");
 	}
 	
 	@Stop
@@ -47,6 +48,9 @@ public class Sender {
 	
 	@Output
 	private Port newsPort;
+	
+	@Output
+	private Port timer;	
 	
 	@Input
 	private void poll(Object msg) {

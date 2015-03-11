@@ -17,3 +17,7 @@ bind node0.Sender.poll chan1
 add chan2 : SyncBroadcast
 bind node0.Sender.newsPort chan2
 bind node0.Receiver.Receiver_receiver_newsPort chan2
+
+add chan3 : SyncBroadcast
+bind node0.Sender.timer chan3
+bind node0.Timer.Timer_timer_timerPort chan3
