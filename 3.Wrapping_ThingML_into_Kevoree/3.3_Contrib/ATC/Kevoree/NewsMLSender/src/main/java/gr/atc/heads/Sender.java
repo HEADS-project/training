@@ -33,7 +33,7 @@ public class Sender {
 	@Start
 	public void start() {
 		Log.info("Sender starts");
-		timer.send("");
+		timer.send("{\"message\" : \"timer_start\", \"delay\" : 5000}", null);
 	}
 	
 	@Stop
@@ -57,8 +57,11 @@ public class Sender {
 		List<NewsMLItem> items = getNewsML(newsUrl);
 		for(NewsMLItem item: items) {
 			String message = String.format("%s-%s", item.getTopic(), item.getNewsItemId());
-			newsPort.send(message);
+			newsPort.send(
+					String.format("{\"message\" : \"news_item\", \"newsData\" : \"%s\"}", message), 
+					null);
 		}
+		timer.send("{\"message\" : \"timer_start\", \"delay\" : 5000}", null);
 	}
 	
 	private final String USER_AGENT = "Mozilla/5.0";
