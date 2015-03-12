@@ -1,0 +1,26 @@
+import "../Sender/Sender.thingml"
+
+thing Receiver includes NewsMsgs {
+
+	required port news
+	{
+		receives news_item
+	}
+	
+	statechart behavior init Init {
+	
+		state Init {			
+			transition -> Init
+			event val: news?news_item
+			
+			action do
+				print "Receiver: received item:"
+				print val.newsData
+			end
+		}
+	}
+}
+
+configuration Receiver {
+    instance receiver : Receiver
+}
