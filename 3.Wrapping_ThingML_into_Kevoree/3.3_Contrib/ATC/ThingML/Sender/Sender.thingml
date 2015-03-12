@@ -1,0 +1,35 @@
+import "../Timer/Timer.thingml"
+
+thing fragment NewsMsgs {
+	message news_item(newsData : String);
+}
+
+thing Sender includes TimerClient, NewsMsgs {
+
+	readonly property period : Integer = 10000
+	
+	provided port news
+	{
+		sends news_item
+	}
+	
+	statechart behavior init Init {
+	
+		state Init {
+			on entry do
+				timer!timer_start(period)
+			end
+			
+			transition -> Init
+			event timer?timer_timeout
+			
+			action do
+				news!news_item("hello")
+			end
+		}
+	}
+}
+
+configuration Sender {
+    instance sender : Sender
+}

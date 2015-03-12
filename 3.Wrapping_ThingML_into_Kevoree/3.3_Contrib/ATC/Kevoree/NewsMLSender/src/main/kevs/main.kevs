@@ -1,0 +1,23 @@
+repo "http://repo1.maven.org/maven2"
+include mvn:org.kevoree.library.java:org.kevoree.library.java.javaNode:release
+include mvn:org.kevoree.library.java:org.kevoree.library.java.ws:release
+
+add node0 : JavaNode
+add node0.Timer : org.thingml.generated.kevoree.KTimer
+add node0.Receiver : org.thingml.generated.kevoree.KReceiver
+add node0.Sender : gr.atc.heads.Sender
+
+add sync : WSGroup
+attach node0 sync
+
+add chan1 : SyncBroadcast
+bind node0.Timer.Timer_timer_timerPort_out chan1
+bind node0.Sender.poll chan1
+
+add chan2 : SyncBroadcast
+bind node0.Sender.newsPort chan2
+bind node0.Receiver.Receiver_receiver_newsPort chan2
+
+add chan3 : SyncBroadcast
+bind node0.Sender.timer chan3
+bind node0.Timer.Timer_timer_timerPort chan3
