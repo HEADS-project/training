@@ -1,0 +1,11 @@
+// create a fieldnode JavaScript (node1)
+
+add node0 : JavascriptNode
+add node1 : JavascriptNode
+//create a default group to manage the node(s)
+add sync : WSGroup
+set sync.port/node0 = "9000"
+attach node1 sync
+set sync.master = 'node0'
+
+network node0.ip.lo 10.10.0.1

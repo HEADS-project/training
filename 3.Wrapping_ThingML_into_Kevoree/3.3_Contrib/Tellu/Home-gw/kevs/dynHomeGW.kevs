@@ -1,0 +1,52 @@
+//create server JavaScript node (node0)
+add node0 : JavascriptNode
+
+//instantiate Kevoree/ThingML components
+add node0.HomeGW_0 : no.tellu.HomeGW
+
+add node0.broker : WSMsgBroker
+
+// define on which port the broker will start
+set node0.broker.port = '9050'
+
+//create a default group to manage the node(s)
+add sync : WSGroup
+set sync.port/node0 = "9000"
+attach node0 sync
+set sync.master = 'node0'
+
+set sync.onConnect = '
+add {nodeName}.FieldNode_0 : no.tellu.FieldNode
+
+add chan: WSChan
+set chan.port = "9050"
+set chan.host = "10.10.0.1"
+
+add chan1: WSChan
+set chan1.port = "9050"
+set chan1.host = "10.10.0.1"
+
+
+bind {nodeName}.FieldNode_0.FieldNode_sensor_sensor_service_out chan
+bind {nodeName}.FieldNode_0.FieldNode_sensor_sensor_service_in chan1
+'
+
+set sync.onDisconnect = '
+remove {nodeName}
+'
+
+add chan: WSChan
+set chan.port = "9050"
+set chan.host = "localhost"
+
+add chan1: WSChan
+set chan1.port = "9050"
+set chan1.host = "localhost"
+
+bind node0.HomeGW_0.HomeGW_server_sensor_service_out chan1
+bind node0.HomeGW_0.HomeGW_server_sensor_service_in chan
+
+start sync
+//start node0
+
+
