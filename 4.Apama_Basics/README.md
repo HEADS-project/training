@@ -20,14 +20,22 @@ https://www.softwareag.com/corporate/res/download/default.asp for a free trial d
 Unpack the apama_5.3.0.0_win_64.zip and run apama_5.3.0.0_win_64.exe according to Installing_Apama.pdf (also in zip). Have the license file you 
 got from Software AG in hand.
 Install the developers option. Administrative privileges are needed.
-The installation for this tutorial requires Windows, because Apama Studio is not supported on other platforms. 
+The installation for this tutorial requires Windows, because Apama Studio is not supported on other platforms. Please complain, if this is a show stopper.
 
 ### 1. Exploring the samples
 
 In Apama Studio open the Welcome page, go to the Samples section. These six samples can be imported into an Eclipse workspace as Apama projects. 
 From the Apama Workbench perspective you can launch these samples, one at a time. The Readme files suggest small exercises to modify these samples. 
 The source of the samples is the folder 'demos' in the Apama installation. The folder 'samples' contains more in-depth examples for components 
-of Apama and the connection with other products like Universal Messaging or Terracotta BigMemory.  
+of Apama and the connection with other products like Universal Messaging or Terracotta BigMemory. 
+
+Steps to perform for a sample:
+
+* Import project into workspace
+* Explore files in the Apama Workbench perspective. Toggle on the 'Show All Folders' button in the toolbar of the 'Workbench Project View'.
+* Launch the sample with the 'Launch Control Panel'. This starts a correlator (Apama CEP runtime process) listening on port localhost:15903 (default). 
+In addition a dashboard viewer is started in a separate window and events are sent to the correlator. 
+ 
 
 ### 2. Using the tutorial on EPL monitor scripts
 
