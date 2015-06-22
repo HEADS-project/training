@@ -79,7 +79,7 @@ Kevoree Java provides a **.jar** file to start a Kevoree runtime easily.
 You can download it [here](http://oss.sonatype.org/service/local/artifact/maven/redirect?r=public&g=org.kevoree.platform&a=org.kevoree.platform.standalone&v=RELEASE) or run the following command
 
 ```sh
-wget http://oss.sonatype.org/service/local/artifact/maven/redirect?r=public&g=org.kevoree.platform&a=org.kevoree.platform.standalone&v=RELEASE -O kevoree.jar
+wget "http://oss.sonatype.org/service/local/artifact/maven/redirect?r=public&g=org.kevoree.platform&a=org.kevoree.platform.standalone&v=RELEASE" -O kevoree.jar
 ```
 
 Let's use this **.jar** to run the **javaNode** from your KevScript `starterModel.kevs`
