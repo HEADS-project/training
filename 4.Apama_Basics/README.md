@@ -22,6 +22,29 @@ got from Software AG in hand.
 Install the developers option. Administrative privileges are needed.
 The installation for this tutorial requires Windows, because Apama Studio is not supported on other platforms. Please complain, if this is a show stopper.
 
+Installation verification: 
+
+* Import demo project 'Weather' from the samples of the welcome page.
+* This opens the Apama Workbench perspective with the Launch Control Panel on the lower left corner of the window and the readme.htm in the editor area.
+* Start the Apama correlator with the default settings.
+* You see in the Eclipse console log of this application 
+```
+2015-**-** xx:xx:xx.342 ##### [1384] - License information:
+2015-**-** xx:xx:xx.342 ##### [1384] -   D:\Users\xxxx\SoftwareAG\ApamaWork_5.3\license\license.txt
+2015-**-** xx:xx:xx.342 ##### [1384] -   Expiration date:   2015-07-18
+2015-**-** xx:xx:xx.343 ##### [1384] -   Monitor limit:     unlimited
+2015-**-** xx:xx:xx.346 ##### [1384] -   Context limit:     unlimited
+2015-**-** xx:xx:xx.349 ##### [1384] -   Event rate limit:  unlimited
+2015-**-** xx:xx:xx.355 ##### [1384] -   Connect Allowed:   true
+2015-**-** xx:xx:xx.357 ##### [1384] -   Version prefix:    "5"
+2015-**-** xx:xx:xx.359 ##### [1384] -   Platforms:        
+2015-**-** xx:xx:xx.363 ##### [1384] -     "*"
+```
+* This shows that the license file is correctly installed and Apama is working.
+* Stop Apama correlator with the stop button in the Launch Control Panel.
+
+  
+
 ### 1. Exploring the samples
 
 In Apama Studio open the Welcome page, go to the Samples section. These six samples can be imported into an Eclipse workspace as Apama projects. 
