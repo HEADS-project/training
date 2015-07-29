@@ -17,17 +17,15 @@ var HelloWorld = AbstractComponent.extend({
      * @param {Function} done   call this when you are done starting your component
      */
     start: function (done) {
-        this._super(function () {
-            var greetMessage = this.dictionary.getValue('greetMessage');
-            this.log.info(this.toString(), greetMessage);
+      var greetMessage = this.dictionary.getValue('greetMessage');
+      this.log.info(this.toString(), greetMessage);
 
-            this.id = setInterval(function () {
-                // send the greetMessage every 5 seconds
-                this.out_hello(this.dictionary.getValue('greetMessage'));
-            }.bind(this), 5000);
+      this.id = setInterval(function () {
+          // send the greetMessage every 5 seconds
+          this.out_hello(this.dictionary.getValue('greetMessage'));
+      }.bind(this), 5000);
 
-            done();
-        }.bind(this));
+      done();
     },
 
     /**
@@ -35,11 +33,9 @@ var HelloWorld = AbstractComponent.extend({
      * @param {Function} done   call this when you are done stopping your component
      */
     stop: function (done) {
-        this._super(function () {
-            this.log.info(this.toString(), 'Bye, world!');
-            clearInterval(this.id);
-            done();
-        }.bind(this));
+      this.log.info(this.toString(), 'Bye, world!');
+      clearInterval(this.id);
+      done();
     },
 
     update: function (done) {
