@@ -30,7 +30,7 @@ On the middle, we have a virtual sensor which combine the values from the person
 As we can see, the micro-controllers combine values received from different sensors, with sometimes the time window concept. There is no easy way to implement that with just state machine. Indeed, the developers must implement time window manually, use temporary values, use booleans to combine values. However, it already exists some technique to do this : complex event processing (CEP). To ease such development, in the HEADS project we are implementing a new approach which combine state machine and CEP, with resources constraints (device with a few KB of RAM and a few MHz of clock speed). We describe this method in the next section.
 
 ## How to implement this in ThingML
-All the code of this example can be find here. **TODO : add 
+All the code of this example can be find here. **TODO : add** 
 
 ### The heating sensor - on the top
 To declare a stream, two things should be specified: the input event (or source) and the output event. In ThingML, there is two keywords: **from** to declare the source and **action** to declare the output. Both must be in a **stream** declaration, in the same level as function declation : 
@@ -100,6 +100,50 @@ end
 This syntax can be also used in the **select** clause. For example, here the select could be : `select oneWindowOpen: #0 `.
 
 ### Operators
-In all the previous code, the output event is sent whatever is value. However, we can filter these messages to send only message that interested in the system. It can be done thanks to the **filter** operator. It needs one thing: a special "function" which take a message as parameter and return a boolean. We talk about **operator**. 
+In all the previous code, the output event is sent whatever is value. However, we can filter these messages to send only message that interested in the system. It can be done thanks to the **filter** operator. It needs one thing: a special "function" which take a message as parameter and return a boolean. We talk about **operator**, and you can declare one as following:
+```
+operator filterHeatingValue(msg : heatingIsOn) : Boolean do
+    return msg.value //a message is sent only if the value is true
+end
+```
+
+Then, we modify the stream declaration to call this filter:
+```
+stream heatingSensor do
+    from heating : [rcvPort?heatingIsOn]::filter(filterHeatingValue(heating))
+    select v : heating.value
+    action sendPort!cepHeatingStatus(v)
+end
+```
+
+Now, you can modify all the streams that need to be modified so that send only a message with a true value. You can add how many filter you want, and where you want. It means that you can filter the different sources of a merge or a join. For example, with the previous merge example, we could get (this is probably not the best solution):
+```
+operator filterWindowValue(m : cepWindowOpen) : Boolean do
+    return m.v
+end
+
+stream mergeWindowOpenDetector do
+    from merge: [ w1 : [window1?cepWindowOpen]::filter(filterWindowValue(w1)) | w2 : [window2?cepWindowOpen]::filter(filterWindowValue(w2)) | w3 : [window3?cepWindowOpen]::filter(filterWindowValue(w3)) -> cepWindowOpen(#0)]
+    select oneWindowOpen: merge.v
+    action room1!cepWindowOpen(oneWindowOpen)
+end
+```
+
+Another feature is to subdivise a stream to process just a part, we talk about window. We have two kinds of window: length and time window. Both allow the developer to do some aggregation operation (count, average, max, min) on a part of the streams. To create a length window, the size should be declared but the step is optional. If the step is not specify, its value is equal to the size. A new window is created every step items and contains at most size events. For the time window, instead of declare the size/step with number of events, there are declared with time, in milliseconds. **ATTENTION:** currently it is not possible to apply an aggregator function on a message which does not have any parameter. And, you can manipulate the collection of messages only in the stream declaration. You cannot send it as a message parameter.
+
+A version of all basic function (sum, average, max, min and count) are avaible [here](https://github.com/SINTEF-9012/ThingML/tree/master/org.thingml.samples/src/main/thingml/cep). 
+
+For example, we can compute the average of values in a time window, as below: 
+```
+stream averageValues do
+    from ints : [recvPort?intValue]::timeWindow(50,10)
+    select avg: avg(ints.value[])
+    action sendPort!avgValues(avg)
+end
+```
+
+The keyword for a length window is **lengthWindow**.
 
 
+## Your turn!
+**TO DO**
