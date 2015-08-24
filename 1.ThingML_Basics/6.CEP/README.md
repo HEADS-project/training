@@ -5,7 +5,7 @@ Complex Event Processing
 
 # Tutorial - A heating control system
 
-To describe all the feature avaible on the end of august, we are going to take an example: an heating control system.
+To describe all the features avaible on the end of august, we are going to take an example: an heating control system.
 
 ## Running example
 Marc supervises the electric consumption of a building aiming at reducing the electric consumption. His first step to achieve this goal is to implement alerts when heating is on in a room while the window is open.
@@ -58,7 +58,7 @@ Currently, two events can be joined to create a unique output. More than declare
 
 ```
 stream windowOpenDetector do
-   from w : [ indoor : rcvPort?indoorTemp & outdoor : rcvPort?outdoorTemp -> windowOpen(complexAlgo(indoor.value,outdoor.value))]
+   from w : [ indoor : rcvPort?indoorTemp & outdoor : rcvPort?outdoorTemp -> cepWindowOpen(complexAlgo(indoor.value,outdoor.value))]
    select windowIsOpen: w.v
    action sendPort!cepWindowOpen(windowIsOpen) 
 end
@@ -74,7 +74,7 @@ stream joinTempHumidity do
 end
 
 stream personPresenseDetector do
-   from person : [ joinTH: rcvPort?cepJTH & light : rcvPort?light -> cepPerson(complexAlgo(joinTH.temp,joinTH.humi,light.v)) ]
+   from person : [ joinTH: rcvPort?cepJTH & light : rcvPort?light -> cepPersonIsPresent(complexAlgo(joinTH.temp,joinTH.humi,light.value)) ]
    select isPresent: person.v
    action sendPort!cepPersonIsPresent(isPresent)
 end
