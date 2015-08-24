@@ -16,23 +16,26 @@ thing ComputeAvg includes TimerClient, ComputeAvgMsgs {
     }
     
     function avg(values : Integer[]) : Integer do
-        var index : Integer = 0
-        var sum : Integer = 0
-        while(index < values.length) do
-            sum = sum + values[index]
-            index = index + 1
+        if(values.length > 0) do
+            var index : Integer = 0
+            var sum : Integer = 0
+            while(index < values.length) do
+                sum = sum + values[index]
+                index = index + 1
+            end
+            return sum / values.length
         end
-        return sum / values.length
+        return 0
     end
     
     stream averageValues do
-        from ints : [recvPort?intValue]::timeWindow(50,10)
+        from ints : [recvPort?intValue]::timeWindow(2000,1000)
         select avg: avg(ints.value[])
         action sendPort!avgValues(avg)
     end
     
     statechart ComputeAvg init Idle {
-        readonly property period : Integer = 10
+        readonly property period : Integer = 500
 
 		state Idle {
 			on entry do
@@ -41,12 +44,12 @@ thing ComputeAvg includes TimerClient, ComputeAvgMsgs {
 
             internal
             event avg : recvPort?avgValues
-            action print "avg = " + avg.avg
+            action print "avg = " + avg.avg + " \n"
 			
-			transition -> Init
+			transition -> Idle
             event timer?timer_timeout
 			action do
-                sendPort!indoorTemp(5)
+                sendPort!intValue(5)
 			end
 		
 		} 

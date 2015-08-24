@@ -1,4 +1,4 @@
-import "../Timer.thingml"
+import "../../Timer.thingml"
 
 thing TimerJS includes Timer
 {
