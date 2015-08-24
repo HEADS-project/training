@@ -1,5 +1,5 @@
-import "../Timer.thingml"
-import "../sharedMsgs.thingml"
+import "Timer.thingml"
+import "sharedMsgs.thingml"
 
 thing HeatingSensor includes TimerClient, heatingMsgs{
     provided port sendPort {

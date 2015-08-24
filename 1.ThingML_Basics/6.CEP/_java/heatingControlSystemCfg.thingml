@@ -1,9 +1,9 @@
-import "LightSensor.thingml"
-import "humiditySensor.thingml"
-import "indoorTemperatureSensor.thingml"
-import "outdoorTemperatureSensor.thingml"
-import "heatingSensor.thingml"
-import "JSTimer.thingml"
+import "../LightSensor.thingml"
+import "../humiditySensor.thingml"
+import "../indoorTemperatureSensor.thingml"
+import "../outdoorTemperatureSensor.thingml"
+import "../heatingSensor.thingml"
+import "JavaTimer.thingml"
 
 import "../presensePersonDetector.thingml"
 import "../windowOpenDetector.thingml"
@@ -16,11 +16,11 @@ configuration heatingControlSystemCfg {
     instance outdoorTemp : OutdoorTempSensor
     instance heating : HeatingSensor
     
-    instance timerLight : TimerJS
-    instance timerHumidity : TimerJS
-    instance timerIndoorTemp : TimerJS
-    instance timerOutdoorTemp : TimerJS
-    instance timerHeating : TimerJS
+    instance timerLight : TimerJava
+    instance timerHumidity : TimerJava
+    instance timerIndoorTemp : TimerJava
+    instance timerOutdoorTemp : TimerJava
+    instance timerHeating : TimerJava
     
     instance personDetector : PresenceDetector
     instance windowOpDetectetor : WindowOpenDetector
@@ -47,7 +47,5 @@ configuration heatingControlSystemCfg {
     connector system.rcvPort => windowOpDetectetor.sendPort
     connector system.rcvPort => personDetector.sendPort
     connector system.rcvPort => heating.sendPort
-    
-    
-  
+   
 }

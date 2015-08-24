@@ -1,9 +1,9 @@
-import "../Timer.thingml"
-import "../sharedMsgs.thingml"
+import "Timer.thingml"
+import "sharedMsgs.thingml"
 
-thing OutdoorTempSensor includes TimerClient, outdoorTempMsgs{
+thing HumiditySensor includes TimerClient, humidityMsgs{
     provided port sendPort {
-        sends outdoorTemp    
+        sends humidity    
     }
     
     statechart behavior init Init {
@@ -17,8 +17,8 @@ thing OutdoorTempSensor includes TimerClient, outdoorTempMsgs{
 			transition -> Init
             event timer?timer_timeout
 			action do
-				print "OutdoorTempSensor: send a value\n"
-                sendPort!outdoorTemp(6)
+				print "HumiditySensor: send a value\n"
+                sendPort!humidity(5)
 			end
 		
 		}

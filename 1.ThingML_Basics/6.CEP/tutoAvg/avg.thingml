@@ -1,0 +1,56 @@
+import "../datatype.thingml"
+import "../Timer.thingml"
+
+thing fragment ComputeAvgMsgs {
+    message intValue(value : Integer);
+    message avgValues(avg : Integer);
+}
+
+thing ComputeAvg includes TimerClient, ComputeAvgMsgs {
+    provided port sendPort {
+        sends intValue, avgValues   
+    }
+    
+    required port recvPort {
+        receives intValue, avgValues
+    }
+    
+    function avg(values : Integer[]) : Integer do
+        var index : Integer = 0
+        var sum : Integer = 0
+        while(index < values.length) do
+            sum = sum + values[index]
+            index = index + 1
+        end
+        return sum / values.length
+    end
+    
+    stream averageValues do
+        from ints : [recvPort?intValue]::timeWindow(50,10)
+        select avg: avg(ints.value[])
+        action sendPort!avgValues(avg)
+    end
+    
+    statechart ComputeAvg init Idle {
+        readonly property period : Integer = 10
+
+		state Idle {
+			on entry do
+                timer!timer_start(period)
+			end
+
+            internal
+            event avg : recvPort?avgValues
+            action print "avg = " + avg.avg
+			
+			transition -> Init
+            event timer?timer_timeout
+			action do
+                sendPort!indoorTemp(5)
+			end
+		
+		} 
+    }
+}
+
+

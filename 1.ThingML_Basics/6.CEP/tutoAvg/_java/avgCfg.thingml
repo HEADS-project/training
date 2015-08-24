@@ -1,0 +1,10 @@
+import "../avg.thingml"
+import "JavaTimer.thingml"
+
+configuration avgJava {
+    instance timer : TimerJava
+    instance avg : ComputeAvg
+    
+    connector avg.timer => timer.timer
+    connector avg.recvPort => avg.sendPort    
+}

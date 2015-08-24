@@ -1,5 +1,5 @@
-import "../Timer.thingml"
-import "../sharedMsgs.thingml"
+import "Timer.thingml"
+import "sharedMsgs.thingml"
 
 thing LightSensor includes TimerClient, lightMsgs{
     provided port sendPort {
