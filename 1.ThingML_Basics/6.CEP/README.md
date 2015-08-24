@@ -1,12 +1,11 @@
 Complex Event Processing
 ===
-Building...
 
-> **Last updated:** August 15th 2015
+> **Last updated:** August 24th 2015
 
 # Tutorial - A heating control system
 
-To describe all the feature avaible on the end of august, we are going to take an example: an heating control system.
+To describe all the features avaible on the end of august, we are going to take an example: an heating control system.
 
 ## Running example
 Marc supervises the electric consumption of a building aiming at reducing the electric consumption. His first step to achieve this goal is to implement alerts when heating is on in a room while the window is open.
@@ -15,7 +14,7 @@ To be accepted by the inhabitants of the building, the alert system should be fl
 
 As Marc is not allowed to buy extra sensors, he should rely on the sensors available in each room, in addition to a global temperature sensor installed on the roof, to implement his alert system. The final system is depicted in the following figure.
 
-**TODO: add image**
+![heating system](https://github.com/HEADS-project/training/blob/master/1.ThingML_Basics/6.CEP/docs/heatingSystem.png)
 
 On the figure, all the blue elements are virtual sensors whereas the other are physical sensors, except the two hands in the bottom. These elements represent the alert system. The physical sensors send the value regularly. The virtual sensor are micro-controllers which receive values from other sensors, physical or virtual, and apply the rules defined by an user. On the center, the virtual sensor is a micro-controller which turn on the alert system, shown by the hand with a green card, or turn off, shown by the hand with a red card.
 
@@ -59,7 +58,7 @@ Currently, two events can be joined to create a unique output. More than declare
 
 ```
 stream windowOpenDetector do
-   from w : [ indoor : rcvPort?indoorTemp & outdoor : rcvPort?outdoorTemp -> windowOpen(complexAlgo(indoor.value,outdoor.value))]
+   from w : [ indoor : rcvPort?indoorTemp & outdoor : rcvPort?outdoorTemp -> cepWindowOpen(complexAlgo(indoor.value,outdoor.value))]
    select windowIsOpen: w.v
    action sendPort!cepWindowOpen(windowIsOpen) 
 end
@@ -75,7 +74,7 @@ stream joinTempHumidity do
 end
 
 stream personPresenseDetector do
-   from person : [ joinTH: rcvPort?cepJTH & light : rcvPort?light -> cepPerson(complexAlgo(joinTH.temp,joinTH.humi,light.v)) ]
+   from person : [ joinTH: rcvPort?cepJTH & light : rcvPort?light -> cepPersonIsPresent(complexAlgo(joinTH.temp,joinTH.humi,light.value)) ]
    select isPresent: person.v
    action sendPort!cepPersonIsPresent(isPresent)
 end
@@ -85,7 +84,7 @@ end
 It is not possible (currently) to customize the time in ThingML. Currently, you have to modify the generated source code. 
 
 ### Merge multiple window-open detector
-We can imagine that there is a window-open detecting device on each window. But, in our example, if one window is open, it does'nt matter about which, we notify the system. To developp this, the ThingML language support the **merge** feature. The output event is sent as soon as one event of the source list is received. Contrary to the join feature, the merge feature support an "infinite" number of merged messages. **ATTENTION: ** However, all the messages must have the same footprint (i.e: same parameters type).
+We can imagine that there is a window-open detecting device on each window. But, in our example, if one window is open, it does'nt matter about which, we notify the system. To developp this, the ThingML language support the **merge** feature. The output event is sent as soon as one event of the source list is received. Contrary to the join feature, the merge feature support an "infinite" number of merged messages. **ATTENTION:** However, all the messages must have the same footprint (i.e: same parameters type).
 
 Since the message parameters could have different name, we introduce a new syntax element: "#i", where i is the index of the parameter (we start to count at 0). The following code show how to merge three window-open detectors:
 
@@ -145,5 +144,12 @@ end
 The keyword for a length window is **lengthWindow**.
 
 
-## Your turn!
-**TO DO**
+## Your turn to play!
+In this last step of the tutorial, your task is to write your own program in ThingML.
+
+**Your program should contains:**
+* at least one simple stream and one "complex stream" (with merge or join)
+* at least a stream with a filter operator
+* at least a stream with a window (time or length) operator
+
+Submit your program by forking the training repository, adding to example in a sub-folder in the [Contribs](https://github.com/HEADS-project/training/tree/master/1.ThingML_Basics/5.Contrib) directory and making pull request. If you have no idea how to do this, send your example to Brice Morin (brice.morin@sintef.no). The best examples will be added as additional examples in this tutorial. Think about what examples you would have liked to get!
