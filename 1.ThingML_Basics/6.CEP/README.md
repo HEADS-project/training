@@ -84,7 +84,7 @@ end
 It is not possible (currently) to customize the time in ThingML. Currently, you have to modify the generated source code. 
 
 ### Merge multiple window-open detector
-We can imagine that there is a window-open detecting device on each window. But, in our example, if one window is open, it does'nt matter about which, we notify the system. To developp this, the ThingML language support the **merge** feature. The output event is sent as soon as one event of the source list is received. Contrary to the join feature, the merge feature support an "infinite" number of merged messages. **ATTENTION: ** However, all the messages must have the same footprint (i.e: same parameters type).
+We can imagine that there is a window-open detecting device on each window. But, in our example, if one window is open, it does'nt matter about which, we notify the system. To developp this, the ThingML language support the **merge** feature. The output event is sent as soon as one event of the source list is received. Contrary to the join feature, the merge feature support an "infinite" number of merged messages. **ATTENTION:** However, all the messages must have the same footprint (i.e: same parameters type).
 
 Since the message parameters could have different name, we introduce a new syntax element: "#i", where i is the index of the parameter (we start to count at 0). The following code show how to merge three window-open detectors:
 
