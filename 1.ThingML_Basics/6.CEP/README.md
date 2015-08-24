@@ -1,6 +1,5 @@
 Complex Event Processing
 ===
-Building...
 
 > **Last updated:** August 24th 2015
 
