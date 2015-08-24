@@ -1,0 +1,33 @@
+import "datatype.thingml"
+
+// Message of physical sensors
+thing fragment indoorTempMsgs {
+    message indoorTemp(value : Integer);    
+}
+
+thing fragment humidityMsgs {
+    message humidity(value : Integer);    
+}
+
+thing fragment lightMsgs {
+    message light(value : Integer);    
+}
+
+thing fragment heatingMsgs {
+    message cepHeatingStatus(value : Boolean);  
+    message heatingIsOn(value : Boolean);  
+}
+
+thing fragment outdoorTempMsgs {
+    message outdoorTemp(value : Integer);    
+}
+
+//Message of virtual sensor
+thing fragment windowOpenMsgs{
+    message cepWindowOpen(v : Boolean);    
+}
+
+thing fragment PresenceDetectorMsgs {
+    message cepJTH(temp : Integer, humi : Integer);
+    message cepPersonIsPresent(v : Boolean);
+}

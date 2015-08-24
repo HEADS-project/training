@@ -1,0 +1,27 @@
+import "../Timer.thingml"
+import "../sharedMsgs.thingml"
+
+thing LightSensor includes TimerClient, lightMsgs{
+    provided port sendPort {
+        sends light    
+    }
+    
+    statechart behavior init Init {
+	    readonly property period : Integer = 2000
+
+		state Init {
+			on entry do
+                timer!timer_start(period)
+			end
+			
+			transition -> Init
+            event timer?timer_timeout
+			action do
+				print "LightSensor: send a value\n"
+                sendPort!light(5)
+			end
+		
+		}
+	
+	}
+}

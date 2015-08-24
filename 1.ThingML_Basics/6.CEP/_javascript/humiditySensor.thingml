@@ -1,0 +1,27 @@
+import "../Timer.thingml"
+import "../sharedMsgs.thingml"
+
+thing HumiditySensor includes TimerClient, humidityMsgs{
+    provided port sendPort {
+        sends humidity    
+    }
+    
+    statechart behavior init Init {
+	    readonly property period : Integer = 2000
+
+		state Init {
+			on entry do
+                timer!timer_start(period)
+			end
+			
+			transition -> Init
+            event timer?timer_timeout
+			action do
+				print "HumiditySensor: send a value\n"
+                sendPort!humidity(5)
+			end
+		
+		}
+	
+	}
+}
