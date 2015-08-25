@@ -80,7 +80,7 @@ stream personPresenseDetector do
 end
 ```
 
-**ATTENTION: ** the semantic of the join is the one of [ReactiveX](http://reactivex.io/documentation/operators/join.html). 
+**ATTENTION:** the semantic of the join is the one of [ReactiveX](http://reactivex.io/documentation/operators/join.html). 
 It is not possible (currently) to customize the time in ThingML. Currently, you have to modify the generated source code. 
 
 ### Merge multiple window-open detector
@@ -141,7 +141,7 @@ stream averageValues do
 end
 ```
 
-The keyword for a length window is **lengthWindow**.
+The keyword for a length window is **lengthWindow**. **ATTENTION:** even if its possible, the window operators must be the last operators and cannot be chained. I do not assure the result. It should be a next feature.
 
 
 ## Your turn to play!
