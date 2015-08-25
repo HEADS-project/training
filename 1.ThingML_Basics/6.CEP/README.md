@@ -143,6 +143,13 @@ end
 
 The keyword for a length window is **lengthWindow**. **ATTENTION:** even if its possible, the window operators must be the last operators and cannot be chained. I do not assure the result. It should be a next feature.
 
+Now, you have all the keys to implement the Marc's system. To simulate the physical sensor, we can use the following files:
+* `LightSensor.thingml`,
+* `heatingSensor.thingml`,
+* `humiditySensor.thingml`,
+* `indoorTemperatureSensor.thingml`,
+* `outdoorTemperatureSensor.thingml`.
+
 
 ## Your turn to play!
 In this last step of the tutorial, your task is to write your own program in ThingML.
