@@ -29,7 +29,7 @@ On the middle, we have a virtual sensor which combine the values from the person
 As we can see, the micro-controllers combine values received from different sensors, with sometimes the time window concept. There is no easy way to implement that with just state machine. Indeed, the developers must implement time window manually, use temporary values, use booleans to combine values. However, it already exists some technique to do this : complex event processing (CEP). To ease such development, in the HEADS project we are implementing a new approach which combine state machine and CEP, with resources constraints (device with a few KB of RAM and a few MHz of clock speed). We describe this method in the next section.
 
 ## How to implement this in ThingML
-All the code of this example can be find here. **TODO : add** 
+All the code of this example can be find here.
 
 ### The heating sensor - on the top
 To declare a stream, two things should be specified: the input event (or source) and the output event. In ThingML, there is two keywords: **from** to declare the source and **action** to declare the output. Both must be in a **stream** declaration, in the same level as function declation : 
