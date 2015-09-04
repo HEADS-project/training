@@ -1,11 +1,11 @@
-import "../Join.thingml"
+import "../Merge.thingml"
 
  /**
 TODO: compile and run this configuration for Java
 **/
-configuration JoinJavaCfg 
+configuration MergeJavaCfg 
 {
-	instance my_instance: JoinCEP
+	instance my_instance: MergeCEP
     connector my_instance.receivePort => my_instance.sendPort
 }
 

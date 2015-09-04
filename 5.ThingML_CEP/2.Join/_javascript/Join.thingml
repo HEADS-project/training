@@ -1,4 +1,4 @@
-import "../JoinAndMerge.thingml"
+import "../Join.thingml"
   
 /**
 TODO: compile and run this configuration for Java

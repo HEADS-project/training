@@ -1,0 +1,88 @@
+/**
+Unlike the print statement, ThingML does not provide any timing facilities directly in the language.
+However, timers are usually important in your logic. We define below how to wrap timers for the different platforms.
+*/
+
+datatype Integer	
+	@c_type "int"
+	@c_byte_size "2"
+	@java_type "short"
+	@java_primitive "true"
+	@js_type "short";
+
+/**
+First, declare the messages that make sense for the timer:
+- timer start
+- timer cancel
+- timer timeout
+*/
+
+thing fragment TimerMsgs {
+	// Start the Timer
+	message timer_start(delay : Integer);
+	// Cancel the Timer
+	message timer_cancel();
+	// Notification that the timer has expired
+	message timer_timeout();
+}
+
+/**
+Second, organize your messages into a port. The timer can receive a timer_start and a timer_cancel,
+and will eventually send a timer_timeout
+*/
+thing fragment Timer includes TimerMsgs
+{
+	provided port timer
+    {
+		sends timer_timeout
+		receives timer_start, timer_cancel
+	}
+}
+
+/**
+A typical client for the timer will have a mirror port, able to send timer_start and timer_cancel,
+and able to receive a timer_timeout
+*/
+thing fragment TimerClient includes TimerMsgs
+{
+	required port timer
+    {
+		receives timer_timeout
+		sends timer_start, timer_cancel
+	}
+    
+}
+
+/**
+When developing your logic, you basically rely on this platform-indepent APIs (you can e.g. include the TimerClient thing in your things that require a timer)
+*/
+
+/**
+TODO: write a simple platform-independent thing that uses the timer e.g. a thing that prints hello every 5 seconds
+*/
+thing HelloTimer includes TimerClient {
+
+	readonly property period : Integer = 5000
+	
+	statechart behavior init Init {
+	
+		state Init {
+			on entry do
+				//TODO: start the timer every *period* milliseconds
+			end
+			
+			transition -> Init //this will loop on the Init state, and start a new timer
+			//event myPort?myMessage //TODO: make the transition to be triggered by a timer_timeout event received on the timer port
+			action do
+				//TODO: print hello
+			end
+		
+		}
+	
+	}
+
+}
+
+/**
+TODO: test your PIM program for the different platforms (C, Java and JavaScript)
+*/
