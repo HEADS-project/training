@@ -24,7 +24,7 @@ This tutorial is organized in a set of exercices:
 1. Basics: Learn the syntax to express streams
 2. Join: Learn how to join events
 3. Merge: Learn how to merge event
-4. Filters: Learn how to apply filters
+4. Operators: Learn how to apply filters, etc
 
 ## Contact us
 
