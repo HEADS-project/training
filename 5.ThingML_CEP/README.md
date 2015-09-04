@@ -5,7 +5,7 @@ HEADS ThingML modelling language: Complex Event Processing
 
 ### 0. Prerequisites
 
-**You should, at least, have done Tutorial #1**. In other words, you should be comfortable with using the HEADS IDE and the ThingML language in particular, and should know how to generate, compile and run Java and/or JavaScript code.
+**You should, at least, have done [Tutorial #1](https://github.com/HEADS-project/training/tree/master/1.ThingML_Basics)**. In other words, you should be comfortable with using the HEADS IDE and the ThingML language in particular, and should know how to generate, compile and run Java and/or JavaScript code.
 
 ### 1. Background
 
