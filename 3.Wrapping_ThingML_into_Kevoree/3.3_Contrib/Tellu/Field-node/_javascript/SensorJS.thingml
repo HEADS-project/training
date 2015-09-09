@@ -11,36 +11,192 @@ thing SensorJS includes Sensor
 
     function initialize() 
     /*do
-    	print "initialize"
+    	'console.log(\'initialize\');'
+    	&vals &'=[]'
     end*/
     do
         'var m = require(\'mraa\');
          console.log(\'MRAA Version: \' + m.getVersion());'
-         analogPin0 = 'new m.Aio(0);'
+         
+         analogPin0 = 'new m.I2c(1);'
+         & analogPin0 & '.address(0x0b);'
+         &vals&' = [];'
+         
+    end
+    
+    function calculateStart() : Integer
+    do
+    	'var time = new Date().getTime();
+    	var delay = Math.round('& setPeriod & ' - time %' & setPeriod &');
+    	console.log("Set start: "+ delay.toString());
+    	return  delay'
+    end
+    
+    function calculateDelay() : Integer
+    do
+    	'var time = new Date().getTime();
+    	var delay = Math.round(' & samplePeriod & ' - time %' & samplePeriod &');
+    	if('& samplePeriod &'/2 > delay ) {
+    		delay = delay + '& samplePeriod &';
+    	}
+    	console.log("Sample start: "+ delay.toString()) 
+    	return  delay'
     end
     
     function read() : Integer
-	 /*   do
+	/*do
 	    	print "read"
-	    	return 1
-	    end
-	    */
+	    	testval = testval + 1
+	    	return testval
+	 end*/
+	    
     do
-       'var analogValue = ' & analogPin0 & '.read();
-        console.log(\'Field Node reading: \' +analogValue); '
-        return 'analogValue'
+    	'var array = '&analogPin0&'.read(4);
+
+        //console.log(array[0]);
+        //console.log(array[1]);
+        //console.log(array[2]);
+        //console.log(array[3]);
+
+        console.log("pressure:");
+        var pressure = ((array[0]<<8 | array[1])&0x3FFF)-8192;
+        console.log(pressure);
+
+        var utmp = (array[2]<<3|array[3]>>5);
+
+        var tmp = (((utmp * 200.0) / 2047.0) - 50.0);
+
+        console.log("temperature:");
+        console.log(tmp);
+        console.log("----------------------");'
+      
+        return 'pressure'
     end
     
+    
+    /*
+ 	{"data" :
+                {"pressure":[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
+                "temperature":21.2,
+                "sample_set":14,
+                "sensor_id":"IsensU 1"
+                },
+	"status" :                           
+                {"fn_id":"FN 1",
+                "bt_rssi": -41,
+                "last_resync": 7
+                }
+	}
+	*/
+   
+    
+    function append(pressure : Integer) : String
+    do
+    	
+    	''&vals&'.push('&pressure&')
+    	if ('&vals&'.length == Math.round('& setPeriod/samplePeriod &')){
+    		var data = {}
+    	    data.pressure = '&vals&'
+    	    data.temperature = 0
+    	    var time = new Date().getTime();
+    	    data.sample_set = Math.floor((time/'&setPeriod&')%255 + 1);
+    	    data.sensor_id = "0x0b";
+    	    
+    	    var status = {};
+    	    status.fn_id = "node0";
+    	    status.bt_rssi = 0;
+    	    status.last_resync = 0;
+    	    var metering = {};
+    	    metering.data = data;
+    	    metering.status = status;
+    	    
+    	    var json = {};
+    	    json.topic="sensor/metering";
+    	    json.message=JSON.stringify(metering);
+    		var res = JSON.stringify(json);
+    		'&vals&' = []
+    		return res;
+    	} else {
+    		return "";
+    	}
+    	'
+    end
+    
+    function printSendPeriod()
+    do
+	    'var now = new Date().getTime();
+	    if ('& lastSend &' != 0){
+	    	var diff = now-'&lastSend&';
+	    	'&lastSend&'= now;
+	    	console.log("Diff send: "+ diff.toString());
+	    } else {
+			'&lastSend&'= now;
+		}'		
+	end
+    	
+	function printReadPeriod()
+    do
+	    'var now = new Date().getTime();
+	    if ('&lastRead&' != 0){
+	    	var diff = now-'&lastRead&';
+	    	'&lastRead&'= now;
+	    	console.log("Diff read: "+ diff.toString())
+	    } else {
+			'&lastRead&'= now;	
+		}'
+	end
+    
+    //property testval : Integer = 0
+    property lastSend : Integer = 0
+    property lastRead : Integer = 0
+    property setPeriod : Integer = 1800
+    property samplePeriod : Integer = 200
     property value : Integer = 0
+    property topicAndMSg : String
     property analogPin0 : Analog
+    property vals : Analog
     
     statechart SensorMachine init Idle {
 
 		state Idle {
 			on entry do 
 				initialize()
-				print "Sensor Ready"
-				timer!timer_start(delay)
+				print "Sensor Ready"				
+				timer!timer_start(calculateStart())
+			end
+			
+			transition READING -> Reading
+			event timer?timer_timeout
+			
+		}
+		state Reading {
+			on entry do 
+				print "Sensor Reading"
+				value = read()
+				topicAndMSg = append(value)
+				if (not (topicAndMSg == ""))
+				do
+					sensor_mqtt!readingJson(topicAndMSg)
+				end
+				timer!timer_start(calculateDelay())
+								
+			end
+			
+			internal event timer?timer_timeout
+			action do				
+				value = read()
+				printReadPeriod()
+				topicAndMSg = append(value)
+				if (not (topicAndMSg == ""))
+				do
+					sensor_mqtt!readingJson(topicAndMSg)
+					printSendPeriod()
+					timer!timer_start(calculateStart())
+				end
+				if (topicAndMSg == "")
+				do
+					timer!timer_start(calculateDelay())
+				end
 			end
 			
 			internal event sensor_service?read
@@ -56,16 +212,8 @@ thing SensorJS includes Sensor
 				timer!timer_start(delay)
 			end
 			
-			internal event timer?timer_timeout
-			action do				
-				value = read()
-				sensor_service!reading(value)
-				timer!timer_start(delay)
-			end
-			
 			internal event sensor_service?reading_cancel
 			action timer!timer_cancel()
-			
 		}
 	}
 }

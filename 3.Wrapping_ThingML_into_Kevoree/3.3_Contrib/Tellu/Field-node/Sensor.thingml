@@ -1,6 +1,12 @@
 import "SensorTimer.thingml"
 
 
+datatype String
+	@c_type "char *"
+	@c_byte_size "2"
+	@java_type "String"
+	@js_type "String";
+
 thing fragment SensorMsgs {
 	// Start the Timer
 	message start_periodic_reading(delay : Integer);
@@ -11,21 +17,28 @@ thing fragment SensorMsgs {
 	// Notification that the timer has expired
 	message reading(value : Long);
 	// Notification that sensor is online
+	message readingJson(value : String);
+	// Notification that sensor is online
 	message ready();
 }
 
 thing Sensor includes TimerMsgs, SensorMsgs {
 
-	property delay : Integer = 1000
+	property delay : Integer 
 
 	provided port sensor_service @public "true" {
 		sends reading, ready
 		receives start_periodic_reading, reading_cancel, read 
 	}
 	
+	required port sensor_mqtt {
+		sends readingJson 		
+	}
+	
+	
 	required port timer {
 		receives timer_timeout
-		sends timer_start, timer_cancel
+		sends timer_start, timer_start_interval, timer_cancel
 	}
 
 	

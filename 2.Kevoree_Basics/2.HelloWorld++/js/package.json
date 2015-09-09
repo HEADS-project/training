@@ -14,13 +14,18 @@
         "library",
         "comp"
     ],
-    "dependencies": {
-        "kevoree-entities": "^7.0.0"
+   "dependencies": {
+        "kevoree-entities": "^8.0.0",
+        "kevoree-node-javascript": "^5.0.0"
     },
     "devDependencies": {
         "grunt": "^0.4.1",
         "grunt-kevoree": "^5.0.0",
+        "grunt-browserify": "^3.0.0",
+        "grunt-contrib-uglify": "^0.4.0",
         "grunt-kevoree-genmodel" : "^2.0.0",
         "grunt-kevoree-registry" : "^2.0.0"
     }
+	
+	
 }

@@ -19,6 +19,8 @@ datatype Long
 thing fragment TimerMsgs {
 	// Start the Timer
 	message timer_start(delay : Integer);
+	// Start the Timer
+	message timer_start_interval(interval : Integer);
 	// Cancel the Timer
 	message timer_cancel();
 	// Notification that the timer has expired
@@ -30,6 +32,6 @@ thing fragment SensorTimer includes TimerMsgs
 	provided port timer @public "true"
     {
 		sends timer_timeout
-		receives timer_start, timer_cancel
+		receives timer_start, timer_start_interval, timer_cancel
 	}
 }

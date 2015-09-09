@@ -71,11 +71,11 @@ thing TimerJava includes Timer
  You can now run your updated main, and after 2 seconds, your code should be called
    
 */
-
+/**
 configuration Deployment0 {
     instance timer : TimerJava
 }
-
+*/
 
 /**
 
@@ -122,10 +122,10 @@ Eeach configuration will be wrapped as a separate Kevoree component.
 The dynamica adaptation capabilities now include the ability to manage the lifecycle
 of both components individually (e.g. the client can be changed dynamically).
 */
-/*configuration TimerJ {
+configuration TimerJ {
     instance timer : TimerJava    
 }
 
 configuration TimerClientJ {
     instance client : SimpleTimerClient    
-}*/
+}

@@ -58,9 +58,16 @@ thing TimerJS includes Timer
 
  */
 
-configuration Deployment0JS {
+/**configuration Deployment0JS {
     instance timer : TimerJS
+}*/
+
+/**configuration TestTimerJS {
+    instance timer : TimerJS
+    instance client : SimpleTimerClient
+    connector client.timer => timer.timer    
 }
+*/
 
 /**
 The ThingML to Kevoree/JS transformation is not implemented yet.

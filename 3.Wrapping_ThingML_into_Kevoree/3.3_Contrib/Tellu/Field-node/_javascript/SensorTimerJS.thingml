@@ -16,6 +16,11 @@ thing SensorTimerJS includes SensorTimer
         'this.timer = setTimeout(onTimeout,' & delay & ');'
     end
     
+    function startInterval(interval : Integer)
+    do
+        'this.timer = setInterval(onTimeout,' & interval & ');'
+    end
+    
     function onTimeout() 
     do
         timer!timer_timeout()
@@ -29,6 +34,13 @@ thing SensorTimerJS includes SensorTimer
             guard m.delay > 0
             action do
                 start(m.delay)
+            end
+            
+           internal startInterval
+            event m : timer?timer_start_interval
+            guard m.interval > 0
+            action do
+                startInterval(m.interval)
             end
             
           internal cancel

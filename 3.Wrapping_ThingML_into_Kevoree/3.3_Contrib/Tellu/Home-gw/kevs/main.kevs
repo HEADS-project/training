@@ -1,19 +1,58 @@
 //create server JavaScript node (node0)
 add node0 : JavascriptNode
-add node1 : JavascriptNode
-//create a default group to manage the node(s)
-add sync : WSGroup
-set sync.port/node0 = "9000"
-attach node0, node1 sync
-set sync.master = 'node0'
 
 //instantiate Kevoree/ThingML components
-add node0.HomeGW_0 : my.package.HomeGW
+add node0.HomeGW_0 : no.tellu.HomeGW
 
 add node0.broker : WSMsgBroker
 
 // define on which port the broker will start
 set node0.broker.port = '9050'
+
+//create a default group to manage the node(s)
+add sync : WSGroup
+set sync.port/node0 = "9000"
+attach node0 sync
+set sync.master = 'node0'
+
+set sync.onConnect = '
+add {nodeName}.FieldNode_0 : no.tellu.FieldNode
+
+add chan: WSChan
+set chan.port = "9050"
+set chan.host = "10.10.0.1"
+
+add chan1: WSChan
+set chan1.port = "9050"
+set chan1.host = "10.10.0.1"
+
+bind {nodeName}.FieldNode_0.FieldNode_sensor_sensor_service_out chan
+bind {nodeName}.FieldNode_0.FieldNode_sensor_sensor_service_in chan1
+
+add {nodeName}.submqtt : MQTTSubClient
+set {nodeName}.submqtt.topic = 'meg/smarttracker'
+set {nodeName}.submqtt.host = '10.10.0.1'
+set {nodeName}.submqtt.port = '1883'
+
+add {nodeName}.pubmqtt : MQTTPubClient
+set {nodeName}.pubmqtt.topic = 'test/smarttracker'
+set {nodeName}.pubmqtt.host = '10.10.0.1'
+set {nodeName}.pubmqtt.port = '1883'
+
+add pubchan : LocalChannel
+add subchan : LocalChannel
+
+bind {nodeName}.FieldNode_0.FieldNode_sensor_sensor_service_out pubchan
+bind {nodeName}.FieldNode_0.FieldNode_sensor_sensor_service_in subchan
+
+bind {nodeName}.pubmqtt.jsonPub pubchan
+bind {nodeName}.submqtt.onTopicAndMsg subchan
+
+'
+
+set sync.onDisconnect = '
+remove {nodeName}
+'
 
 add chan: WSChan
 set chan.port = "9050"
@@ -22,6 +61,25 @@ set chan.host = "localhost"
 add chan1: WSChan
 set chan1.port = "9050"
 set chan1.host = "localhost"
+
+add node0.submqtt : MQTTSubClient
+set node0.submqtt.topic = 'meg/smarttracker'
+set node0.submqtt.host = 'ri.smarttracker.no'
+set node0.submqtt.port = '1883'
+
+add node0.pubmqtt : MQTTPubClient
+set node0.pubmqtt.topic = 'test/smarttracker'
+set node0.pubmqtt.host = 'ri.smarttracker.no'
+set node0.pubmqtt.port = '1883'
+
+add pubchan : LocalChannel
+add subchan : LocalChannel
+
+bind node0.HomeGW_0.HomeGW_server_smarttracker_out pubchan
+bind node0.HomeGW_0.HomeGW_server_smarttracker_in subchan
+
+bind node0.pubmqtt.pub pubchan
+bind node0.submqtt.onMsg subchan
 
 bind node0.HomeGW_0.HomeGW_server_sensor_service_out chan1
 bind node0.HomeGW_0.HomeGW_server_sensor_service_in chan
