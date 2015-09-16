@@ -1,0 +1,58 @@
+/*
+ * File: HelloCPU.thingml
+ * 
+ * Description: This a simple test, its purpose is to check the connection between arduino yun's two chips is working
+ * 				It also shows how to use external connector, and traces with posix systems.
+ * 				It should be used with MCUButtonAndLEDController deployed on the Yun's MCU
+ * 
+ * TODO: Compile this ThingML into posix compatible code, and cross compile it with the arduino-yun-cross-compiler
+ * 		 docker container, then upload the executable on the Yun (CPU side) and run it.
+*/
+
+
+import "Msgs.thingml"
+import "../lib/_Datatypes.thingml"
+
+configuration CPUForwarderCfg
+@serial_trace_level "3"
+{
+	instance bc : ButtonController
+	
+	connector bc.LEDport over Serial1
+	@serial_trace_level "3"
+	@serial_path_to_device "/dev/ttyATH0"
+	@serial_baudrate "115200"
+}
+
+thing CPUForwarder includes Msgs
+@serial_trace_level "3"
+{
+	
+	required port LEDport 
+	@serial_trace_level "3"
+	{
+		receives LEDON, LEDOFF, LEDControllerReady
+		sends LEDON, LEDOFF, LEDControllerReady
+	}
+	
+	statechart CPUForwarder init Init {
+		state Init {
+			on entry do
+				'printf("[CPU] Init\n");'
+			end
+			transition -> Running
+		}
+		
+		state Running {
+			internal event LEDport?LEDON action do
+				LEDport!LEDON()
+				'printf("[CPU] LEDON\n");'
+			end
+			internal event LEDport?LEDOFF action do
+				LEDport!LEDOFF()
+				'printf("[CPU] LEDOFF\n");'
+			end
+		}
+	}
+}
+

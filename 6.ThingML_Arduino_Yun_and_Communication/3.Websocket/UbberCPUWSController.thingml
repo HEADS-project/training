@@ -1,0 +1,87 @@
+
+import "../lib/_Datatypes.thingml"
+
+configuration UbberButtonControllerCfg
+@trace_level "1"
+@c_compiler "/openwrt-yun/staging_dir/toolchain-mips_r2_gcc-4.6-linaro_uClibc-0.9.33.2/bin/mips-openwrt-linux-gcc"
+@add_c_libraries "websockets"
+@add_c_libraries "ssl"
+@add_c_libraries "crypto"
+@add_c_libraries "z"
+@add_c_libraries_rep "/openwrt-yun/staging_dir/target-mips_r2_uClibc-0.9.33.2/lib"
+@add_c_libraries_rep "/openwrt-yun/staging_dir/target-mips_r2_uClibc-0.9.33.2/usr/lib"
+@add_c_flags "-I/openwrt-yun/staging_dir/target-mips_r2_uClibc-0.9.33.2/usr/include"
+@add_c_flags "-I/openwrt-yun/staging_dir/target-mips_r2_uClibc-0.9.33.2/include"
+{
+	instance bc : ButtonController
+	
+	connector bc.LEDport over Serial1
+	@serial_path_to_device "/dev/ttyATH0"
+	@serial_baudrate "115200"
+	
+	connector bc.WS over Websocket
+	@trace_level "3"
+	@websocket_enable_unicast "true"
+}
+
+thing fragment Msgs {
+	message LEDControllerReady() @code "65";
+	message LEDON() @code "66";
+	message LEDOFF() @code "67";
+}
+
+thing fragment WSMsgs {
+	message LEDisON(ClientID : UInt16) @code "101" @websocket_client_id "ClientID";
+	message LEDisOFF(ClientID : UInt16) @code "102" @websocket_client_id "ClientID";
+	message newClient(ClientID : UInt16) @websocket_new_client "";
+	message clientDC(ClientID : UInt16) @websocket_client_disconnected "";
+}
+
+thing ButtonController includes Msgs, WSMsgs
+{
+	
+	required port LEDport {
+		receives LEDON, LEDOFF, LEDControllerReady
+		sends LEDON, LEDOFF, LEDControllerReady
+	}
+	
+	required port WS {
+		receives LEDON, LEDOFF, newClient, clientDC
+		sends LEDisON, LEDisOFF
+	}
+	
+	statechart LEDControllerChart init Init {
+		state Init {
+			on entry do
+				'printf("[CPU] Init\n");'
+			end
+			transition -> Running
+		}
+		
+		state Running {
+			internal event LEDport?LEDON action do
+				LEDport!LEDON()
+				WS!LEDisON(-1)
+				'printf("[CPU] LEDON\n");'
+			end
+			internal event LEDport?LEDOFF action do
+				LEDport!LEDOFF()
+				WS!LEDisOFF(-1)
+				'printf("[CPU] LEDOFF\n");'
+			end
+			internal event WS?LEDON action do
+				LEDport!LEDON()
+				'printf("[CPU] WS LEDON\n");'
+			end
+			internal event WS?LEDOFF action do
+				LEDport!LEDOFF()
+				'printf("[CPU] WS LEDOFF\n");'
+			end
+			internal event e : WS?newClient action do
+				WS!LEDisOFF(e.ClientID)
+				'printf("[CPU] new Client: %i\n", '& e.ClientID &');'
+			end
+		}
+	}
+}
+

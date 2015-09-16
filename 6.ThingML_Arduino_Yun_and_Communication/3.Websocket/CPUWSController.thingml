@@ -1,0 +1,60 @@
+import "Msgs.thingml"
+import "../lib/_Datatypes.thingml"
+
+configuration ButtonControllerCfg
+{
+	instance bc : ButtonController
+	
+	connector bc.LEDport over Serial1
+	@serial_trace_level "3"
+	@serial_path_to_device "/dev/ttyATH0"
+	@serial_baudrate "115200"
+	
+	connector bc.WS over Websocket
+	@websocket_trace_level "3"
+}
+
+thing ButtonController includes Msgs
+{
+	
+	required port LEDport {
+		receives LEDON, LEDOFF, LEDControllerReady
+		sends LEDON, LEDOFF, LEDControllerReady
+	}
+	
+	required port WS {
+		receives LEDON, LEDOFF, LEDControllerReady
+		sends LEDON, LEDOFF, LEDControllerReady
+	}
+	
+	statechart LEDControllerChart init Init {
+		state Init {
+			on entry do
+				'printf("[CPU] Init\n");'
+			end
+			transition -> Running
+		}
+		
+		state Running {
+			internal event LEDport?LEDON action do
+				LEDport!LEDON()
+				WS!LEDON()
+				'printf("[CPU] LEDON\n");'
+			end
+			internal event LEDport?LEDOFF action do
+				LEDport!LEDOFF()
+				WS!LEDOFF()
+				'printf("[CPU] LEDOFF\n");'
+			end
+			internal event WS?LEDON action do
+				LEDport!LEDON()
+				'printf("[CPU] WS LEDON\n");'
+			end
+			internal event WS?LEDOFF action do
+				LEDport!LEDOFF()
+				'printf("[CPU] WS LEDOFF\n");'
+			end
+		}
+	}
+}
+

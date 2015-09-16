@@ -1,0 +1,83 @@
+
+import "../lib/_Datatypes.thingml"
+
+configuration MQTTButtonControllerCfg
+@trace_level "3"
+@c_compiler "/openwrt-yun/staging_dir/toolchain-mips_r2_gcc-4.6-linaro_uClibc-0.9.33.2/bin/mips-openwrt-linux-gcc"
+@add_c_libraries "mosquitto"
+@add_c_libraries_rep "/openwrt-yun/staging_dir/target-mips_r2_uClibc-0.9.33.2/lib"
+@add_c_libraries_rep "/openwrt-yun/staging_dir/target-mips_r2_uClibc-0.9.33.2/usr/lib"
+@add_c_flags "-I/openwrt-yun/staging_dir/target-mips_r2_uClibc-0.9.33.2/usr/include"
+@add_c_flags "-I/openwrt-yun/staging_dir/target-mips_r2_uClibc-0.9.33.2/include"
+{
+	instance bc : ButtonController
+	
+	connector bc.LEDport over Serial1
+	@serial_path_to_device "/dev/ttyATH0"
+	@serial_baudrate "115200"
+	@trace_level "3"
+	
+	connector bc.mqttport over MQTT
+	@trace_level "3"
+	@mqtt_broker_address "192.168.1.127"
+	@mqtt_topic "ThingML"
+	@mqtt_topic "ThingML2"
+	@mqtt_multi_topic_publish_selection "true"
+}
+
+thing fragment Msgs {
+	message LEDControllerReady() @code "65";
+	message LEDON() @code "66";
+	message LEDOFF() @code "67";
+}
+
+thing fragment WSMsgs {
+	message LEDisON(TopicID : UInt16) @code "101" @mqtt_topic_id "TopicID";
+	message LEDisOFF(TopicID : UInt16) @code "102" @mqtt_topic_id "TopicID";
+}
+
+thing ButtonController includes Msgs, WSMsgs
+@trace_level "3"
+{
+	
+	required port LEDport {
+		receives LEDON, LEDOFF, LEDControllerReady
+		sends LEDON, LEDOFF, LEDControllerReady
+	}
+	
+	required port mqttport {
+		receives LEDON, LEDOFF
+		sends LEDisON, LEDisOFF
+	}
+	
+	statechart LEDControllerChart init Init {
+		state Init {
+			on entry do
+				'printf("[CPU] Init\n");'
+			end
+			transition -> Running
+		}
+		
+		state Running {
+			internal event LEDport?LEDON action do
+				LEDport!LEDON()
+				mqttport!LEDisON(0)
+				'printf("[CPU] LEDON\n");'
+			end
+			internal event LEDport?LEDOFF action do
+				LEDport!LEDOFF()
+				mqttport!LEDisOFF(-1)
+				'printf("[CPU] LEDOFF\n");'
+			end
+			internal event mqttport?LEDON action do
+				LEDport!LEDON()
+				'printf("[CPU] WS LEDON\n");'
+			end
+			internal event mqttport?LEDOFF action do
+				LEDport!LEDOFF()
+				'printf("[CPU] WS LEDOFF\n");'
+			end
+		}
+	}
+}
+
