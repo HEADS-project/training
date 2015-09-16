@@ -44,4 +44,4 @@ alias ayxc="/path/to/ayxc"
 ayxc make
 #Upload HelloCPUCfg on your Yun
 #Run it
-``
+```
