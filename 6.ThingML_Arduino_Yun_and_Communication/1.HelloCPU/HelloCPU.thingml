@@ -8,7 +8,8 @@
 */
 
 configuration HelloCPUCfg
-//Cross compiler command, the path correspond to the internal organisation of the arduino-yun-cross-compiler docker container. No need to change it unless you want to compile it for another platform.
+//Cross compiler command, the path correspond to the internal organisation of the arduino-yun-cross-compiler docker
+//container. No need to change it unless you want to compile it for another platform.
 @c_compiler "/openwrt-yun/staging_dir/toolchain-mips_r2_gcc-4.6-linaro_uClibc-0.9.33.2/bin/mips-openwrt-linux-gcc"
 {
 	instance HelloInstance: HelloThing
