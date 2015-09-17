@@ -2,7 +2,6 @@
 
 This section shows an example of Websocket communication, which allow to turn on and off the LED from your computer.
 
-
 ![HW1](../img/Yun_Tuto_3.png)
 
 ## Run the example
