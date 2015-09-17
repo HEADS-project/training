@@ -1,3 +1,16 @@
+/*
+ * File: MQTT_Subscriver.thingml
+ * 
+ * Description: This application allow remote control of the LED by MQTT. 
+ * 				It listen to the topics ThingML and ThingML2 and switchs on and off the LED 
+ * 				when LEDON/LEDOFF is received
+ * 				It also publish when the LED is switched off on both topics, and when it's switched on
+ * 				only on ThingML
+ * 
+ *
+ * TODO: Compile this ThingML into posix compatible code, and cross compile it with the arduino-yun-cross-compiler
+ * 		 docker container, then upload the executable on the Yun (CPU side) and run it.
+*/
 
 import "../lib/_Datatypes.thingml"
 
@@ -26,7 +39,6 @@ configuration MQTTButtonControllerCfg
 }
 
 thing fragment Msgs {
-	message LEDControllerReady() @code "65";
 	message LEDON() @code "66";
 	message LEDOFF() @code "67";
 }

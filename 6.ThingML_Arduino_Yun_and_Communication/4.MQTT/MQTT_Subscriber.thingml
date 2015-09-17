@@ -1,0 +1,78 @@
+/*
+ * File: MQTT_Subscriber.thingml
+ * 
+ * Description: This application allow remote control of the LED by MQTT. 
+ * 				It listen to the topic ThingML and switchs on and off the LED when LEDON/LEDOFF is received
+ * 
+ *
+ * TODO: Compile this ThingML into posix compatible code, and cross compile it with the arduino-yun-cross-compiler
+ * 		 docker container, then upload the executable on the Yun (CPU side) and run it.
+*/
+
+import "../lib/_Datatypes.thingml"
+
+configuration MQTTSubscriberCfg
+@c_compiler "/openwrt-yun/staging_dir/toolchain-mips_r2_gcc-4.6-linaro_uClibc-0.9.33.2/bin/mips-openwrt-linux-gcc"
+@add_c_libraries "mosquitto"
+@add_c_libraries_rep "/openwrt-yun/staging_dir/target-mips_r2_uClibc-0.9.33.2/lib"
+@add_c_libraries_rep "/openwrt-yun/staging_dir/target-mips_r2_uClibc-0.9.33.2/usr/lib"
+@add_c_flags "-I/openwrt-yun/staging_dir/target-mips_r2_uClibc-0.9.33.2/usr/include"
+@add_c_flags "-I/openwrt-yun/staging_dir/target-mips_r2_uClibc-0.9.33.2/include"
+{
+	instance bc : ButtonController
+	
+	connector bc.LEDport over Serial1
+	@serial_path_to_device "/dev/ttyATH0"
+	@serial_baudrate "115200"
+	
+	connector bc.mqttport over MQTT
+	@mqtt_broker_address "192.168.1.127"
+	@mqtt_topic "ThingML"
+}
+
+thing fragment Msgs {
+	message LEDON() @code "66";
+	message LEDOFF() @code "67";
+}
+
+thing ButtonController includes Msgs
+{
+	
+	required port LEDport {
+		receives LEDON, LEDOFF
+		sends LEDON, LEDOFF
+	}
+	
+	required port mqttport {
+		receives LEDON, LEDOFF
+	}
+	
+	statechart LEDControllerChart init Init {
+		state Init {
+			on entry do
+				'printf("[CPU] Init\n");'
+			end
+			transition -> Running
+		}
+		
+		state Running {
+			internal event LEDport?LEDON action do
+				LEDport!LEDON()
+				'printf("[CPU] LEDON\n");'
+			end
+			internal event LEDport?LEDOFF action do
+				LEDport!LEDOFF()
+				'printf("[CPU] LEDOFF\n");'
+			end
+			internal event mqttport?LEDON action do
+				LEDport!LEDON()
+				'printf("[CPU] MQTT LEDON\n");'
+			end
+			internal event mqttport?LEDOFF action do
+				LEDport!LEDOFF()
+				'printf("[CPU] MQTT LEDOFF\n");'
+			end
+		}
+	}
+}
+

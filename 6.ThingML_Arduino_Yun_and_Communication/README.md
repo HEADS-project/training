@@ -13,7 +13,7 @@ This tutorial has been written for person working on a linux machine. It hasn't 
 
 This tutorial will lead you through the learning of external communication generation with ThingML on Arduino Yùn.
 
-![HW1](../img/Yun_Tuto_0.png)
+![HW1](img/Yun_Tuto_0.png)
 
 * An Arduino Yùn Board
 * A LED

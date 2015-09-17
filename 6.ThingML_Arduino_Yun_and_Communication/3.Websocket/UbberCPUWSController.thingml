@@ -1,3 +1,16 @@
+/*
+ * File: UbberCPUWSController.thingml
+ * 
+ * Description: This application allow remote control of the LED by several client, 
+ * 				and notify them of the LED status upon connection. 
+ * 				It demostrate the use of both unicast and broadcast with websocket.
+ * 
+ * Debug: In this example trace level is at its maximum 
+ *
+ * TODO: Compile this ThingML into posix compatible code, and cross compile it with the arduino-yun-cross-compiler
+ * 		 docker container, then upload the executable on the Yun (CPU side) and run it.
+ * 		You can modify the trace level at various place in order to find out what each trace exactly generate.
+*/
 
 import "../lib/_Datatypes.thingml"
 
