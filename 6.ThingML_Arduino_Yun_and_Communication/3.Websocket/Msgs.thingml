@@ -1,6 +1,5 @@
 
 thing fragment Msgs {
-	message LEDControllerReady() @code "65";
 	message LEDON() @code "66";
 	message LEDOFF() @code "67";
 }

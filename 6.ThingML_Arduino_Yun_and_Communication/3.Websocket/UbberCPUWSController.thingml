@@ -25,7 +25,6 @@ configuration UbberButtonControllerCfg
 }
 
 thing fragment Msgs {
-	message LEDControllerReady() @code "65";
 	message LEDON() @code "66";
 	message LEDOFF() @code "67";
 }
@@ -39,10 +38,10 @@ thing fragment WSMsgs {
 
 thing ButtonController includes Msgs, WSMsgs
 {
-	
+	property LED : Boolean = false
 	required port LEDport {
-		receives LEDON, LEDOFF, LEDControllerReady
-		sends LEDON, LEDOFF, LEDControllerReady
+		receives LEDON, LEDOFF
+		sends LEDON, LEDOFF
 	}
 	
 	required port WS {
@@ -60,25 +59,34 @@ thing ButtonController includes Msgs, WSMsgs
 		
 		state Running {
 			internal event LEDport?LEDON action do
+				LED = true
 				LEDport!LEDON()
 				WS!LEDisON(-1)
 				'printf("[CPU] LEDON\n");'
 			end
 			internal event LEDport?LEDOFF action do
+				LED = false
 				LEDport!LEDOFF()
 				WS!LEDisOFF(-1)
 				'printf("[CPU] LEDOFF\n");'
 			end
 			internal event WS?LEDON action do
+				LED = true
 				LEDport!LEDON()
 				'printf("[CPU] WS LEDON\n");'
 			end
 			internal event WS?LEDOFF action do
+				LED = false
 				LEDport!LEDOFF()
 				'printf("[CPU] WS LEDOFF\n");'
 			end
 			internal event e : WS?newClient action do
-				WS!LEDisOFF(e.ClientID)
+				if(LED) do
+					WS!LEDisON(e.ClientID)
+				end
+				if(not(LED)) do
+					WS!LEDisOFF(e.ClientID)
+				end
 				'printf("[CPU] new Client: %i\n", '& e.ClientID &');'
 			end
 		}

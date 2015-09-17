@@ -2,7 +2,7 @@
 
 ## Installing libraries on the Yùn
 
-- #Go to the 1.HelloCPU folder
+- Go to the 1.HelloCPU folder
 
 - Copy the installation files on your Yùn
 ```
@@ -31,14 +31,19 @@ Indeed, when the Yun's CPU reboot there is a moment where it ask to press any ke
 
 
 ## Installing Arduino Yun Cross Compiler
+- Install the cross compiler
 ```
 docker run lyadis/arduino-yun-cross-compiler > ayxc
 chmod +x ayxc
 alias ayxc="/path/to/ayxc"
 ```
-
+More documentation about this docker image is available on [Docker Hub](https://hub.docker.com/r/lyadis/arduino-yun-cross-compiler/)
 
 ## Run an example
+The first example provided only aims at testing the toolchain ThingML compiler > cross compiler > deployment on the Yun's CPU.
+
+![HW1](../img/Yun_Tuto_1.png)
+
 - Compile the HelloCPU.thingml file
 - Got to the folder generated
 ```

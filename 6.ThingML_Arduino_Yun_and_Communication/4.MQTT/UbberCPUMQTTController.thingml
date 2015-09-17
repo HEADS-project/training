@@ -41,8 +41,8 @@ thing ButtonController includes Msgs, WSMsgs
 {
 	
 	required port LEDport {
-		receives LEDON, LEDOFF, LEDControllerReady
-		sends LEDON, LEDOFF, LEDControllerReady
+		receives LEDON, LEDOFF
+		sends LEDON, LEDOFF
 	}
 	
 	required port mqttport {
