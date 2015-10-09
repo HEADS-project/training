@@ -15,7 +15,7 @@
         "comp"
     ],
     "dependencies": {
-        "kevoree-entities": "^7.0.0"
+        "kevoree-entities": "^8.0.0"
     },
     "devDependencies": {
         "grunt": "^0.4.1",

@@ -1,5 +1,7 @@
 import "SensorJS.thingml"
 import "SensorTimerJS.thingml"
+//import "Filter.thingml"
+import "DecoderFilter.thingml"
 
 thing FieldNodeJS {
 }
@@ -7,6 +9,17 @@ thing FieldNodeJS {
 
 configuration FieldNode {
     instance timer : SensorTimerJS
-    instance sensor : SensorJS
-    connector sensor.timer => timer.timer  
+    instance sensor : SensorJS @debug "true"
+    instance pfilter : DecoderFilter    
+    //instance pfilter : Filter  
+    connector sensor.timer => timer.timer
+    connector pfilter.decoder => sensor.decoder 
+    connector sensor.filtered => pfilter.filtered @debug "true"
+    //connector pfilter.output => pfilter.outputRecv
+    
+    /*instance ble : BLE
+	instance decoder : Decoder @debug "true"
+	connector ble.BLEInternalRec => ble.BLEInternal
+	connector decoder.BLE => ble.BLE
+	connector pfilter.decoder => decoder.decoder*/ 
 }

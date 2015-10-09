@@ -1,0 +1,45 @@
+import "Timer.thingml"
+import "sharedMsgs.thingml"
+
+thing HeatingSensor includes TimerClient, heatingMsgs{
+    provided port sendPort {
+        sends cepHeatingStatus, heatingIsOn    
+    }
+    
+    required port rcvPort {
+        receives heatingIsOn, cepHeatingStatus     
+    }
+    
+    operator filterHeatingValue(msg : heatingIsOn) : Boolean do
+        return msg.value //a message is sent only if the value is true
+    end
+    
+    stream heatingSensor do
+        from heating : [rcvPort?heatingIsOn]::filter(filterHeatingValue(heating))
+        select v : heating.value
+        action sendPort!cepHeatingStatus(v)
+    end
+    
+    statechart behavior init Init {
+	    readonly property period : Integer = 2000
+
+		state Init {
+			on entry do
+                timer!timer_start(period)
+			end
+
+            internal
+            event e : rcvPort?cepHeatingStatus
+            action print "Is heating on? " + e.value + "\n"
+			
+			transition -> Init
+            event timer?timer_timeout
+			action do
+				print "HeatingSensor: send a value\n"
+                sendPort!heatingIsOn('true')
+			end
+		
+		}
+	
+	}
+}

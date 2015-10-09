@@ -1,27 +1,48 @@
 import "../Sensor.thingml"
+import "Filter.thingml"
 
 datatype Analog
     @js_type "var";
 
-thing SensorJS includes Sensor
+thing SensorJS includes Sensor, Filter
 @pim "Sensor"
 @platform "javascript"
 @javascript "node browser"
 {
 
     function initialize() 
-    /*do
+    if (test==true)
+    do
     	'console.log(\'initialize\');'
     	&vals &'=[]'
-    end*/
+    end 
+    else
     do
-        'var m = require(\'mraa\');
-         console.log(\'MRAA Version: \' + m.getVersion());'
+         ''& mraa &' =  require(\'mraa\');
+         console.log(\'MRAA Version: \' + '& mraa &'.getVersion());'
          
-         analogPin0 = 'new m.I2c(1);'
+         analogPin0 = 'new '& mraa &'.I2c(1);'
          & analogPin0 & '.address(0x0b);'
          &vals&' = [];'
          
+    end
+    
+    function initializeTemp()
+    if (test==true) 
+    do
+    	'console.log(\'initialize\');'
+    end
+    else
+    do
+       
+         ''& temp & '= new '& mraa &'.I2c(1);'
+         & temp &'.address(0x48);'
+         & temp & '.writeReg(0x03, 0x40);
+         var data =  '& temp & '.readReg(0x0b);
+         console.log(\'DT7410 ID reg = \' + data);'
+         & temp & '.writeReg(0x03, 0x40);
+         var config =  '& temp & '.readReg(0x03);
+         console.log(\'DT7410 ID config = \' + config);'
     end
     
     function calculateStart() : Integer
@@ -44,12 +65,18 @@ thing SensorJS includes Sensor
     end
     
     function read() : Integer
-	/*do
+	if (test==true)
+	do
 	    	print "read"
-	    	testval = testval + 1
-	    	return testval
-	 end*/
-	    
+	    	if(testval < 10) do
+	    		testval = testval + 1 
+	    		return 0
+	    	end else do
+	    		return 1
+	    	end
+	    	
+	end
+	else   
     do
     	'var array = '&analogPin0&'.read(4);
 
@@ -73,6 +100,29 @@ thing SensorJS includes Sensor
         return 'pressure'
     end
     
+    function readTemp() : Integer
+    if (test==true)
+    do
+    	if(testval < 10) do
+	    		return 0
+	    	end else do
+	    		return 1
+	    	end
+    end
+    else
+    do
+	   // Read temperature register
+	   'var data =  []
+	   data[0] = '& temp & '.readReg(0x00);
+	   data[1] = '& temp & '.readReg(0x01);
+	   var temperature = ((data[0]<<5|data[1]>>3)&0x1FFF)/16
+	   
+	   console.log("temperature:");
+	   console.log(temperature);
+	   return temperature'
+   
+    end
+    
     
     /*
  	{"data" :
@@ -90,14 +140,14 @@ thing SensorJS includes Sensor
 	*/
    
     
-    function append(pressure : Integer) : String
+    function append(pressure : Integer, temperature : Integer) : String
     do
     	
     	''&vals&'.push('&pressure&')
     	if ('&vals&'.length == Math.round('& setPeriod/samplePeriod &')){
     		var data = {}
     	    data.pressure = '&vals&'
-    	    data.temperature = 0
+    	    data.temperature = '&temperature&'
     	    var time = new Date().getTime();
     	    data.sample_set = Math.floor((time/'&setPeriod&')%255 + 1);
     	    data.sensor_id = "0x0b";
@@ -110,16 +160,26 @@ thing SensorJS includes Sensor
     	    metering.data = data;
     	    metering.status = status;
     	    
-    	    var json = {};
-    	    json.topic="sensor/metering";
-    	    json.message=JSON.stringify(metering);
-    		var res = JSON.stringify(json);
+    	    //var json = {};
+    	    //json.topic="sensor/metering";
+    	    //json.message=JSON.stringify(metering);
+    		var res = JSON.stringify(metering);
     		'&vals&' = []
     		return res;
     	} else {
     		return "";
     	}
     	'
+    end
+    
+    function addTopic(str : String) : String
+    do
+    	'var metering = JSON.parse('&str&');
+		var json = {};
+	    json.topic="sensor/metering";
+	    json.message=JSON.stringify(metering);
+		var res = JSON.stringify(json);
+		return res'
     end
     
     function printSendPeriod()
@@ -146,14 +206,18 @@ thing SensorJS includes Sensor
 		}'
 	end
     
-    //property testval : Integer = 0
+    property test : Boolean = true
+    property testval : Integer = 0
     property lastSend : Integer = 0
     property lastRead : Integer = 0
     property setPeriod : Integer = 1800
     property samplePeriod : Integer = 200
     property value : Integer = 0
-    property topicAndMSg : String
+    property tempValue : Integer = 0
+    property msg : String
     property analogPin0 : Analog
+    property temp : Analog
+    property mraa : Analog
     property vals : Analog
     
     statechart SensorMachine init Idle {
@@ -161,7 +225,9 @@ thing SensorJS includes Sensor
 		state Idle {
 			on entry do 
 				initialize()
-				print "Sensor Ready"				
+				print "Pressure Sensor Ready"	
+				initializeTemp()
+				print "Temperature Sensor Ready"				
 				timer!timer_start(calculateStart())
 			end
 			
@@ -173,10 +239,12 @@ thing SensorJS includes Sensor
 			on entry do 
 				print "Sensor Reading"
 				value = read()
-				topicAndMSg = append(value)
-				if (not (topicAndMSg == ""))
+				tempValue = readTemp()
+				msg = append(value, tempValue)
+				if (not (msg == ""))
 				do
-					sensor_mqtt!readingJson(topicAndMSg)
+					decoder!decoded(msg)
+					//sensor_mqtt!readingJson(addTopic(msg))
 				end
 				timer!timer_start(calculateDelay())
 								
@@ -185,18 +253,27 @@ thing SensorJS includes Sensor
 			internal event timer?timer_timeout
 			action do				
 				value = read()
+				tempValue = readTemp()
 				printReadPeriod()
-				topicAndMSg = append(value)
-				if (not (topicAndMSg == ""))
+				msg = append(value, tempValue)
+				if (not (msg == ""))
 				do
-					sensor_mqtt!readingJson(topicAndMSg)
+					decoder!decoded(msg)
+					//sensor_mqtt!readingJson(addTopic(msg))
+					
 					printSendPeriod()
 					timer!timer_start(calculateStart())
 				end
-				if (topicAndMSg == "")
+				else
 				do
 					timer!timer_start(calculateDelay())
 				end
+			end
+			
+			internal event e : filtered?decoded
+			action do
+				print("sensorjs: "+e.msg)
+				sensor_mqtt!readingJson(addTopic(e.msg))
 			end
 			
 			internal event sensor_service?read

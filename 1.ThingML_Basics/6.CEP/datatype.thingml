@@ -1,0 +1,9 @@
+datatype Integer
+    @js_type "int"
+    @java_type "int"
+    @java_primitive "true";
+    
+datatype Boolean
+    @js_type "bool"
+    @java_type "boolean"
+    @java_primitive "true";

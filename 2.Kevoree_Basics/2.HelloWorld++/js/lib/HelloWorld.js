@@ -7,7 +7,7 @@ var AbstractComponent = require('kevoree-entities').AbstractComponent;
 var HelloWorld = AbstractComponent.extend({
     toString: 'HelloWorld',
 
-    
+
     /**
      * Dictionary attribute named "greetMessage"
      */
@@ -21,11 +21,9 @@ var HelloWorld = AbstractComponent.extend({
      * @param {Function} done   call this when you are done starting your component
      */
     start: function (done) {
-        this._super(function () {
-            var greetMessage = this.dictionary.getValue('greetMessage');
-            this.log.info(this.toString(), greetMessage);
-            done();
-        }.bind(this));
+      var greetMessage = this.dictionary.getValue('greetMessage');
+      this.log.info(this.toString(), greetMessage);
+      done();
     },
 
     /**
@@ -33,10 +31,8 @@ var HelloWorld = AbstractComponent.extend({
      * @param {Function} done   call this when you are done stopping your component
      */
     stop: function (done) {
-        this._super(function () {
-            this.log.info(this.toString(), 'Bye, world!');
-            done();
-        }.bind(this));
+      this.log.info(this.toString(), 'Bye, world!');
+      done();
     }
 });
 

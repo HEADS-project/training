@@ -1,0 +1,27 @@
+import "Timer.thingml"
+import "sharedMsgs.thingml"
+
+thing OutdoorTempSensor includes TimerClient, outdoorTempMsgs{
+    provided port sendPort {
+        sends outdoorTemp    
+    }
+    
+    statechart behavior init Init {
+	    readonly property period : Integer = 2000
+
+		state Init {
+			on entry do
+                timer!timer_start(period)
+			end
+			
+			transition -> Init
+            event timer?timer_timeout
+			action do
+				print "OutdoorTempSensor: send a value\n"
+                sendPort!outdoorTemp(5)
+			end
+		
+		}
+	
+	}
+}

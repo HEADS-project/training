@@ -1,0 +1,129 @@
+import "Decoder.thingml"
+import "../Filter.thingml"
+import "../datatypes.thingml"
+
+
+
+thing Filter includes DecoderMsg{
+
+    message output(value : Integer);
+	message tmp(msg: String, value: Integer);
+	message tmp2(msg: Map);
+
+
+
+	function filterComp(msg : Map[], outp : Integer[]) : Map do
+	
+	//ekstraher temperatur for hver av msg
+	//gjør kalkulasjonen 
+	//returner kompenserte verdier og kompensasjons verdi i en kombinert map
+	
+	//y = ay-1 + by-2 + cx-1 + dx-2
+	
+		/*
+ 	{"data" :
+                {"pressure":[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
+                "temperature":21.2,
+                "sample_set":14,
+                "sensor_id":"IsensU 1"
+                },
+	"status" :                           
+                {"fn_id":"FN 1",
+                "bt_rssi": -41,
+                "last_resync": 7
+                }
+	}
+	*/
+	
+	'
+	
+	var a = 1.9982;
+	var b = -0.99820017;
+	var c = 0.033;
+	var d = -0.033;
+	var coeff = 1;
+	
+	
+	var temperature = []
+	for (var i = 0; i < '&msg&'.length; i++) {
+		 var json = JSON.parse('&msg&'[i]);
+		 temperature[i] = json.data.temperature;
+	}
+	 
+	var comp = coeff* (a*'&outp&'[1] + b*'&outp&'[2] + c*temperature[1] + d*temperature[2]);
+	
+	var json = JSON.parse('&msg&'[0]); 
+	var pressure = json.data.pressure; 
+	
+	for (var i = 0; i < pressure.length; i++) {
+ 	 	pressure[i] = pressure[i]-comp;
+ 	}
+	
+	var res = {}
+	res.reading = json;
+	res.comp = comp;
+	
+	return res;
+	'
+	end
+	
+	
+	function getJson(msg: Map) : String 
+	do
+		'return JSON.stringify('& msg & '.reading)'
+	end
+	
+	function getComp(msg: Map) : Integer 
+	do
+		'return '& msg & '.comp'
+	end
+	
+	
+	stream compansation @TTL "7000" do 
+		from e : [e1: decoder?decoded & e2 : outputRecv?output -> tmp(e1.msg, e2.value)]::lengthWindow(3,1)
+		select compensated : filterComp(e.msg[], e.value[])
+		action output!tmp2(compensated)
+	
+	end
+	
+	statechart Filter init Active @debug "false" {
+	
+		state Active {
+			on entry do
+				print "Filter Ready"
+				output!output(0)				
+			end
+			
+			internal event e: outputRecv?tmp2
+			action do
+				output!output(getComp(e.msg))
+				filtered!decoded(getJson(e.msg))
+				print("----------------------")
+				//print(getJson(e.msg))
+				print("----------------------")
+			end
+		}
+	}
+	
+	
+	required port output {
+		sends output, tmp2
+	}
+	
+	provided port outputRecv{
+		receives output,tmp2
+	}
+	
+	
+	required port decoder {
+		receives decoded
+	}
+	
+	provided port filtered {
+		sends decoded
+	}
+
+}
+
+
+

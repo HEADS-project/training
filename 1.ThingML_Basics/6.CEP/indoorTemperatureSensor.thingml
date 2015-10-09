@@ -1,0 +1,27 @@
+import "Timer.thingml"
+import "sharedMsgs.thingml"
+
+thing IndoorTempSensor includes TimerClient, indoorTempMsgs{
+    provided port sendPort {
+        sends indoorTemp    
+    }
+    
+    statechart behavior init Init {
+	    readonly property period : Integer = 2000
+
+		state Init {
+			on entry do
+                timer!timer_start(period)
+			end
+			
+			transition -> Init
+            event timer?timer_timeout
+			action do
+				print "IndoorTempSensor: send a value\n"
+                sendPort!indoorTemp(5)
+			end
+		
+		}
+	
+	}
+}

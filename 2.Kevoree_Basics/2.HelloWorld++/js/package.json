@@ -14,9 +14,14 @@
         "library",
         "comp"
     ],
+<<<<<<< HEAD
    "dependencies": {
         "kevoree-entities": "^8.0.0",
         "kevoree-node-javascript": "^5.0.0"
+=======
+    "dependencies": {
+        "kevoree-entities": "^8.0.0"
+>>>>>>> f6435badf6c158b29c3a21d13385daddf814c541
     },
     "devDependencies": {
         "grunt": "^0.4.1",

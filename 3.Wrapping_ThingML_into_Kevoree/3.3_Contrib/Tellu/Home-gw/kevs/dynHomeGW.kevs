@@ -20,7 +20,7 @@ remove {nodeName}
 '
 
 set sync.onConnect = '
-add {nodeName}.FieldNode_0 : no.tellu.FieldNode/1.0.5
+add {nodeName}.FieldNode_0 : no.tellu.FieldNode/1.0.9
 
 add chan: WSChan
 set chan.port = "9050"

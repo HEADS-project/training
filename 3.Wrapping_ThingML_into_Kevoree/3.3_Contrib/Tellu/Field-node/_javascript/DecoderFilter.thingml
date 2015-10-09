@@ -1,0 +1,140 @@
+import "Decoder.thingml"
+import "../Filter.thingml"
+import "../datatypes.thingml"
+
+
+
+thing DecoderFilter includes DecoderMsg{
+
+	
+	function initialize() do
+		''&inputs&'={};'
+	end
+
+	function filterComp(msg : String) : Map do
+	
+	//parse sensor_id ut av msg
+	//finne riktig array som har sensor_id som key
+	//ekstraher temperatur for hver av msg
+	//gjør kalkulasjonen 
+	//returner kompenserte verdier og kompensasjons verdi i en kombinert map
+	
+	//y = ay-1 + by-2 + cx-1 + dx-2
+	
+		/*
+ 	{"data" :
+                {"pressure":[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
+                "temperature":21.2,
+                "sample_set":14,
+                "sensor_id":"IsensU 1"
+                },
+	"status" :                           
+                {"fn_id":"FN 1",
+                "bt_rssi": -41,
+                "last_resync": 7
+                }
+	}
+	*/
+	
+	'
+	
+	var a = 1.9982;
+	var b = -0.99820017;
+	var c = 0.033;
+	var d = -0.033;
+	var coeff = 1;
+	
+	var presCoeff = 0.03051758;
+	
+	var json = JSON.parse('&msg&');
+	
+	var res = {}
+	res.reading = json;
+	res.output = 0;
+	
+	var sensorId = res.reading.data.sensor_id;
+	var meterings = '&inputs&'[sensorId];
+	if(!meterings){
+		meterings = [];
+		meterings[0] = null;
+		meterings[1] = null;
+		meterings[2] = null;
+		'&inputs&'[sensorId] = meterings;
+	}
+	
+	meterings[2] = meterings[1];
+	meterings[1] = meterings[0];
+	meterings[0] = res;
+	
+	var temperature = [];
+	var outputs = [];
+	for (var i = 0; i < meterings.length; i++) {
+		if(meterings[i]){
+			temperature[i] = meterings[i].reading.data.temperature;
+			outputs[i] = meterings[i].output;
+		}
+	}
+	if(temperature.length == 3){
+		var comp = coeff* (a*outputs[1] + b*outputs[2] + c*temperature[1] + d*temperature[2]);
+	
+		var pressure = res.reading.data.pressure; 
+		
+		for (var i = 0; i < pressure.length; i++) {
+	 	 	pressure[i] = presCoeff*pressure[i]-comp;
+	 	}
+		
+		console.log("Comp: "+ comp);
+		console.log("Temp: " + temperature[0]);
+		res.output = comp;
+	
+		return res.reading;
+	} else {
+		return "";
+	}
+	'
+	end
+	
+	
+	function getJson(msg: Map) : String 
+	do
+		'return JSON.stringify('& msg & ')'
+	end
+	
+	
+	property inputs : Map
+	property compensated : Map
+	
+	statechart DecoderFilter init Active @debug "false" {
+	
+		state Active {
+			on entry do
+				initialize()
+				print "Filter Ready"
+			end
+			
+			
+			internal event e: decoder?decoded
+			action do
+				compensated = filterComp(e.msg)
+				if(not(compensated == "")) do
+					filtered!decoded(getJson(compensated))
+					print("----------------------\n")
+					print(getJson(compensated))
+					print("----------------------\n")
+				end
+			end
+		}
+	}
+	
+	required port decoder {
+		receives decoded
+	}
+	
+	provided port filtered {
+		sends decoded
+	}
+
+}
+
+
+

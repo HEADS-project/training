@@ -1,0 +1,101 @@
+datatype Boolean
+@java_type "boolean";
+
+thing fragment TestMsgs {
+    message m1(b : Boolean, b2 : Boolean);
+    message m2(b : Boolean, b2 : Boolean);  
+    
+    message res(b : Boolean, b2 : Boolean);
+    message res2(b : Boolean, b2 : Boolean);
+}
+
+thing TestMergeFilter includes TestMsgs
+{
+    provided port send {
+        sends m1, m2, res, res2
+    }
+
+    required port recv {
+        receives m1, m2, res, res2
+    }
+
+    operator m1Filter(m : m1) : Boolean do
+        return m.b
+    end    
+    
+    operator Notm1Filter(m : m1) : Boolean do
+        return not m.b
+    end
+    
+    operator m2Filter(m : m2) : Boolean do
+        return m.b
+    end    
+    
+    operator Notm2Filter(m : m2) : Boolean do
+        return not m.b
+    end
+    
+    operator resFilter(m : res) : Boolean do
+    	return m.b2
+    end
+    
+    operator res2Filter(m : res2) : Boolean do
+    	return m.b2
+    end    
+
+    //filter all m1(true) | m2(false)
+    //note: filters are limited to operator calls (do not put expressions directly in the filter)
+	//You can filter individual input streams and/or the output stream
+    stream filteredMergeOK do
+        from m : [ e1 : [recv?m1]::filter(m1Filter(e1)) | e2 : [recv?m2]::filter(Notm2Filter(e2)) -> res(#0, #1)]::filter(resFilter(m))
+        select a : #0, b : #1
+        action send!res(a, b)
+    end
+    
+    //filter all m1(true) | m2(false) + additional filter on the result (false)
+    stream filteredMergeFail do
+        from m : [ e1 : [recv?m1]::filter(Notm1Filter(e1)) | e2 : [recv?m2]::filter(m2Filter(e2)) -> res2(#0, #1)]::filter(res2Filter(m))
+        select a : #0, b : #1
+        action send!res2(a, b)
+    end
+
+
+
+    statechart testSimpleFilter init Init {
+        state Init {
+            on entry do
+                send!m1(true, true)
+                send!m2(false, true)
+                
+                send!m1(false, true)
+                send!m2(true, true)
+                
+                
+                send!m1(true, false)
+                send!m2(false, false)
+                
+                send!m1(false, false)
+                send!m2(true, false)                               
+            end
+            
+            internal 
+            event e: recv?res
+            action do            	
+	       		print "res(" + e.b + ", " + e.b2 + ")\n"
+            end
+            
+            internal 
+            event e : recv?res2
+            action do
+            	print "res2(" + e.b + ", " + e.b2 + ")\n"
+            end
+        }
+    }
+
+
+}
+
+configuration filterCfg {
+	instance myinstance : TestMergeFilter
+	connector myinstance.recv => myinstance.send
+}

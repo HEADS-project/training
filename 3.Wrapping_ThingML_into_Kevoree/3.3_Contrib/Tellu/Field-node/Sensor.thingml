@@ -1,4 +1,5 @@
 import "SensorTimer.thingml"
+import "Filter.thingml"
 
 
 datatype String
@@ -22,7 +23,7 @@ thing fragment SensorMsgs {
 	message ready();
 }
 
-thing Sensor includes TimerMsgs, SensorMsgs {
+thing Sensor includes TimerMsgs, SensorMsgs, DecoderMsg {
 
 	property delay : Integer 
 
@@ -39,6 +40,14 @@ thing Sensor includes TimerMsgs, SensorMsgs {
 	required port timer {
 		receives timer_timeout
 		sends timer_start, timer_start_interval, timer_cancel
+	}
+	
+	provided port decoder {
+		sends decoded
+	}
+	
+	required port filtered {
+		receives decoded
 	}
 
 	

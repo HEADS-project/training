@@ -46,13 +46,11 @@ To retrieve an attribute value at runtime, Kevoree JS provides a class called `D
 
 ```js
 start: function (done) {
-    this._super(function () {
-        // retrieve the value of attribute "greetMessage"
-        var greetMessage = this.dictionary.getValue('greetMessage');
-        // display the attribute value
-        this.log.info(this.toString(), greetMessage);
-        done();
-    }.bind(this));
+  // retrieve the value of attribute "greetMessage"
+  var greetMessage = this.dictionary.getValue('greetMessage');
+  // display the attribute value
+  this.log.info(this.toString(), greetMessage);
+  done();
 }
 ```
 

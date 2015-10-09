@@ -1,0 +1,159 @@
+import "ble.thingml"
+import "../Filter.thingml"
+
+datatype Map
+    @js_type "var";
+
+thing Decoder includes BLEClient, DecoderMsg{
+
+
+	function initialize() do
+		''&deviceSeq&' = {};'
+	end
+
+	function decode(ble : String) : Map do
+	
+		'
+		var NUM_PRESSURE_IN_STRUCT = 9;
+    	var NUM_BYTES_IN_STRUCT = 16;
+    	var PRESSURE_BIT_SIZE = 14;
+    	var PRESSURE_START_BIT = 2;
+		
+		var per = JSON.parse('&ble&')
+		
+		var data;
+		if(per.advertisement == null || per.advertisement.serviceData == null|| per.advertisement.serviceData.length == 0){
+			return "";
+		}
+		var serviceData = per.advertisement.serviceData
+		
+		for(i = 0; i < serviceData.length; i++) {
+		console.log("servicedata"+serviceData)
+			if(serviceData[i].uuid == "1840"){
+				data = serviceData[i].data;
+			} else {
+				return "";
+			}
+		}
+		console.log(per);
+		var cur_device_no = per.uuid;
+		
+		//if('& deviceSeq &' == null){
+		//	'& deviceSeq &' = {};
+		//}
+		
+		var cur_sequence_no = data[0]; // Upcast to avoid negative number
+		console.log("cur_sequence_no: "+cur_sequence_no);
+		console.log("deviceSeq: "+JSON.stringify('& deviceSeq &'));
+        if ('& deviceSeq &'[cur_device_no] == null || cur_sequence_no > '& deviceSeq &'[cur_device_no] || cur_sequence_no == 0 && '& deviceSeq &'[cur_device_no] == 255) {
+            
+            '& deviceSeq &'[cur_device_no] = cur_sequence_no;
+                        
+            var temperature = data[1]; // Transmitted as 8 bits, note must handle negative numbers, not tested
+            var last_resync = data[2] & 0x03; // Upcast to avoid negative number
+            var pressure = [];
+            var pres_set_bit = 0;
+            for(i=0; i<NUM_BYTES_IN_STRUCT; i++){
+                var cur_byte = data[i+2];
+                var pres_read_bit = 0;
+                if (i==0) {
+                    pres_read_bit = PRESSURE_START_BIT;
+                    cur_byte = ((cur_byte & 0xFF) >> 2);
+                }
+                while (pres_read_bit < 8 ) {
+                    var b = pres_set_bit % 14;
+                    var idx = Math.floor(pres_set_bit / 14);
+                
+                    if ((cur_byte & 0x01)==1) {
+                       // Set bit
+                       pressure[idx] |= 1<<b;
+                    }
+                    else {
+                       // Clear bit
+                       pressure[idx] &= ~(1<<b);
+                    }
+                    // Prepare next bit
+                    pres_set_bit++;
+                    pres_read_bit++;
+                    cur_byte = ((cur_byte & 0xFF) >> 1);
+                }
+            }
+            
+            for (var i = 0; i < pressure.length; i++) {
+            	pressure[i] = pressure[i]-8192;
+            }
+            
+           
+	
+			var sensorData = {"data" :
+				                {"pressure":pressure,
+				                "temperature":temperature,
+				                "sample_set":cur_sequence_no,
+				                "sensor_id":cur_device_no
+				                },
+					"status" :                           
+				                {"fn_id":"FN 1",
+				                "bt_rssi": '& ble &'.rssi,
+				                "last_resync": last_resync
+				                }
+				    }
+            
+           /*console.log("IsenseU I" + cur_device_no + " Sequence=" + cur_sequence_no + 
+                               " Temperature=" + temperature + 
+                               " Last resync=" + last_resync + 
+                               " Pressure=" + pressure +
+                               " BLE data=" + data);*/
+                               
+           
+           return sensorData
+        } else {
+           console.log("Skipping BLE advertisement");
+           return "";
+        }
+		'
+	
+	end
+	
+	function getJson(msg : Map) : String do
+		'return JSON.stringify('& msg & ')'
+	end
+	
+	
+	property deviceSeq : Map
+	property decodedMsg : Map
+	
+	statechart Decoder init Active @debug "false" {
+	
+		state Active {
+			on entry do
+			    initialize() 
+				print "Decoder Ready"				
+			end
+			
+			internal event ble : BLE?discover
+			action do
+				decodedMsg = decode(ble.peripheral)
+				if(not (decodedMsg == "")) do
+					decoder!decoded(getJson(decodedMsg))
+				end
+				
+			end
+		}
+	}
+	
+	provided port decoder {
+		sends decoded
+	}
+
+}
+
+
+
+configuration DecodeBle {
+		instance ble : BLE
+		instance decoder : Decoder @debug "true"
+		connector ble.BLEInternalRec => ble.BLEInternal
+		connector decoder.BLE => ble.BLE
+		
+	}
+

@@ -1,0 +1,41 @@
+import "sharedMsgs.thingml"
+import "datatype.thingml"
+
+thing PresenceDetector includes indoorTempMsgs, humidityMsgs, lightMsgs, PresenceDetectorMsgs{
+    required port rcvPort {
+        receives  indoorTemp, humidity, light,cepJTH, cepPersonIsPresent   
+    }
+    
+    provided port sendPort {
+        sends cepJTH, cepPersonIsPresent   
+    }
+    
+    function complexAlgo(temp : Integer, humidity: Integer, light: Integer) : Boolean do
+        return temp == humidity and humidity == light
+    end
+    
+    stream joinTempHumidity do
+        from jTH : [ temp: rcvPort?indoorTemp & humi: rcvPort?humidity -> cepJTH(temp.value,humi.value) ]
+        select tempV: jTH.temp, humiV: jTH.humi
+        action sendPort!cepJTH(tempV,humiV)
+    end
+
+    operator filterPersonPresence(msg : cepPersonIsPresent) : Boolean do
+        return msg.v
+    end
+    
+    stream personPresenseDetector do
+        from person : [ joinTH: rcvPort?cepJTH & light : rcvPort?light -> cepPersonIsPresent(complexAlgo(joinTH.temp,joinTH.humi,light.value)) ]::filter(filterPersonPresence(person))
+        select isPresent: person.v
+        action sendPort!cepPersonIsPresent(isPresent)
+    end
+    
+    statechart PresenceDetector init Init {
+        state Init {
+            internal
+            event e : rcvPort?cepPersonIsPresent
+            action print "Person is present: " + e.v +"\n"  
+           
+        }
+    }
+}

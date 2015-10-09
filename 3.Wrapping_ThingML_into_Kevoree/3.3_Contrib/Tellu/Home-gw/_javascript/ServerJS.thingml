@@ -1,0 +1,123 @@
+import "../Server.thingml"
+
+    
+thing FallServer includes SensorServer
+@pim "SensorServer"
+@platform "javascript"
+{
+
+ 	property reading : String
+ 	property difference : Integer = 0
+ 	property average : Integer = 0 
+ 	
+ 	function compare(reading1 : String, reading2 : String) : Integer
+ 	do
+ 	
+ 	/*
+ 	{"data" :
+                {"pressure":[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
+                "temperature":21.2,
+                "sample_set":14,
+                "sensor_id":"IsensU 1"
+                },
+	"status" :                           
+                {"fn_id":"FN 1",
+                "bt_rssi": -41,
+                "last_resync": 7
+                }
+	}
+	*/
+	
+	 	
+ 	'if ('&reading&'==null) {
+ 		JSON.parse('&reading2&');
+ 	 	'&reading&' = '&reading2&';
+ 	 	return -1;
+ 	 }
+ 	 
+ 	 var json1 = JSON.parse('&reading1&');
+ 	 var json2 = JSON.parse('&reading2&');
+ 	 
+ 	 if (json1.data.sensor_id == json2.data.sensor_id) {
+ 	 	'& reading &' = '& reading2 &';
+ 	 	return -1;
+ 	 }
+ 	 if (json1.data.sample_set != json2.data.sample_set) {
+ 	 	'& reading &' = '& reading2 &';
+ 	 	return -1;
+ 	 }
+ 	 
+ 	 var pressure1 = json1.data.pressure;
+ 	 var pressure2 = json2.data.pressure;
+ 	 var tmp = 0;
+ 	 var diff = 0;
+ 	 var alarm = true;
+ 	 
+ 	 
+ 	 for (var i = 0; i < pressure1.length; i++) {
+ 	 	diff = Math.abs(pressure1[i]-pressure2[i]);
+ 	 	tmp = diff + tmp;
+ 	 	diff = diff - '& average &'
+ 	 	if(diff < 100) {
+ 	 	    alarm = false;
+ 	 	} 
+ 	 }
+ 	 tmp = tmp / pressure1.length;
+ 	 
+ 	 var n = 10;
+ 	 
+ 	 '& average &' = tmp / n + '& average &' * (n-1)/n
+ 	 
+ 	 if (alarm){
+ 	 	return diff;
+ 	 } else {
+ 	 	return -1;
+ 	 }
+ 	 '
+ 	  	 
+ 	end
+
+	
+	  statechart Server init reading {
+        
+        /*state idle {
+            
+            transition -> reading 
+            event sensor_service?ready
+            action do
+            	print "Fieldnode online\n"
+            	sensor_service!start_periodic_reading(delay)
+            end
+        }*/
+        
+        state reading {
+        
+         	on entry print "Server starting!\n"
+        
+        	internal event reading1 : sensor_service?reading
+            action do
+            	print "Sensor reading"
+                print reading1.value
+            	smarttracker!reading(reading1.value)
+                print "sent on MQTT"                            
+            end     
+            
+            internal event readingJson : sensor_mqtt?readingJson
+            action do
+            	print "Sensor reading"
+                print readingJson.value
+                difference = compare (reading, readingJson.value)
+                print difference
+                if(not(difference == -1))
+                do                                            
+            		smarttracker!reading(difference)
+                	print "sent on MQTT"
+                end                            
+            end     
+        }
+    }
+}
+
+configuration HomeGW {
+    instance server : FallServer   
+}

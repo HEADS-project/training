@@ -1,0 +1,117 @@
+datatype Integer
+@java_type "int";
+
+datatype Boolean
+@java_type "boolean";
+ 
+/**
+You can see that this thing is Platform-Independent: we are not using any C, Java or JavaScript code here.
+/!\ However, do not expect it to compile in C, yet, as CEP is currenlty only available for Java and JavaScript at the moment
+*/
+thing SimpleCEP {
+
+    //These are basic ThingML messages that you have manipulated before
+    message m1();
+    message m2(v1 : Integer, v2 : Integer);
+    
+    //These are CEP message that will be produced by CEP queries
+    //Good news: they are just basic ThingML messages that you receive and send as usual
+    message cep1();
+    message cep2(v1 : Integer, v2 : Integer);
+    message cep2b(v1 : Integer, v2 : Integer);
+    
+    provided port sendPort {
+        sends m1, m2, cep1, cep2, cep2b   
+    }
+    
+    required port receivePort {
+        receives m1, m2, cep1, cep2, cep2b    
+    }
+    
+    /*Streams are defined at the same level as ports, so that we can reuse 
+    the same stream in different places in the implementation (state machine)*/
+    
+    //This is a very simple CEP stream that just forwards a message
+    //Note: we wouldn't really need CEP for that, it is just a slow introduction to the syntax of streams
+    stream forwardSimpleMessage do
+        from receivePort?m1
+        action sendPort!cep1()
+    end
+    
+    //If you want to manipulate message parameters in CEP queries, use the folling syntax
+    stream forwardSimpleMessageWithParams do
+        from evt : [receivePort?m2]
+        select a : evt.v1, b : evt.v2
+        action sendPort!cep2(a,b)
+    end
+    
+    //You can transform message parameters directly in the select
+    stream transformAndForward do
+        from evt : [receivePort?m2]
+        select a : (evt.v1 * 2), b : transform(evt.v2)
+        action sendPort!cep2b(a, b)
+    end
+    
+    function transform(v : Integer) : Integer do
+        return v * v
+    end
+
+	statechart HelloWorld init Greetings {
+        
+        //Some booleans to keep track of the CEP results we receive
+        //Note: we could use proper CEP to manage that :-)
+        property cep1Rec : Boolean = false
+        property cep2Rec : Boolean = false
+        property cep2bRec : Boolean = false
+	
+		state Greetings {
+
+            on entry do
+                print "Welcome!\n\n"
+                sendPort!m1() // This should trigger cep1
+                sendPort!m2(1, 2) //This should trigger both cep2 and cep2b
+            end
+            
+            internal event receivePort?cep1
+            action do
+                cep1Rec = true
+                print "CEP1 received!\n"
+            end
+            
+            internal event receivePort?cep2
+            action do
+                cep2Rec = true
+                print "CEP2 received!\n"
+            end
+            
+            internal event receivePort?cep2b
+            action do
+                cep2bRec = true
+                print "CEP2B received!\n"
+            end
+			
+			transition -> Bye 
+			guard cep1Rec and cep2Rec and cep2bRec //exit when all CEP results have been received
+			
+		}
+	
+		state Bye {
+			on entry print "\nBye.\n\n"
+		}
+	
+	}
+}
+
+/**
+TODO: compile and run this configuration for Java and JavaScript
+Right-click on this file (in the Project Explorer on the left) and try:
+HEADS / ThingML -> Plain Java
+HEADS / ThingML -> Javascript for NodeJS
+**/
+configuration SimpleCEPCfg 
+{
+
+	instance my_instance: SimpleCEP
+    connector my_instance.receivePort => my_instance.sendPort
+
+}

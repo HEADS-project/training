@@ -1,0 +1,48 @@
+// create a fieldnode JavaScript (node1)
+
+add node0 : JavascriptNode
+add node1 : JavascriptNode
+//create a default group to manage the node(s)
+add sync : WSGroup
+set sync.port/node0 = "9000"
+attach node1 sync
+set sync.master = 'node0'
+
+network node0.ip.lo 127.0.0.1
+
+add node1.FieldNode_0 : no.tellu.FieldNode
+
+add chan: WSChan
+set chan.port = "9050"
+set chan.host = "127.0.0.1"
+
+add chan1: WSChan
+set chan1.port = "9050"
+set chan1.host = "127.0.0.1"
+
+add node1.submqtt : MQTTSubClient
+set node1.submqtt.topic = "meg/smarttracker"
+set node1.submqtt.host = "127.0.0.1"
+set node1.submqtt.port = "1883"
+
+add node1.pubmqtt : MQTTPubClient
+set node1.pubmqtt.topic = "test/smarttracker"
+set node1.pubmqtt.host = "127.0.0.1"
+set node1.pubmqtt.port = "1883"
+
+add pubchan : LocalChannel
+add subchan : LocalChannel
+
+
+bind node1.FieldNode_0.Fie_sen_readingJson_out pubchan
+
+
+bind node1.pubmqtt.jsonPub pubchan
+bind node1.submqtt.onTopicAndMsg subchan
+
+bind node1.FieldNode_0.Fie_sen_reading_out chan
+bind node1.FieldNode_0.Fie_sen_ready_out chan
+bind node1.FieldNode_0.Fie_sen_start_periodic_reading_in chan1
+bind node1.FieldNode_0.Fie_sen_reading_cancel_in chan1
+bind node1.FieldNode_0.Fie_sen_read_in chan1
+

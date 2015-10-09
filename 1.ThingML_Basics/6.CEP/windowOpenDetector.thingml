@@ -1,0 +1,66 @@
+import "datatype.thingml"
+import "sharedMsgs.thingml"
+
+thing WindowOpenDetector includes indoorTempMsgs, outdoorTempMsgs, windowOpenMsgs{
+    required port rcvPort {
+        receives indoorTemp, outdoorTemp, cepWindowOpen
+    }
+    
+    provided port sendPort {
+        sends cepWindowOpen
+    }
+    
+    //a simple algo to simulate a complex algo :)
+    function complexAlgo(indoorTemp : Integer, outdoorTemp : Integer) : Boolean do
+        print "complexAlgo: " + indoorTemp + " == " + outdoorTemp + "\n"
+        return indoorTemp == outdoorTemp
+    end
+    
+    stream windowOpenDetector do
+        from w : [ indoor : rcvPort?indoorTemp & outdoor : rcvPort?outdoorTemp -> cepWindowOpen(complexAlgo(indoor.value,outdoor.value))]
+        select windowIsOpen: w.v
+        action sendPort!cepWindowOpen(windowIsOpen) 
+    end
+    
+    statechart WindowOpenDetector init Init {
+        state Init{
+            internal 
+            event e : rcvPort?cepWindowOpen
+            action print "Is window open? " + e.v + "\n"    
+        }    
+    }   
+    
+}
+
+
+thing MultipleWindow includes windowOpenMsgs{
+    required port window1 {
+        receives cepWindowOpen    
+    }
+    
+    required port window2 {
+        receives cepWindowOpen    
+    }
+    
+    required port window3 {
+        receives cepWindowOpen    
+    }
+    
+    provided port room1 {
+        sends cepWindowOpen  
+    }
+    
+    operator filterWindowValue(m : cepWindowOpen) : Boolean do
+        return m.v
+    end
+    
+    stream mergeWindowOpenDetector do
+        from merge: [ w1 : [window1?cepWindowOpen]::filter(filterWindowValue(w1)) | w2 : [window2?cepWindowOpen]::filter(filterWindowValue(w2)) | w3 : [window3?cepWindowOpen]::filter(filterWindowValue(w3)) -> cepWindowOpen(#0)]
+        select oneWindowOpen: merge.v
+        action room1!cepWindowOpen(oneWindowOpen)
+    end
+    
+    statechart MultipleWindow init Init {
+        state Init{}    
+    }
+}

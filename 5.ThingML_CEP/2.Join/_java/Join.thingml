@@ -1,0 +1,16 @@
+import "../Join.thingml"
+
+ /**
+TODO: compile and run this configuration for Java
+**/
+configuration JoinJavaCfg 
+{
+	instance my_instance: JoinCEP
+    connector my_instance.receivePort => my_instance.sendPort
+}
+
+/*
+ * TODO: Modify the sample with a timer, so that messages are sent every x ms. 
+ * Adjust the timer and TTL to check that two messages that are send more than TTL ms 
+ * one from the other will not get joined/merged
+ */

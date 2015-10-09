@@ -1,0 +1,51 @@
+import "../LightSensor.thingml"
+import "../humiditySensor.thingml"
+import "../indoorTemperatureSensor.thingml"
+import "../outdoorTemperatureSensor.thingml"
+import "../heatingSensor.thingml"
+import "JavaTimer.thingml"
+
+import "../presensePersonDetector.thingml"
+import "../windowOpenDetector.thingml"
+import "../system.thingml"
+
+configuration heatingControlSystemCfg {
+    instance light : LightSensor
+    instance humidity : HumiditySensor
+    instance indoorTemp : IndoorTempSensor
+    instance outdoorTemp : OutdoorTempSensor
+    instance heating : HeatingSensor
+    
+    instance timerLight : TimerJava
+    instance timerHumidity : TimerJava
+    instance timerIndoorTemp : TimerJava
+    instance timerOutdoorTemp : TimerJava
+    instance timerHeating : TimerJava
+    
+    instance personDetector : PresenceDetector
+    instance windowOpDetectetor : WindowOpenDetector
+    instance system : AlertSystem
+    
+    connector light.timer => timerLight.timer
+    connector humidity.timer => timerHumidity.timer
+    connector indoorTemp.timer => timerIndoorTemp.timer
+    connector outdoorTemp.timer => timerOutdoorTemp.timer
+    connector heating.timer => timerHeating.timer
+    
+    connector personDetector.rcvPort => light.sendPort
+    connector personDetector.rcvPort => humidity.sendPort
+    connector personDetector.rcvPort => indoorTemp.sendPort
+    connector personDetector.rcvPort => personDetector.sendPort
+    
+    connector windowOpDetectetor.rcvPort => indoorTemp.sendPort
+    connector windowOpDetectetor.rcvPort => outdoorTemp.sendPort
+    connector windowOpDetectetor.rcvPort => windowOpDetectetor.sendPort
+    
+    connector heating.rcvPort => heating.sendPort
+    
+    connector system.rcvPort => system.sendPort
+    connector system.rcvPort => windowOpDetectetor.sendPort
+    connector system.rcvPort => personDetector.sendPort
+    connector system.rcvPort => heating.sendPort
+   
+}

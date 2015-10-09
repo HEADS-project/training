@@ -1,0 +1,10 @@
+import "../avg.thingml"
+import "JSTimer.thingml"
+
+configuration avgJS {
+    instance timer : TimerJS
+    instance avg : ComputeAvg
+    
+    connector avg.timer => timer.timer
+    connector avg.recvPort => avg.sendPort    
+}

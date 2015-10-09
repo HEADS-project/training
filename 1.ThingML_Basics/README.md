@@ -138,6 +138,9 @@ In this last step of the tutorial, your task is to write your own program in Thi
 
 Submit your program by forking the [training repository](https://github.com/HEADS-project/training), adding to example in a sub-folder in the Contribs directory and making pull request. If you have no idea how to do this, send your example to Brice Morin (brice.morin@sintef.no). The best examples will be added as additional examples in this tutorial. Think about what examples you would have liked to get!
 
+### 6. CEP
+This tutorial presents the CEP fetures implemented in ThingML.
+
 ## Reporting issues, getting support, etc
 
 If you encounter any problem, find a bug or have suggestions for additional features, please use the [HEADS IDE bug tracker](https://github.com/HEADS-project/heads_ide/issues). This is the best and preferred way of getting in touch with us.
