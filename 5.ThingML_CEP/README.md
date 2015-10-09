@@ -25,6 +25,7 @@ This tutorial is organized in a set of exercices:
 2. Join: Learn how to join events
 3. Merge: Learn how to merge event
 4. Operators: Learn how to apply filters, etc
+5. Time and length Windows: Learn how to aggregate (sum, min, max, etc) a sequence of events
 
 ## Contact us
 

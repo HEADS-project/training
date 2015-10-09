@@ -105,8 +105,9 @@ Note: The "print" statement in ThingML normally prints messages to the standard 
 The Javascript compiler produces code which is meant to run with NodeJS. In order to run the generated code you need to install NodeJS. On Ubuntu Linux NodeJS can be installed by running `apt-get install nodejs`. On Windows it can be downloaded from [the NodeJS web page](http://nodejs.org/) and will seamlessly.
 
 To run the generated code, go to the generated directory and run:
-
-	node behavior.js
+	
+	npm install
+	node main.js
 
 That is it!
 

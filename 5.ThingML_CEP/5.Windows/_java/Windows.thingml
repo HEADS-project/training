@@ -1,0 +1,10 @@
+import "../Windows.thingml"
+import "./JavaTimer.thingml"
+  
+configuration WindowsJSCfg 
+{
+	instance my_instance: TestWindows
+	instance timer : TimerJava
+    connector my_instance.recv => my_instance.send
+    connector my_instance.timer => timer.timer
+}

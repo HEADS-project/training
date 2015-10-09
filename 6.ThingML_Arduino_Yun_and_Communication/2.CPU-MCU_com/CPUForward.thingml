@@ -1,0 +1,62 @@
+/*
+ * File: CPUForward.thingml
+ * 
+ * Description: This a simple test, its purpose is to check the connection between arduino yun's two chips is working
+ * 				It also shows how to use external connector, and traces with posix systems.
+ * 				It should be used with MCUButtonAndLEDController deployed on the Yun's MCU
+ * 
+ * Debug: In this example trace level is at its maximum 
+ *
+ * TODO: Compile this ThingML into posix compatible code, and cross compile it with the arduino-yun-cross-compiler
+ * 		 docker container, then upload the executable on the Yun (CPU side) and run it.
+ * 		You can modify the trace level at various place in order to find out what each trace exactly generate.
+*/
+
+
+import "Msgs.thingml"
+import "../lib/_Datatypes.thingml"
+
+configuration CPUForwarderCfg
+@serial_trace_level "3"
+@c_compiler "/openwrt-yun/staging_dir/toolchain-mips_r2_gcc-4.6-linaro_uClibc-0.9.33.2/bin/mips-openwrt-linux-gcc"
+{
+	instance bc : CPUForwarder
+	
+	connector bc.LEDport over Serial1
+	@serial_trace_level "3"
+	@serial_path_to_device "/dev/ttyATH0"
+	@serial_baudrate "115200"
+}
+
+thing CPUForwarder includes Msgs
+@serial_trace_level "3"
+{
+	
+	required port LEDport 
+	@serial_trace_level "3"
+	{
+		receives LEDON, LEDOFF
+		sends LEDON, LEDOFF
+	}
+	
+	statechart CPUForwarder init Init {
+		state Init {
+			on entry do
+				'printf("[CPU] Init\n");'
+			end
+			transition -> Running
+		}
+		
+		state Running {
+			internal event LEDport?LEDON action do
+				LEDport!LEDON()
+				'printf("[CPU] LEDON\n");'
+			end
+			internal event LEDport?LEDOFF action do
+				LEDport!LEDOFF()
+				'printf("[CPU] LEDOFF\n");'
+			end
+		}
+	}
+}
+

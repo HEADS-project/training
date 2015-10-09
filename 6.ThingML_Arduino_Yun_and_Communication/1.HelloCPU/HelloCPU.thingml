@@ -1,0 +1,26 @@
+/*
+ * File: HelloCPU.thingml
+ * 
+ * Description: This a simple test, its purpose is to check that cross compiling tools are working properly
+ * 
+ * TODO: Compile this ThingML into posix compatible code, and cross compile it with the arduino-yun-cross-compiler
+ * 		 docker container, then upload the executable on the Yun (CPU side) and run it.
+*/
+
+configuration HelloCPUCfg
+//Cross compiler command, the path correspond to the internal organisation of the arduino-yun-cross-compiler docker
+//container. No need to change it unless you want to compile it for another platform.
+@c_compiler "/openwrt-yun/staging_dir/toolchain-mips_r2_gcc-4.6-linaro_uClibc-0.9.33.2/bin/mips-openwrt-linux-gcc"
+{
+	instance HelloInstance: HelloThing
+}
+
+thing HelloThing {
+	statechart HelloChart init HelloState {
+		state HelloState {
+			on entry do
+				print "[HelloThing] Hello CPU!\n"
+			end
+		}	
+	}
+}

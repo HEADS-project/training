@@ -1,0 +1,137 @@
+/*
+ * File:MCUButtonAndLEDController.thingml
+ * 
+ * Description: This a simple test, its purpose is to check the connection between arduino yun's two chips is working
+ * 				It also shows how to use external connector, and traces with arduino.
+ * 				It should be used with CPUForward deployed on the Yun's CPU
+ * 
+ * Prerequisites: The bridge provided by Arduino has been deactivated. (you can use the provided script)
+ *
+ * Hardware: A arduino Yùn, a button on pin 8, and a LED on pin 7
+ *
+ * TODO: Using the arduino IDE deploy the generated code on the Yun (MCU side)
+*/
+
+import "../lib/_Datatypes.thingml"
+import "Msgs.thingml"
+
+configuration MCUButtonAndLEDControllersCfg
+// This annotation allows to use the ThingML command "print" and to use generated traces on the serial port.
+// Be aware that it means the arduino serial library will be told to initialize Serial0 at 9600bps, so the port won't be available for other use
+@arduino_stdout "Serial"
+{
+	instance lc : LEDController
+	instance bc : ButtonController
+	instance b : Bridge
+	
+	connector lc.LEDport => b.LEDport
+	connector bc.LEDport => b.LEDport
+	//Each Physical port should not be initialized more than once. In order to use it with several instances a multiplexer instance should be added. in this case it is Bridge
+	connector b.Bridge over Serial1
+	@port_name "Serial1"
+	@serial_baudrate "115200"
+	
+}
+
+thing Bridge includes Msgs {
+	provided port LEDport {
+		receives LEDON, LEDOFF
+		sends LEDON, LEDOFF
+	}
+	provided port Bridge 
+	//Trace level 0 correspond to no traces
+	//Trace level 1 correspond to traces for initialization and errors
+	//Trace level 2 correspond to traces for messages
+	//Trace level 3 correspond to traces for bytes
+	//Each Level includes previous level traces
+	//It is recomanded not to use traces on every components on the same time for big configuration as the string containing the traces might make the sketch taking a lot of memory
+	@trace_level "2"
+	{
+		receives LEDON, LEDOFF
+		sends LEDON, LEDOFF
+	}
+	
+	statechart BridgeChart init Active {
+		state Active {
+			internal event LEDport?LEDON action Bridge!LEDON()
+			internal event LEDport?LEDOFF action Bridge!LEDOFF()
+			internal event Bridge?LEDON action LEDport!LEDON()
+			internal event Bridge?LEDOFF action LEDport!LEDOFF()
+		}
+	}
+}
+
+//This thing
+thing LEDController includes Msgs {
+	property LEDpin : UInt8 = 7
+	
+	required port LEDport {
+		receives LEDON, LEDOFF
+	}
+	
+	statechart LEDControllerChart init Init {
+		state Init {
+			transition -> Idle action do
+				'pinMode('& LEDpin &', OUTPUT);'
+			end
+		}
+		
+		state Idle {
+			internal event LEDport?LEDON action do
+				'digitalWrite('& LEDpin &', HIGH);'
+			end
+			
+			internal event LEDport?LEDOFF action do
+				'digitalWrite('& LEDpin &', LOW);'
+			end
+		}
+	}
+}
+
+
+//This thing control a button, each time the button is pressed the controller will switch the state of the LEDON boolean property from on to off or off to on.
+thing ButtonController includes Msgs
+{
+	property ButtonPin : UInt8 = 8
+	
+	property ButtonIsPressed : Boolean = false
+	property LEDON : Boolean = false
+	
+	required port LEDport {
+		sends LEDON, LEDOFF
+	}
+	
+	statechart LEDControllerChart init Init {
+		state Init {
+			on entry do
+				'pinMode('& ButtonPin &', INPUT);'
+			end
+			transition -> Running
+		}
+		
+		state Running {
+			on entry do
+				
+				
+				if (not(ButtonIsPressed)) do
+					ButtonIsPressed = 'digitalRead(' & ButtonPin & ')'
+					if (ButtonIsPressed) do
+						if(LEDON) do
+							LEDport!LEDOFF()
+						end
+						if(not(LEDON)) do
+							LEDport!LEDON()
+						end
+						LEDON = not(LEDON)
+					end
+				end
+				
+				ButtonIsPressed = 'digitalRead(' & ButtonPin & ')'
+				'delay(100);'
+			end
+			
+			transition -> Running
+		}
+	}
+}
+

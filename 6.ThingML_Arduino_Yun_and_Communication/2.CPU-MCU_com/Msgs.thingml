@@ -1,0 +1,5 @@
+
+thing fragment Msgs {
+	message LEDON() @code "66";
+	message LEDOFF() @code "67";
+}

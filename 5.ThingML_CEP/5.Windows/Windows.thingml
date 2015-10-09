@@ -1,0 +1,131 @@
+import "./Timer.thingml"
+
+datatype Integer
+@java_type "int";
+
+datatype Float
+@java_type "float";
+
+thing fragment TestMsgs {
+    message m1(x : Integer);
+    message m2(x : Integer);    
+    message res(avg : Integer, min : Integer, max : Integer);
+    message res2(avg : Integer, min : Integer, max : Integer);
+}
+
+thing TestWindows includes TestMsgs, TimerClient
+{
+    provided port send {
+        sends m1, m2, res, res2
+    }
+
+    required port recv {
+        receives m1, m2, res, res2
+    }   
+
+	function average(x : Integer[]) : Float do
+		var i : Integer = 0
+		var sum : Integer = 0
+		while (i < x.length) do
+			sum = sum + x[i]
+			i = i + 1
+		end
+		return sum / x.length
+	end
+	
+	function min(x : Integer[]) : Integer do
+		var i : Integer = 0
+		var min : Integer = x[0]
+		while (i < x.length) do
+			if (x[i] < min) 
+				min = x[i]
+			i = i + 1
+		end
+		return min
+	end
+	
+	function max(x : Integer[]) : Integer do
+		var i : Integer = 0
+		var max : Integer = x[0]
+		while (i < x.length) do
+			if (x[i] > max) 
+				max = x[i]
+			i = i + 1
+		end
+		return max
+	end
+
+	//Time and length windows can be defined to aggregate a set of events
+	//Note: windows should be defined at the very end, after the filters (if any)
+	//For time windows. two parameters should be specified:
+	//   - timeSpan, the "size"/duration of the window
+	//   - timeShift, which creates a new output every timeShift milliseconds
+    stream lengthW do
+        from e : [recv?m2]::timeWindow(5000, 5000)
+        select avg : average(e.x[]), min : min(e.x[]), max : max(e.x[])
+        action send!res2(avg, min, max)
+    end
+    
+    
+    //Length windows take one or two parameters
+    //    - size (mandatory)
+    //    - step (optional, by default equals to size i.e. no overlap between windows)
+    stream lengthW do
+        from e : [recv?m1]::lengthWindow(5, 5)
+        select avg : average(e.x[]), min : min(e.x[]), max : max(e.x[])
+        action send!res(avg, min, max)
+    end
+
+
+
+    statechart testSimpleFilter init Init {
+        readonly property duration : Integer = 250
+        property i : Integer = 0
+    
+        state Init {
+            on entry do
+                send!m1(1)                
+                send!m1(2)                             
+                send!m1(0)                
+                send!m1(-1)
+                send!m1(-2)                
+                
+                send!m1(2)                
+                send!m1(4)                             
+                send!m1(0)                
+                send!m1(2)
+                send!m1(2)                               
+            end
+            
+            internal 
+            event e: recv?res
+            action do            	
+	       		print "res(" + e.avg + ", " + e.min + ", " + e.max + ")\n"
+            end            
+        }
+        
+        region time init Init {
+        
+        	state Init {
+        		on entry do
+        			timer!timer_start(duration)        			
+        		end
+        		
+        		transition -> Init
+        		event timer?timer_timeout
+        		action do
+        			send!m2(i)
+        			i = i + 1
+        		end
+        		
+        		internal 
+            	event e: recv?res2
+            	action do            	
+	       			print "res2(" + e.avg + ", " + e.min + ", " + e.max + ")\n"
+            	end
+        	}        
+        }
+    }
+
+
+}
