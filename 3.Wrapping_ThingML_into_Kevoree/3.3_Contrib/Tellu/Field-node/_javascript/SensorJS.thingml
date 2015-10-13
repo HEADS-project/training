@@ -21,9 +21,9 @@ thing SensorJS includes Sensor, Filter
          ''& mraa &' =  require(\'mraa\');
          console.log(\'MRAA Version: \' + '& mraa &'.getVersion());'
          
-         analogPin0 = 'new '& mraa &'.I2c(1);'
-         & analogPin0 & '.address(0x0b);'
-         &vals&' = [];'
+         analogPin0 = 'new '& mraa &'.I2c(1)'
+         '' & analogPin0 & '.address(0x0b);'
+         '' &vals&' = [];'
          
     end
     
