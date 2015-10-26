@@ -9,17 +9,27 @@ HEADS ThingML modelling language: Arduino Yun and External Communication
 
 This tutorial has been written for a person working on a linux machine. It hasn't been tested on windows, but if you want to try, feel free to send your feedbacks.
 
+#### 0.1 Arduino Yùn prerequisites
+
+Before starting, you need to be able to connect your Arduino Yùn with your local network. [Here](https://www.arduino.cc/en/Guide/ArduinoYun) you can find some documentation on the subject.
+
 ### 1. Background
 
 This tutorial will lead you through the learning of external communication generation with ThingML on Arduino Yùn.
 Here you can find the hardware configuration that will be used to run the various application proposed in this tutorial.
 ![HW1](img/Yun_Tuto_0.png)
+
 You will need:
 * An Arduino Yùn Board
 * A LED
 * A button
 
 As you may know the Arduino Yùn Board contains two chips: an Atheros AR9331 (MIPS processor running openwrt, a linux  distribution for embedded systems), and an ATmega32u4 microcontroller. For the rest of this tutorial, the AR9331 will be refered as the CPU, and the ATmega32u4 as the MCU.
+
+Furthermore the instruction `upload program on MCU/CPU` will be used during this tutorial. 
+ * To upload a program on the CPU you can use the command `scp program root@ip.of.your.Yun:/root`, in order to run it you will need to connect to your Yùn with `ssh root@ip.of.your.Yun` and run `./program`.
+ * To upload a sketch on the MCU, follow the standard procedure with the arduino IDE. [Documentation can be find here.](https://www.arduino.cc/en/Guide/Environment#toc9)
+
 
 ### Content of this tutorial
 
