@@ -26,8 +26,10 @@ cd Yun_installation_files
 
 - Reboot your Yun's CPU by pressing on the "Yùn RST" button
 
-Note that if you currently have a sketch on the MCU which use the Serial1 or any Bridge library component, you might want to hold the "32u4 RST" button before pressing "Yùn RST" and release it only a dozain of second after.
+***Note*** that if you currently have a sketch on the MCU which use the Serial1 or any Bridge library component, you might want to hold the "32u4 RST" button before pressing "Yùn RST" and release it only a dozain of second after.
 Indeed, when the Yun's CPU reboot there is a moment where it ask to press any key to interrupt the boot, and writing on the Serial1 count may interrupt it.
+
+***Info***: The script simply copies the libraries (microhttpd, websocket, and mosquitto) compiled for AR9331 in /usr/lib/ and their headers in /usr/lib/Headers. It also deactivates the bridge provided by default that prevent you from using the serial connection between CPU and MCU directly (as you will need in this tutorial). (If you want to reactivate it, just uncomment the line containing /ttyATH0 in the file /etc/inittab)
 
 
 ## Installing Arduino Yun Cross Compiler
