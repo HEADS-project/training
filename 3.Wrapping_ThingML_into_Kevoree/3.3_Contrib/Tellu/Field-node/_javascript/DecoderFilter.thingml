@@ -38,63 +38,53 @@ thing DecoderFilter includes DecoderMsg{
 	
 	'
 	
-	var a = 1.9982;
-	var b = -0.99820017;
-	var c = 0.033;
-	var d = -0.033;
+	var a = 1.994315;
+	var b = -0.9943162;
+	var c = 0.0973;
+	var d = -0.0973;
 	var coeff = 1;
 	
 	var presCoeff = 0.03051758;
 	
 	var json = JSON.parse('&msg&');
 	
-	var res = {}
-	res.reading = json;
-	res.output = 0;
-	
-	var sensorId = res.reading.data.sensor_id;
+	var sensorId = json.data.sensor_id;
 	var meterings = '&inputs&'[sensorId];
 	if(!meterings){
 		meterings = [];
-		meterings[0] = null;
-		meterings[1] = null;
-		meterings[2] = null;
+		for (var i = 0; i < 11; i++) {
+			meterings[i] = {};
+			meterings[i].comp = 0;
+			meterings[i].temperature = json.data.temperature/9;
+		}
 		'&inputs&'[sensorId] = meterings;
 	}
 	
-	meterings[2] = meterings[1];
-	meterings[1] = meterings[0];
-	meterings[0] = res;
+	meterings[1].comp = meterings[10].comp;
+	meterings[1].temperature = meterings[10].temperature;
+	meterings[0].comp = meterings[9].comp;
+	meterings[0].temperature = meterings[9].temperature;
 	
-	var temperature = [];
-	var outputs = [];
-	for (var i = 0; i < meterings.length; i++) {
-		if(meterings[i]){
-			temperature[i] = meterings[i].reading.data.temperature;
-			outputs[i] = meterings[i].output;
-		}
+	var inc = (json.data.temperature)/9;
+	for (var i = 2; i < meterings.length; i++) {
+		meterings[i].temperature = inc;
 	}
-	if(temperature.length == 3){
-		var comp = coeff* (a*outputs[1] + b*outputs[2] + c*temperature[1] + d*temperature[2]);
 	
-		var pressure = res.reading.data.pressure; 
-		
-		for (var i = 0; i < pressure.length; i++) {
-	 	 	pressure[i] = presCoeff*pressure[i]-comp;
-	 	}
-		
-		console.log("Comp: "+ comp);
-		console.log("Temp: " + temperature[0]);
-		res.output = comp;
+	var pressure = json.data.pressure;
 	
-		return res.reading;
-	} else {
-		return "";
-	}
+	for (var i = 0; i < pressure.length; i++) {
+		var comp = coeff* (a*meterings[i+1].comp + b*meterings[i].comp + c*meterings[i+1].temperature);
+ 	 	pressure[i] = presCoeff*pressure[i]-comp;
+ 	 	meterings[i+2].comp=comp
+ 	 	//console.log("Comp: "+ comp);
+		//console.log("Temp: " + meterings[i].temperature);
+ 	}
+
+	return json;
 	'
 	end
 	
-	
+		
 	function getJson(msg: Map) : String 
 	do
 		'return JSON.stringify('& msg & ')'
@@ -118,9 +108,9 @@ thing DecoderFilter includes DecoderMsg{
 				compensated = filterComp(e.msg)
 				if(not(compensated == "")) do
 					filtered!decoded(getJson(compensated))
-					print("----------------------\n")
-					print(getJson(compensated))
-					print("----------------------\n")
+					//print("----------------------\n")
+					//print(getJson(compensated))
+					//print("----------------------\n")
 				end
 			end
 		}

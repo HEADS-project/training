@@ -1,0 +1,221 @@
+import "Decoder.thingml"
+import "../Filter.thingml"
+import "../datatypes.thingml"
+
+
+
+thing Comparator includes DecoderMsg{
+
+
+	function initialize() do
+		''&ref&' = new Array(10);
+		'&ble&' = {};'
+	end
+
+	function addRef(refmsg : Map) do
+		
+		'
+		for (var i = 1; i < '&ref&'.length; i++) {
+			'&ref&'['&ref&'.length-i] = '&ref&'['&ref&'.length-1-i];
+		}
+		var json = JSON.parse('&refmsg&');
+		
+		'&ref&'[0] = json;
+		
+		var refSampleSet = json.data.sample_set;
+		
+		var keys =Object.keys('&ble&');
+		
+		for (var i = 0; i < keys.length; i++) {
+			var cur_id = keys[i];
+			var msgs = '&ble&'[cur_id];
+			
+			for (var j = 0; j < msgs.length; j++) {
+				if(msgs[j] && msgs[j].data.sample_set == refSampleSet) {
+					generateDiff(msgs[j], json);
+					msgs[j] = null;
+					break;
+				}
+			}
+			for (var j = 1; j < msgs.length; j++) {
+				msgs[msgs.length - j] = msgs[msgs.length -1 - j]
+			}
+		}
+		'
+	end
+	
+	function addBle(blemsg : Map) : Map do
+		'
+		json = JSON.parse('&blemsg&');
+		var curId = json.data.sensor_id;
+		var sampleSet = json.data.sample_set;
+		
+		var msgs = '&ble&'[curId];
+		if(!msgs){
+			msgs = new Array(10);
+			'&ble&'[curId] = msgs;
+		}
+		
+		for (var j = 0; j < '&ref&'.length; j++) {
+			if('&ref&'[j] && '&ref&'[j].data.sample_set == sampleSet) {
+				generateDiff(json, '&ref&'[j]);
+				return;
+			}
+		}
+		
+		for (var i = 1; i < msgs.length; i++) {
+			msgs[msgs.length-i] = msgs[msgs.length-1-i];
+		}
+		
+		msgs[0] = json;
+		'
+	end
+	
+	function generateDiff(blemsg : Map, refmsg : Map) do
+	
+	/*
+ 	{"data" :
+                {"pressure":[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
+                "temperature":21.2,
+                "sample_set":14,
+                "sensor_id":"IsensU 1"
+                },
+	"status" :                           
+                {"fn_id":"FN 1",
+                "bt_rssi": -41,
+                "last_resync": 7
+                }
+	}
+	*/
+		'
+		 var tmp = 0;
+		 var tmp2 = 0;
+		 var tmp3 = 0;
+		 
+		 var prs = [];
+		 var diff = [];
+		 prs[0] = '&blemsg&'.data.pressure;
+		 prs[1] = '&refmsg&'.data.pressure;
+		 
+		 for (var i = 0; i < prs[0].length; i++) {
+			 
+			 var val = 0;
+			 if('&compensate&'){
+				 if(prs[0][i] > -400 && prs[1][i] > -400) {
+					 tmp = prs[0][i]-prs[1][i] + tmp;
+					 if('&average&' != 1000000){
+						 tmp2 = prs[0][i]-prs[1][i]-'&average&' + tmp2;
+					 }
+				 }
+				 if('&average&' == 1000000 && '&average2&' == 1000000){
+					 val = prs[0][i]-prs[1][i];
+				 } else if('&average2&' == 1000000){
+					 val = prs[0][i]-prs[1][i] - '&average&';
+				 } else {
+					 val = prs[0][i]-prs[1][i] - '&average&' - '&average2&';
+				 }
+			 } else {
+				 val = prs[0][i]-prs[1][i];
+			 }
+			 diff[i] = val;
+			 
+			 tmp3 = val + tmp3;
+		 }
+		 
+		 if('&compensate&') {
+			 tmp  = tmp / prs[0].length; //mean_difference 
+			 tmp2  = tmp2 / prs[0].length; //mean_differeceOfdifference
+			 
+			 if('&average&' != 1000000){
+				 '&average&' = tmp / '&AVERAGE_SET&' + '&average&' * ('&AVERAGE_SET&' -1)/'&AVERAGE_SET&';
+			 } else {
+				 '&average&' = tmp;
+			 }
+			 console.log("Average: " + '&average&');
+			 
+			 if('&average2&' != 1000000){
+				 '&average2&' = tmp2 / '&AVERAGE_SET&' + '&average2&' * ('&AVERAGE_SET&' -1)/'&AVERAGE_SET&';
+			 } else {
+				 '&average2&' = tmp2;
+			 }
+			 console.log("Average2: " + '&average2&');
+		 }
+		 
+		 tmp3 = tmp3 / prs[0].length;
+		 if('&fallIndex&' != 1000000){
+			 '&fallIndex&' = tmp3 / '&FALL_SET&'  + '&fallIndex&' * ('&FALL_SET&' -1)/'&FALL_SET&';
+		 } else {
+			 '&fallIndex&' = tmp3;
+		 }
+		 
+		 var result = {};
+		 result.fall_index = '&fallIndex&'
+		 result.bt_rssi = '&blemsg&'.status.bt_rssi
+		 result.sensor_id = '&blemsg&'.data.sensor_id
+		 result.sample_set = '&blemsg&'.data.sample_set
+		 result.fn_id = '&fieldNode&'
+		 var compStr = JSON.stringify(result)'
+		 comparedInternal!decoded('compStr')
+	end
+	
+	property ref : Map
+	property ble : Map
+	property compensate : Boolean = true
+	property average : Long = 1000000
+	property average2 : Long = 1000000
+	property fallIndex : Long = 1000000
+	property FALL_SET : Integer = 2
+	property AVERAGE_SET : Integer = 166
+	property fieldNode : String = "FN1"
+	
+	
+	statechart Comparator init Active @debug "true" {
+	
+		state Active {
+			on entry do
+				initialize()
+				print "Comparator Ready"		
+			end
+			
+			internal event e: comparedInternalRec?decoded
+			action do
+				compared!decoded(e.msg)
+				//print(e.msg)
+			end
+			
+			internal event e : ref?decoded
+			action do
+				addRef(e.msg)
+			end
+			
+			internal event e : ble?decoded
+			action do
+				addBle(e.msg)
+			end
+		}
+	}
+	
+	required port ref {
+		receives decoded
+	}
+	
+	required port ble {
+		receives decoded
+	}
+	
+	provided port compared {
+		sends decoded
+	}
+	
+	required port comparedInternal {
+		sends decoded
+	}
+	
+	provided port comparedInternalRec {
+		receives decoded
+	}
+
+}
+
+
+

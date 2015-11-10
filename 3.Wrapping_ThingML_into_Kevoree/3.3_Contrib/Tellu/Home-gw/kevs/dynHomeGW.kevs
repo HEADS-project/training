@@ -2,7 +2,7 @@
 add node0 : JavascriptNode
 
 //instantiate Kevoree/ThingML components
-add node0.HomeGW_0 : no.tellu.HomeGW/1.0.3
+add node0.HomeGW_0 : no.tellu.HomeGW/1.0.10
 
 add node0.broker : WSMsgBroker
 
@@ -20,22 +20,23 @@ remove {nodeName}
 '
 
 set sync.onConnect = '
-add {nodeName}.FieldNode_0 : no.tellu.FieldNode/1.0.9
+add {nodeName}.FieldNode_0 : no.tellu.FieldNode/1.0.10
+//set {nodeName}.FieldNode_0.nodeName = {nodeName}
 
-add chan: WSChan
-set chan.port = "9050"
-set chan.host = "10.10.0.1"
+//add chan: WSChan
+//set chan.port = "9050"
+//set chan.host = "10.10.0.1"
 
-add chan1: WSChan
-set chan1.port = "9050"
-set chan1.host = "10.10.0.1"
+//add chan1: WSChan
+//set chan1.port = "9050"
+//set chan1.host = "10.10.0.1"
 
-add {nodeName}.submqtt : MQTTSubClient
+add {nodeName}.submqtt : MQTTSubClient/2.0.1
 set {nodeName}.submqtt.topic = "meg/smarttracker"
 set {nodeName}.submqtt.host = "10.10.0.1"
 set {nodeName}.submqtt.port = "1883"
 
-add {nodeName}.pubmqtt : MQTTPubClient
+add {nodeName}.pubmqtt : MQTTPubClient/2.0.1
 set {nodeName}.pubmqtt.topic = "test/smarttracker"
 set {nodeName}.pubmqtt.host = "10.10.0.1"
 set {nodeName}.pubmqtt.port = "1883"
@@ -48,29 +49,29 @@ bind {nodeName}.FieldNode_0.Fie_sen_readingJson_out pubchan
 bind {nodeName}.pubmqtt.jsonPub pubchan
 bind {nodeName}.submqtt.onTopicAndMsg subchan
 
-bind {nodeName}.FieldNode_0.Fie_sen_reading_out chan
-bind {nodeName}.FieldNode_0.Fie_sen_ready_out chan
-bind {nodeName}.FieldNode_0.Fie_sen_start_periodic_reading_in chan1
-bind {nodeName}.FieldNode_0.Fie_sen_reading_cancel_in chan1
-bind {nodeName}.FieldNode_0.Fie_sen_read_in chan1
+//bind {nodeName}.FieldNode_0.Fie_sen_reading_out chan
+//bind {nodeName}.FieldNode_0.Fie_sen_ready_out chan
+//bind {nodeName}.FieldNode_0.Fie_sen_start_periodic_reading_in chan1
+//bind {nodeName}.FieldNode_0.Fie_sen_reading_cancel_in chan1
+//bind {nodeName}.FieldNode_0.Fie_sen_read_in chan1
 
 '
 
 
-add chan: WSChan
-set chan.port = "9050"
-set chan.host = "localhost"
+//add chan: WSChan
+//set chan.port = "9050"
+//set chan.host = "localhost"
 
-add chan1: WSChan
-set chan1.port = "9050"
-set chan1.host = "localhost"
+//add chan1: WSChan
+//set chan1.port = "9050"
+//set chan1.host = "localhost"
 
-add node0.submqtt : MQTTSubClient
+add node0.submqtt : MQTTSubClient/2.0.1
 set node0.submqtt.topic = 'meg/smarttracker'
 set node0.submqtt.host = 'ri.smarttracker.no'
 set node0.submqtt.port = '1883'
 
-add node0.pubmqtt : MQTTPubClient
+add node0.pubmqtt : MQTTPubClient/2.0.1
 set node0.pubmqtt.topic = 'test/smarttracker/pressure'
 set node0.pubmqtt.host = 'ri.smarttracker.no'
 set node0.pubmqtt.port = '1883'
@@ -84,13 +85,13 @@ bind node0.HomeGW_0.Hom_sma_read_in subchan
 bind node0.pubmqtt.pub pubchan
 bind node0.submqtt.onMsg subchan
 
-bind node0.HomeGW_0.Hom_sen_start_periodic_reading_out chan1
-bind node0.HomeGW_0.Hom_sen_reading_cancel_out chan1
-bind node0.HomeGW_0.Hom_sen_read_out chan1
-bind node0.HomeGW_0.Hom_sma_read_in chan
+//bind node0.HomeGW_0.Hom_sen_start_periodic_reading_out chan1
+//bind node0.HomeGW_0.Hom_sen_reading_cancel_out chan1
+//bind node0.HomeGW_0.Hom_sen_read_out chan1
+//bind node0.HomeGW_0.Hom_sma_read_in chan
 
-add node0.fnsubmqtt : MQTTSubClient
-set node0.fnsubmqtt.topic = 'sensor/#'
+add node0.fnsubmqtt : MQTTSubClient/2.0.1
+set node0.fnsubmqtt.topic = 'sensor/fallIndex'
 set node0.fnsubmqtt.host = 'localhost'
 set node0.fnsubmqtt.port = '1883'
 

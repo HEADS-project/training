@@ -1,10 +1,11 @@
 import "../Sensor.thingml"
+import "../Properties.thingml"
 import "Filter.thingml"
 
 datatype Analog
     @js_type "var";
 
-thing SensorJS includes Sensor, Filter
+thing SensorJS includes Sensor, Filter, Properties
 @pim "Sensor"
 @platform "javascript"
 @javascript "node browser"
@@ -22,8 +23,9 @@ thing SensorJS includes Sensor, Filter
          console.log(\'MRAA Version: \' + '& mraa &'.getVersion());'
          
          analogPin0 = 'new '& mraa &'.I2c(1);'
+        
          & analogPin0 & '.address(0x0b);'
-         &vals&' = [];'
+         & vals &' = [];'
          
     end
     
@@ -60,8 +62,8 @@ thing SensorJS includes Sensor, Filter
     	if('& samplePeriod &'/2 > delay ) {
     		delay = delay + '& samplePeriod &';
     	}
-    	console.log("Sample start: "+ delay.toString()) 
-    	return  delay'
+    	//console.log("Sample start: "+ delay.toString()) 
+    	return delay'
     end
     
     function read() : Integer
@@ -78,24 +80,30 @@ thing SensorJS includes Sensor, Filter
 	end
 	else   
     do
-    	'var array = '&analogPin0&'.read(4);
+    	''&analogPin0&'.read(4);
+    	
+	    var now = new Date().getTime();
+	    while(new Date().getTime() < now + 5){ /* do nothing */ } 
+
+    	
+    	var array = '&analogPin0&'.read(4);
 
         //console.log(array[0]);
         //console.log(array[1]);
         //console.log(array[2]);
         //console.log(array[3]);
 
-        console.log("pressure:");
+        //console.log("pressure:");
         var pressure = ((array[0]<<8 | array[1])&0x3FFF)-8192;
-        console.log(pressure);
+        //console.log(pressure);
 
         var utmp = (array[2]<<3|array[3]>>5);
 
         var tmp = (((utmp * 200.0) / 2047.0) - 50.0);
 
-        console.log("temperature:");
-        console.log(tmp);
-        console.log("----------------------");'
+        //console.log("temperature:");
+        //console.log(tmp);
+        //console.log("----------------------");'
       
         return 'pressure'
     end
@@ -117,8 +125,8 @@ thing SensorJS includes Sensor, Filter
 	   data[1] = '& temp & '.readReg(0x01);
 	   var temperature = ((data[0]<<5|data[1]>>3)&0x1FFF)/16
 	   
-	   console.log("temperature:");
-	   console.log(temperature);
+	   //console.log("temperature:");
+	   //console.log(temperature);
 	   return temperature'
    
     end
@@ -145,24 +153,26 @@ thing SensorJS includes Sensor, Filter
     	
     	''&vals&'.push('&pressure&')
     	if ('&vals&'.length == Math.round('& setPeriod/samplePeriod &')){
+    		var tempDiff = 0;
+    		if('&curTempValue&' != 100000){
+    			var tempDiff = '&temperature&' -'&curTempValue&';
+    		}
+    		'&curTempValue&' = '&temperature&'
     		var data = {}
     	    data.pressure = '&vals&'
-    	    data.temperature = '&temperature&'
-    	    var time = new Date().getTime();
-    	    data.sample_set = Math.floor((time/'&setPeriod&')%255 + 1);
+    	    data.temperature = tempDiff
+    	    var time = new Date().getTime()+'&setPeriod&'/2;
+    	    data.sample_set = Math.floor((time/'&setPeriod&')%256);
     	    data.sensor_id = "0x0b";
     	    
     	    var status = {};
-    	    status.fn_id = "node0";
+    	    status.fn_id = '&nodeName&';
     	    status.bt_rssi = 0;
     	    status.last_resync = 0;
     	    var metering = {};
     	    metering.data = data;
     	    metering.status = status;
-    	    
-    	    //var json = {};
-    	    //json.topic="sensor/metering";
-    	    //json.message=JSON.stringify(metering);
+    	        	   
     		var res = JSON.stringify(metering);
     		'&vals&' = []
     		return res;
@@ -176,7 +186,11 @@ thing SensorJS includes Sensor, Filter
     do
     	'var metering = JSON.parse('&str&');
 		var json = {};
-	    json.topic="sensor/metering";
+		if(metering.fall_index) {
+			json.topic="sensor/fallIndex";
+		} else {
+	    	json.topic="sensor/metering";
+	    }
 	    json.message=JSON.stringify(metering);
 		var res = JSON.stringify(json);
 		return res'
@@ -206,7 +220,7 @@ thing SensorJS includes Sensor, Filter
 		}'
 	end
     
-    property test : Boolean = true
+    property test : Boolean = false
     property testval : Integer = 0
     property lastSend : Integer = 0
     property lastRead : Integer = 0
@@ -214,6 +228,7 @@ thing SensorJS includes Sensor, Filter
     property samplePeriod : Integer = 200
     property value : Integer = 0
     property tempValue : Integer = 0
+    property curTempValue : Integer = 100000
     property msg : String
     property analogPin0 : Analog
     property temp : Analog
@@ -237,6 +252,7 @@ thing SensorJS includes Sensor, Filter
 		}
 		state Reading {
 			on entry do 
+			    timer!timer_start(calculateDelay())
 				print "Sensor Reading"
 				value = read()
 				tempValue = readTemp()
@@ -246,7 +262,7 @@ thing SensorJS includes Sensor, Filter
 					decoder!decoded(msg)
 					//sensor_mqtt!readingJson(addTopic(msg))
 				end
-				timer!timer_start(calculateDelay())
+				
 								
 			end
 			
@@ -254,14 +270,14 @@ thing SensorJS includes Sensor, Filter
 			action do				
 				value = read()
 				tempValue = readTemp()
-				printReadPeriod()
+				//printReadPeriod()
 				msg = append(value, tempValue)
 				if (not (msg == ""))
 				do
 					decoder!decoded(msg)
 					//sensor_mqtt!readingJson(addTopic(msg))
 					
-					printSendPeriod()
+					//printSendPeriod()
 					timer!timer_start(calculateStart())
 				end
 				else
@@ -272,25 +288,25 @@ thing SensorJS includes Sensor, Filter
 			
 			internal event e : filtered?decoded
 			action do
-				print("sensorjs: "+e.msg)
+				print("\n MQTT: "+addTopic(e.msg))
 				sensor_mqtt!readingJson(addTopic(e.msg))
 			end
 			
-			internal event sensor_service?read
-			action do
-				value = read()
-				sensor_service!reading(value)
-			end		
+			//internal event sensor_service?read
+			//action do
+			//	value = read()
+			//	sensor_service!reading(value)
+			//end		
 			
-			internal event t : sensor_service?start_periodic_reading
-			action do
-				delay = t.delay
-				timer!timer_cancel()
-				timer!timer_start(delay)
-			end
+			//internal event t : sensor_service?start_periodic_reading
+			//action do
+			//	delay = t.delay
+			//	timer!timer_cancel()
+			//	timer!timer_start(delay)
+			//end
 			
-			internal event sensor_service?reading_cancel
-			action timer!timer_cancel()
+			//internal event sensor_service?reading_cancel
+			//action timer!timer_cancel()
 		}
 	}
 }

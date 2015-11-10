@@ -1,0 +1,7 @@
+import "datatypes.thingml"
+
+    
+thing fragment Properties {
+	property nodeName : String = "FN1"  
+}
+

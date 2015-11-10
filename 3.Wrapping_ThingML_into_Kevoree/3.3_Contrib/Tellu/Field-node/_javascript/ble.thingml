@@ -11,14 +11,20 @@ thing BLE includes BLEServer, BLEServerInternal
 {
 
 	function initialize() do
-	   	ble =' require(\'noble\');'
-	   	''&ble&'.on(\'stateChange\', function(state) {
+	
+	if(not(test)) do	
+	   	ble =' require(\'noble\');	   	
+	   	
+	   	'& ble &'.on(\'stateChange\', function(state) {
 	   	console.log(\'stateChange\')'
   		BLEInternal!stateChange('state')'
   		console.log(\'sent state \' +state)	
 		});'
 		
 		''&ble&'.on(\'discover\', function(peripheral) {
+		if(peripheral.advertisement == null || peripheral.advertisement.serviceData == null|| peripheral.advertisement.serviceData.length == 0){
+			return;
+		}
 		var perStr = JSON.stringify(peripheral, function( key, value) { 
   			if( key == \'_noble\') { return value.id;}
   			else {return value;}
@@ -26,9 +32,11 @@ thing BLE includes BLEServer, BLEServerInternal
   		BLEInternal!discover('perStr')'
   		//console.log(\'sent state \' +perStr)	
 		});'
+		end
 		
 	end
 
+	property test : Boolean = false
 	property ble : BLE
 	property peripherals : Peripherals
 

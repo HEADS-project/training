@@ -23,14 +23,16 @@ thing fragment SensorMsgs {
 	message ready();
 }
 
+
+
 thing Sensor includes TimerMsgs, SensorMsgs, DecoderMsg {
 
-	property delay : Integer 
+	//property delay : Integer
 
-	provided port sensor_service @public "true" {
-		sends reading, ready
-		receives start_periodic_reading, reading_cancel, read 
-	}
+	//provided port sensor_service @public "true" {
+	//	sends reading, ready
+	//	receives start_periodic_reading, reading_cancel, read 
+	//}
 	
 	required port sensor_mqtt {
 		sends readingJson 		

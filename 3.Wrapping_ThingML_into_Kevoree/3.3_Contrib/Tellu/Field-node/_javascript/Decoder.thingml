@@ -1,10 +1,12 @@
 import "ble.thingml"
 import "../Filter.thingml"
+import "../Sensor.thingml"
+import "../Properties.thingml"
 
 datatype Map
     @js_type "var";
 
-thing Decoder includes BLEClient, DecoderMsg{
+thing Decoder includes BLEClient, DecoderMsg, Properties{
 
 
 	function initialize() do
@@ -28,14 +30,15 @@ thing Decoder includes BLEClient, DecoderMsg{
 		var serviceData = per.advertisement.serviceData
 		
 		for(i = 0; i < serviceData.length; i++) {
-		console.log("servicedata"+serviceData)
+		   //console.log("servicedata"+serviceData)
 			if(serviceData[i].uuid == "1840"){
 				data = serviceData[i].data;
 			} else {
+			    //console.log("Skipping wrong UUID service");
 				return "";
 			}
 		}
-		console.log(per);
+		//console.log(per);
 		var cur_device_no = per.uuid;
 		
 		//if('& deviceSeq &' == null){
@@ -43,13 +46,17 @@ thing Decoder includes BLEClient, DecoderMsg{
 		//}
 		
 		var cur_sequence_no = data[0]; // Upcast to avoid negative number
-		console.log("cur_sequence_no: "+cur_sequence_no);
-		console.log("deviceSeq: "+JSON.stringify('& deviceSeq &'));
-        if ('& deviceSeq &'[cur_device_no] == null || cur_sequence_no > '& deviceSeq &'[cur_device_no] || cur_sequence_no == 0 && '& deviceSeq &'[cur_device_no] == 255) {
+		//console.log("cur_sequence_no: "+cur_sequence_no);
+		//console.log("deviceSeq: "+JSON.stringify('& deviceSeq &'));
+        if ('& deviceSeq &'[cur_device_no] == null || cur_sequence_no != '& deviceSeq &'[cur_device_no]) {
             
             '& deviceSeq &'[cur_device_no] = cur_sequence_no;
                         
             var temperature = data[1]; // Transmitted as 8 bits, note must handle negative numbers, not tested
+            if(temperature > 128){
+            	temperature = temperature - 256;
+            }
+            temperature = temperature/128;
             var last_resync = data[2] & 0x03; // Upcast to avoid negative number
             var pressure = [];
             var pres_set_bit = 0;
@@ -92,8 +99,8 @@ thing Decoder includes BLEClient, DecoderMsg{
 				                "sensor_id":cur_device_no
 				                },
 					"status" :                           
-				                {"fn_id":"FN 1",
-				                "bt_rssi": '& ble &'.rssi,
+				                {"fn_id":'&nodeName&',
+				                "bt_rssi": per.rssi,
 				                "last_resync": last_resync
 				                }
 				    }
@@ -107,7 +114,7 @@ thing Decoder includes BLEClient, DecoderMsg{
            
            return sensorData
         } else {
-           console.log("Skipping BLE advertisement");
+           //console.log("Skipping BLE advertisement");
            return "";
         }
 		'
@@ -151,7 +158,7 @@ thing Decoder includes BLEClient, DecoderMsg{
 
 configuration DecodeBle {
 		instance ble : BLE
-		instance decoder : Decoder @debug "true"
+		instance decoder : Decoder @debug "false"
 		connector ble.BLEInternalRec => ble.BLEInternal
 		connector decoder.BLE => ble.BLE
 		

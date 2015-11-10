@@ -37,11 +37,13 @@ thing Filter includes DecoderMsg{
 	
 	'
 	
-	var a = 1.9982;
-	var b = -0.99820017;
-	var c = 0.033;
-	var d = -0.033;
+	var a = 1.994315;
+	var b = -0.9943162;
+	var c = 0.0973;
+	var d = -0.0973;
 	var coeff = 1;
+	
+	var presCoeff = 0.03051758;
 	
 	
 	var temperature = []
@@ -79,8 +81,8 @@ thing Filter includes DecoderMsg{
 	end
 	
 	
-	stream compansation @TTL "7000" do 
-		from e : [e1: decoder?decoded & e2 : outputRecv?output -> tmp(e1.msg, e2.value)]::lengthWindow(3,1)
+	stream compansation @TTL1 "0" @TTL2 "7000" do 
+		from e : [e1  : decoder?decoded  & e2 : outputRecv?output -> tmp(e1.msg, e2.value)]::lengthWindow(3,1)
 		select compensated : filterComp(e.msg[], e.value[])
 		action output!tmp2(compensated)
 	
