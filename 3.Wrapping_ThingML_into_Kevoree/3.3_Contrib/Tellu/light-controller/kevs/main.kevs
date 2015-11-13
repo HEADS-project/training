@@ -1,0 +1,51 @@
+//create server JavaScript node (node0)
+add node0 : JavascriptNode
+
+//instantiate Kevoree/ThingML components
+add node0.HomeGW_0 : my.package.HomeGW/1.0.0
+
+add node0.broker : WSMsgBroker
+
+// define on which port the broker will start
+set node0.broker.port = '9050'
+
+//create a default group to manage the node(s)
+add sync : WSGroup
+set sync.port/node0 = "9000"
+attach node0 sync
+set sync.master = 'node0'
+
+add node0.mqttSmarttrackerToGateway : MQTTSubClient
+set node0.mqttSmarttrackerToGateway.topic = 'meg/smarttracker'
+set node0.mqttSmarttrackerToGateway.host = 'ri.smarttracker.no'
+set node0.mqttSmarttrackerToGateway.port = '1883'
+
+add node0.mqttGatewayToSmarttracker : MQTTPubClient
+set node0.mqttGatewayToSmarttracker.topic = 'device/smarttracker/observation'
+set node0.mqttGatewayToSmarttracker.host = 'ri.smarttracker.no'
+set node0.mqttGatewayToSmarttracker.port = '1883'
+
+add fieldNodeCallbackChannel : LocalChannel
+
+bind node0.mqttSmarttrackerToGateway.onMsg fieldNodeCallbackChannel
+bind node0.HomeGW_0.Hom_sma_read_in fieldNodeCallbackChannel
+
+add gatewayToSmarttrackerChannel : LocalChannel
+bind node0.mqttGatewayToSmarttracker.pub gatewayToSmarttrackerChannel
+bind node0.HomeGW_0.Hom_sma_readingJson_out gatewayToSmarttrackerChannel
+
+add node0.mqttFieldNodeToGateway : MQTTSubClient
+set node0.mqttFieldNodeToGateway.topic = 'sensor/#'
+set node0.mqttFieldNodeToGateway.host = '10.3.1.150'
+set node0.mqttFieldNodeToGateway.port = '1883'
+
+add fieldNodeSenseChannel : LocalChannel
+
+bind node0.HomeGW_0.Hom_sen_readingJson_in fieldNodeSenseChannel
+bind node0.mqttFieldNodeToGateway.onMsg fieldNodeSenseChannel
+
+
+start sync
+//start node0
+
+

@@ -1,0 +1,31 @@
+import "../Field-node/Sensor.thingml"
+
+
+thing SensorServer includes SensorMsgs {
+
+	property delay : Integer = 1000
+
+	required port sensor_service 
+	@public "true" 
+	{
+		sends start_periodic_reading, reading_cancel, read 
+		receives reading, ready
+	}
+	
+	required port sensor_mqtt 
+	@public "true" 
+	@external "true"
+	{ 
+		receives readingJson
+	}
+	
+	provided port smarttracker 
+	@public "true" 
+	@external "true"
+	{
+	 		sends readingJson
+	 		receives read
+	}
+
+  
+}
