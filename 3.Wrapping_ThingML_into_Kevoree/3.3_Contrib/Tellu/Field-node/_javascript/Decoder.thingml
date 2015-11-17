@@ -129,6 +129,7 @@ thing Decoder includes BLEClient, DecoderMsg, Properties{
 	property deviceSeq : Map
 	property decodedMsg : Map
 	
+	
 	statechart Decoder init Active @debug "false" {
 	
 		state Active {

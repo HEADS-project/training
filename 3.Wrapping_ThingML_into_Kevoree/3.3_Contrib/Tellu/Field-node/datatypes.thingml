@@ -100,6 +100,7 @@ datatype String
 	@c_type "char *"
 	@c_byte_size "*"
 	@java_type "String"
+	@java_primitive "true"
     @js_type "String"
     @SenML_type "String";
 	

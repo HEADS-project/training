@@ -2,7 +2,7 @@
 add node0 : JavascriptNode
 
 //instantiate Kevoree/ThingML components
-add node0.HomeGW_0 : no.tellu.HomeGW/1.0.10
+add node0.HomeGW_0 : no.tellu.HomeGW/1.0.17
 
 add node0.broker : WSMsgBroker
 
@@ -10,7 +10,7 @@ add node0.broker : WSMsgBroker
 set node0.broker.port = '9050'
 
 //create a default group to manage the node(s)
-add sync : WSGroup
+add sync : WSGroup/5.2.11-SNAPSHOT
 set sync.port/node0 = "9000"
 attach node0 sync
 set sync.master = 'node0'
@@ -20,8 +20,8 @@ remove {nodeName}
 '
 
 set sync.onConnect = '
-add {nodeName}.FieldNode_0 : no.tellu.FieldNode/1.0.10
-//set {nodeName}.FieldNode_0.nodeName = {nodeName}
+add {nodeName}.FieldNode_0 : no.tellu.FieldNode/1.0.17
+set {nodeName}.FieldNode_0.FieldNode_sensor_Properties_nodeName__var = "{nodeName}"
 
 //add chan: WSChan
 //set chan.port = "9050"
@@ -82,8 +82,8 @@ add subchan : LocalChannel
 bind node0.HomeGW_0.Hom_sma_reading_out pubchan
 bind node0.HomeGW_0.Hom_sma_read_in subchan
 
-bind node0.pubmqtt.pub pubchan
-bind node0.submqtt.onMsg subchan
+bind node0.pubmqtt.jsonPub pubchan
+bind node0.submqtt.onTopicAndMsg subchan
 
 //bind node0.HomeGW_0.Hom_sen_start_periodic_reading_out chan1
 //bind node0.HomeGW_0.Hom_sen_reading_cancel_out chan1

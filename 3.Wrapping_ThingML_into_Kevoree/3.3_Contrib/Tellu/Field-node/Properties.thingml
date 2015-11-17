@@ -2,6 +2,6 @@ import "datatypes.thingml"
 
     
 thing fragment Properties {
-	property nodeName : String = "FN1"  
+	property nodeName : String = "FN1"  @kevoree "merge"
 }
 
