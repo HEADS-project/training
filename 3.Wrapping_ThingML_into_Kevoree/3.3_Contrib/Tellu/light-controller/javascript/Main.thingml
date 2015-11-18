@@ -1,4 +1,4 @@
-import "LightControllerJS.thingml"
+import "LightController.thingml"
 
 configuration HomeGW {
     instance lightControllerServer : LightController   

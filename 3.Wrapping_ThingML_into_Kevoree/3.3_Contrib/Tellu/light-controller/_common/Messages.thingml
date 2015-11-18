@@ -1,0 +1,6 @@
+import "../../Field-node/Sensor.thingml"
+
+thing fragment SmarttrackerMessages {
+	message postJson(value : String);
+	message commandJson(value : String);
+}

@@ -6,7 +6,8 @@ datatype String
 	@c_type "char *"
 	@c_byte_size "2"
 	@java_type "String"
-	@js_type "String";
+	@js_type "String"
+	@java_primitive "true";
 
 thing fragment SensorMsgs {
 	// Start the Timer
