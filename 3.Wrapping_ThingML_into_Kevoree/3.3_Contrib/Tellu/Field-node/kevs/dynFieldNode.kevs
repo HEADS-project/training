@@ -3,7 +3,7 @@
 add node0 : JavascriptNode
 add %node% : JavascriptNode
 //create a default group to manage the node(s)
-add sync : WSGroup
+add sync : WSGroup/5.2.11-SNAPSHOT
 set sync.port/node0 = "9000"
 attach %node% sync
 set sync.master = 'node0'

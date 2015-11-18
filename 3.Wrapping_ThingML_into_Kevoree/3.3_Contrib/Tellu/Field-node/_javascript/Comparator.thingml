@@ -9,7 +9,10 @@ thing Comparator includes DecoderMsg{
 
 	function initialize() do
 		''&ref&' = new Array(10);
-		'&ble&' = {};'
+		'&ble&' = {};
+		'&average&' = {};
+		'&average2&' = {};
+		'&fallIndex&' = {};'
 	end
 
 	function addRef(refmsg : Map) do
@@ -94,6 +97,7 @@ thing Comparator includes DecoderMsg{
 		 
 		 var prs = [];
 		 var diff = [];
+		 var sensorId = '&blemsg&'.data.sensor_id;
 		 prs[0] = '&blemsg&'.data.pressure;
 		 prs[1] = '&refmsg&'.data.pressure;
 		 
@@ -101,18 +105,20 @@ thing Comparator includes DecoderMsg{
 			 
 			 var val = 0;
 			 if('&compensate&'){
-				 if(prs[0][i] > -400 && prs[1][i] > -400) {
+			 	var average = '&average&'[sensorId];
+			 	var average2 = '&average2&'[sensorId];
+				if(prs[0][i] > -400 && prs[1][i] > -400) {
 					 tmp = prs[0][i]-prs[1][i] + tmp;
-					 if('&average&' != 1000000){
-						 tmp2 = prs[0][i]-prs[1][i]-'&average&' + tmp2;
+					 if(average || average==0){
+						 tmp2 = prs[0][i]-prs[1][i]-average + tmp2;
 					 }
 				 }
-				 if('&average&' == 1000000 && '&average2&' == 1000000){
+				 if((!average && average!=0) && (!average2 && average2!=0)){
 					 val = prs[0][i]-prs[1][i];
-				 } else if('&average2&' == 1000000){
-					 val = prs[0][i]-prs[1][i] - '&average&';
+				 } else if(!average2 && average2!=0){
+					 val = prs[0][i]-prs[1][i] - average;
 				 } else {
-					 val = prs[0][i]-prs[1][i] - '&average&' - '&average2&';
+					 val = prs[0][i]-prs[1][i] - average - average2;
 				 }
 			 } else {
 				 val = prs[0][i]-prs[1][i];
@@ -126,47 +132,47 @@ thing Comparator includes DecoderMsg{
 			 tmp  = tmp / prs[0].length; //mean_difference 
 			 tmp2  = tmp2 / prs[0].length; //mean_differeceOfdifference
 			 
-			 if('&average&' != 1000000){
-				 '&average&' = tmp / '&AVERAGE_SET&' + '&average&' * ('&AVERAGE_SET&' -1)/'&AVERAGE_SET&';
+			 if(average || average==0){
+				 '&average&'[sensorId] = tmp / '&AVERAGE_SET&' + average * ('&AVERAGE_SET&' -1)/'&AVERAGE_SET&';
 			 } else {
-				 '&average&' = tmp;
+				 '&average&'[sensorId] = tmp;
 			 }
-			 console.log("Average: " + '&average&');
+			 console.log("Average: " + '&average&'[sensorId]);
 			 
-			 if('&average2&' != 1000000){
-				 '&average2&' = tmp2 / '&AVERAGE_SET&' + '&average2&' * ('&AVERAGE_SET&' -1)/'&AVERAGE_SET&';
+			 if(average2 || average2==0){
+				 '&average2&'[sensorId] = tmp2 / '&AVERAGE_SET&' + average2 * ('&AVERAGE_SET&' -1)/'&AVERAGE_SET&';
 			 } else {
-				 '&average2&' = tmp2;
+				 '&average2&'[sensorId] = tmp2;
 			 }
-			 console.log("Average2: " + '&average2&');
+			 console.log("Average2: " + '&average2&'[sensorId]);
 		 }
 		 
 		 tmp3 = tmp3 / prs[0].length;
-		 if('&fallIndex&' != 1000000){
-			 '&fallIndex&' = tmp3 / '&FALL_SET&'  + '&fallIndex&' * ('&FALL_SET&' -1)/'&FALL_SET&';
+		 var fallIndex = '&fallIndex&'[sensorId];
+		 if(fallIndex || fallIndex == 0){
+			 '&fallIndex&'[sensorId] = tmp3 / '&FALL_SET&'  + fallIndex * ('&FALL_SET&' -1)/'&FALL_SET&';
 		 } else {
-			 '&fallIndex&' = tmp3;
+			 '&fallIndex&'[sensorId] = tmp3;
 		 }
 		 
 		 var result = {};
-		 result.fall_index = '&fallIndex&'
+		 result.fall_index = '&fallIndex&'[sensorId]
 		 result.bt_rssi = '&blemsg&'.status.bt_rssi
 		 result.sensor_id = '&blemsg&'.data.sensor_id
 		 result.sample_set = '&blemsg&'.data.sample_set
-		 result.fn_id = '&fieldNode&'
+		 result.fn_id = '&blemsg&'.status.fn_id
 		 var compStr = JSON.stringify(result)'
 		 comparedInternal!decoded('compStr')
 	end
 	
 	property ref : Map
 	property ble : Map
-	property compensate : Boolean = true
-	property average : Long = 1000000
-	property average2 : Long = 1000000
-	property fallIndex : Long = 1000000
-	property FALL_SET : Integer = 2
-	property AVERAGE_SET : Integer = 166
-	property fieldNode : String = "FN1"
+	property compensate : Boolean = true @kevoree "instance"
+	property average : Map
+	property average2 : Map
+	property fallIndex : Map
+	property FALL_SET : Integer = 2 @kevoree "instance"
+	property AVERAGE_SET : Integer = 166 @kevoree "instance"
 	
 	
 	statechart Comparator init Active @debug "true" {
