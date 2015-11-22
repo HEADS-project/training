@@ -1,0 +1,30 @@
+{
+    "name": "kevoree-comp-helloworld",
+    "version": "1.0.0",
+    "description": "adasdasf",
+    "main": "./lib/HelloWorld.js",
+    "kevoree": {
+        "package": "my.package"
+    },
+    "scripts": {
+        "prepublish": "grunt",
+        "postpublish": "grunt publish"
+    },
+    "keywords": [
+        "kevoree-std-lib",
+        "kevoree",
+        "library",
+        "comp"
+    ],
+    "dependencies": {
+        "kevoree-entities": "^8.0.0"
+    },
+    "devDependencies": {
+        "grunt": "^0.4.1",
+        "grunt-kevoree": "^5.0.0",
+        "grunt-kevoree-genmodel" : "^2.0.0",
+        "grunt-kevoree-registry" : "^2.0.0"
+    },
+    "license": "MIT",
+    "author": "Magnus"
+}
