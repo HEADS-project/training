@@ -1,7 +1,7 @@
-import "../Field-node/Sensor.thingml"
+import "../../Field-node/Sensor.thingml"
+import "Messages.thingml"
 
-
-thing SensorServer includes SensorMsgs {
+thing SensorServer includes SensorMsgs, SmarttrackerMessages {
 
 	property delay : Integer = 1000
 
@@ -23,8 +23,8 @@ thing SensorServer includes SensorMsgs {
 	@public "true" 
 	@external "true"
 	{
-	 		sends readingJson
-	 		receives read
+	 		sends postJson
+	 		receives commandJson
 	}
 
   

@@ -1,4 +1,4 @@
-import "../Server.thingml"
+import "../_common/SensorServer.thingml"
 
     
 thing LightController includes SensorServer
@@ -7,25 +7,41 @@ thing LightController includes SensorServer
 {
 
  	property reading : String
- 	property readValue : String = "0" 
+ 	property readValue : String = "0"
+ 	
+ 	property deviceId : String = "defaultuuid" @kevoree "instance"
 
  	function numberify(readValue : String) : Integer
  	do
  		
  		'return parseInt(String('&readValue&'));'
  	end
+ 	function stringify(anyValue : String) : String
+ 	do
+ 		
+ 		'return String('&anyValue&');'
+ 	end
+ 	
+ 	function createObservation(lightValue : String) : Integer
+ 	do
+ 		'var obsdata = [];'
+ 		if (lightValue == "101")
+		do
+			'obsdata.push({"light":"off"});'
+		end
+ 		if (lightValue == "102")
+		do
+			'obsdata.push({"light":"on"});'
+		end
+		
+		'
+		var obs = {deviceId: ' & deviceId & ', observations: obsdata};
+ 			
+ 		return JSON.stringify(obs);
+ 		'
+ 	end
 	
 	  statechart Server init reading {
-        
-        /*state idle {
-            
-            transition -> reading 
-            event sensor_service?ready
-            action do
-            	print "Fieldnode online\n"
-            	sensor_service!start_periodic_reading(delay)
-            end
-        }*/
         
         state reading {
         
@@ -37,7 +53,7 @@ thing LightController includes SensorServer
                 print readingJson.value      
             	print ">"
 
-            	readValue = numberify(readingJson.value)
+            	readValue = stringify(numberify(readingJson.value))
             	
             	print " readValue <"
                 print readValue      
@@ -45,7 +61,7 @@ thing LightController includes SensorServer
 
             	if(not(readValue == -1))         
                 do                 
-	        		smarttracker!readingJson(readValue)
+	        		smarttracker!postJson( createObservation( readValue) )
 	            	print "sent on MQTT"     
             	end   
             end     
