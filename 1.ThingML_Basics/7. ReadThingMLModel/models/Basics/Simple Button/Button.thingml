@@ -1,0 +1,62 @@
+/**
+File: Button.thingml
+
+Result:	Once compiled and executed this will turn a LED on while the button is pressed
+
+HardWare required: 	Arduino Uno compatible board
+					a LED
+					a button
+					
+Feature taken up: 	- readDigital
+					- readDigitalResponse
+					- ready
+					
+TODO: compile and run 
+
+TODO: Modify this code to have  two button commanding each one a LED (use the "guard")
+*/
+
+import "../../lib/_Arduino.thingml"
+
+configuration ArduinoSketchCfg {
+	instance arduinoScheduler:  ArduinoScheduler
+	instance application: ButtonSketch
+	connector application.arduino => arduinoScheduler.arduino
+}
+
+thing ButtonSketch includes ArduinoApplication
+{
+	
+	readonly property LED : UInt8 = 7
+	readonly property Button : UInt8 = 6
+	property ButtonState : DigitalState = DigitalState:LOW
+
+	statechart ArduinoTimerStateChart init Setup {
+		state Setup { /**
+						This state is not always usefull, most of the time, not writing it will not change any thing.
+						It guarentee the Arduino abstraction layer is already initialized when we start runnin our application
+						If you don't put it you can have lost instruction on the arduino port if they are in the "on entry" of you first state
+						*/
+			transition -> Idle event e : arduino?ready
+		}
+
+		state Idle {
+			on entry do
+				arduino!setOutput(LED)
+				arduino!setInput(Button)
+				arduino!readDigital(Button)
+			end
+			transition -> Idle event arduino?100ms_interrupt // we actualize the state of our button every 100ms
+			
+			internal event e : arduino?readDigitalResponse guard (e.pin == Button) action do //guard is used in order to now the answer we're getting is a response to our request
+																							//it is not really usefull here because only one request exist but in more complex system it will be
+				if (e.DigitalState == DigitalState:HIGH) do
+					arduino!setDigitalHigh(LED)
+				end
+				if (e.DigitalState == DigitalState:LOW) do
+					arduino!setDigitalLow(LED)
+				end
+			end
+		}
+	}
+}

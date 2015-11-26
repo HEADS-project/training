@@ -1,0 +1,48 @@
+/**
+File: Sensor.thingml
+
+Result:	Once compiled and executed this will display the value returned by the sensor on the serial port
+
+HardWare required: 	Arduino Uno compatible board
+					an analogic sensor (light or temerature will do)
+					a LED (not necessary to run this code)
+					
+Feature taken up: 	- readAnalog
+					- readAnaloglResponse
+					
+TODO: compile and run 
+
+TODO: Modify this code to hove an application which turn a led on when the sensor send back a value greater than a given number (choosed by you to be easy to test)
+	  Change the refreshing rate to be 4ms
+*/
+
+import "../../lib/_Arduino.thingml"
+
+configuration ArduinoSketchCfg {
+	instance arduinoScheduler:  ArduinoScheduler
+	instance application: SensorSketch
+	connector application.arduino => arduinoScheduler.arduino
+}
+
+thing SensorSketch includes ArduinoApplication
+{
+	
+	readonly property Sensor : UInt8 = 0
+
+	statechart ArduinoTimerStateChart init Idle {
+
+		on entry arduino!setInput(Sensor)
+		state Idle {
+			on entry do
+				arduino!readAnalog(Sensor)
+			end
+			transition -> Idle event arduino?100ms_interrupt
+			
+			internal event e : arduino?readAnalogResponse guard (e.pin == Sensor) action do
+				arduino!serial_print_str("Sensor value: ")
+				arduino!serial_print_num(e.res)
+				arduino!serial_print_str("\n")
+			end
+		}
+	}
+}
