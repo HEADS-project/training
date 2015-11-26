@@ -1,8 +1,0 @@
-digraph finite_state_machine {
-	rankdir=LR;
-	INIT_STATE [shape=circle label = "", style = filled, color = "black"];
-		INIT_STATE -> Greetings [label="init"];
-	Greetings [label="Greetings", shape = ellipse];
-		Greetings -> Bye [label="{a}"];
-	Bye [label="Bye{i}", shape = ellipse];
-}
