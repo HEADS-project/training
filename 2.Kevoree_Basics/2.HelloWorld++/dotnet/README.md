@@ -41,7 +41,7 @@ set node0.myComp.greetMessage = 'Hello, HEADS!'
 Now that you have defined a new dictionary attribute named `greetMessage` you will want to use it within your component code.
 To retrieve an attribute value at runtime in Kevoree Dotnet you just have to use the reference of your annotated field
 
-```java
+```dotnet
 [Param(Optional = false)] public String greetMessage;
 
 [KevoreeInject] private ILogger logger;
@@ -72,7 +72,7 @@ You can specify 3 different properties in the `@Param(...)` annotation for your 
 
 Ok, let's be more descriptive about `greetMessage`
 
-```java
+```dotnet
 [Param(Optional = false, DefaultValue = "Hello, world")]
 public String greetMessage;
 ```
