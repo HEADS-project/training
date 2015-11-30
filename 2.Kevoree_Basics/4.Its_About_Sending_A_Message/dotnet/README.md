@@ -133,7 +133,8 @@ public void input(String msg)
     {
         Console.WriteLine(context.getInstanceName() + ">" + msg);
     }
-}```
+}
+```
 
 Every time the **ConsolePrinter** component receives a message, the `input(msg)` method is called with the `msg` parameter set with the content of the received message.  
 You can see that the behavior is really basic: it uses the Dotnet native `System.Console.WriteLine` method to output the content to the standard output.
