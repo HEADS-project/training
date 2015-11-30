@@ -1,4 +1,4 @@
-> :warning: This tutorial is the sequel of [3.Runtime_Reconfigurations - Java](https://github.com/HEADS-project/training/tree/master/2.Kevoree_Basics/3.Runtime_Reconfigurations/java), be sure to do the previous tutorial first.
+> :warning: This tutorial is the sequel of [3.Runtime_Reconfigurations - Dotnet](https://github.com/HEADS-project/training/tree/master/2.Kevoree_Basics/3.Runtime_Reconfigurations/dotnet), be sure to do the previous tutorial first.
 
 #### Purpose of this tutorial
 In a distributed system what you want to do is sending messages between your different components.  
@@ -8,7 +8,7 @@ Communications in Kevoree introduce 2 new concepts:
     - Input - receives messages from outside in your components
     - Output - sends messages from your component to "outside"
   - **Channel**: this is where the communication protocol is implemented  
-    Channels can implement any type of communication protocol, the only job they do, is receiving messages from the connected **output** ports and broadcasting them to the connected **input** ports
+    Channels can implement any type of communication protocol, the only job they do is receiving messages from the connected **output** ports and broadcasting them to the connected **input** ports
 
 The Kevoree Standard Library already provides different type of channels so you do not have to create a channel from scratch to get started.
 In this tutorial, you will use a channel named **SyncBroadcast**  

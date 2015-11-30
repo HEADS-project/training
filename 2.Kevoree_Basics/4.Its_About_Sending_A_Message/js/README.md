@@ -8,7 +8,7 @@ Communications in Kevoree introduce 2 new concepts:
     - Input - receives messages from outside in your components
     - Output - sends messages from your component to "outside"
   - **Channel**: this is where the communication protocol is implemented  
-    Channels can implement any type of communication protocol, the only job they do, is receiving messages from the connected **output** ports and broadcasting them to the connected **intput** ports
+    Channels can implement any type of communication protocol, the only job they do, is receiving messages from the connected **output** ports and broadcasting them to the connected **input** ports
 
 The Kevoree Standard Library already provides different type of channels so you do not have to create a channel from scratch to get started.
 In this tutorial, you will use a channel named **LocalChannel**  
@@ -105,7 +105,7 @@ bind node0.myComp.hello chan
 // add an instance of ConsolePrinter named "printer" to the host platform
 add node0.printer : ConsolePrinter
 
-// bind the intput port "input" to chan
+// bind the input port "input" to chan
 bind node0.printer.input chan
 ```
 
