@@ -44,14 +44,14 @@ You can use msbuild or open the project in Visual Studio and compile it from her
 
 #### How to run the project
 ##### Publishing the component
-Once developped, a component must be published in a registry before it can be started in a kevoree instance.
+Once developed, a component must be published in a registry before it can be started in a Kevoree instance.
 
 To to so you can refere to [the official NuGet documentation](https://docs.NuGet.org/create/creating-and-publishing-a-package).
 
 You are free to publish your code to any NuGet repository. My advice is to only publish stable component in the official NuGet repository (https://www.NuGet.org/) and to use a local registry for you developments (for exemple [ProGet](http://inedo.com/proget) is a nice free solution, fast and stable).
 
 ##### Releasing the component
-The [Model Generator](https://github.com/kevoree/kevoree-dotnet-model-generator/releases/latest) allows you to publish a component to an http kevoree registry or to save you component's model into a file.
+The [Model Generator](https://github.com/kevoree/kevoree-dotnet-model-generator/releases/latest) allows you to publish a component to an http Kevoree registry or to save you component's model into a file.
 
 My advice is to only publish stable components in the [official Kevoree registry](http://registry.kevoree.org/) and to generate files during development.
 
@@ -95,10 +95,10 @@ Copyright ©  2015
 To publish a component in a file you just have to set the path to a file in the *output.path* option.
 
 ###### In a registry
-To publish a component to a http kevoree registry you can either ignore the option and the component will be publish in the [offial kevoree registry](http://registry.kevoree.org) or a valid http url (you can, for example, deploy you own registry instances using ou [docker image](https://github.com/kevoree/docker-image-registry-replica)).
+To publish a component to a http Kevoree registry you can either ignore the option and the component will be publish in the [offial Kevoree registry](http://registry.kevoree.org) or a valid http url (you can, for example, deploy you own registry instances using ou [docker image](https://github.com/kevoree/docker-image-registry-replica)).
 
 ##### Defining the model
-If your component have been published into an http kevoree registry it should be available in the "Registry Libraries" tab of the [online editor](http://editor.kevoree.org/).
+If your component have been published into an http Kevoree registry it should be available in the "Registry Libraries" tab of the [online editor](http://editor.kevoree.org/).
 If it has been generated into a file, you can merge into your model using the File -> Merge menu of the "Model Editor" tab.
 
 One your component are loaded you just have to define and push your model to your nodes as usual.
