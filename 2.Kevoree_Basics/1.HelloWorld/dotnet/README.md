@@ -106,24 +106,30 @@ One your component are loaded you just have to define and push your model to you
 #### Understand the HelloWorld component
 Kevoree Dotnet is using attributes to let you specify what's what in your code.  
 When Kevoree will have to **start** your component, it will call the method with the `[Start]` attribute
+
 ```dotnet
 [Start]
 public void Start()
 {
     Console.WriteLine("Hello, world!");
-}```
+}
+```
+
 When Kevoree will have to **stop** your component, it will call the method with the `[Stop]` attribute
+
 ```dotnet
 [Stop]
 public void Stop()
 {
     Console.WriteLine("Bye, world!");
-}```
+}
+```
 
 Kevoree Java knows several other `attributes` but they will be explained in a later tutorial.
 
 Kevoree Dotnet provides a logger by component injection using the KevoreeInject.
 The ILogger interface is provided by the Logger API (Org.Kevoree.Log.Api in NuGet).
+
 ```dotnet
 [KevoreeInject]
 private Org.Kevoree.Log.Api.ILogger logger;
