@@ -1,4 +1,4 @@
-> :warning: This tutorial is the sequel of [2.HelloWorld++ - Java](https://github.com/HEADS-project/training/tree/master/2.Kevoree_Basics/2.HelloWorld++/dotnet), be sure to do the previous tutorial first.
+> :warning: This tutorial is the sequel of [2.HelloWorld++ - Dotnet](https://github.com/HEADS-project/training/tree/master/2.Kevoree_Basics/2.HelloWorld++/dotnet), be sure to do the previous tutorial first.
 
 #### Purpose of the Kevoree Web Editor
 The Kevoree Web Editor is a web application that allows you to manage a Kevoree model graphically.
