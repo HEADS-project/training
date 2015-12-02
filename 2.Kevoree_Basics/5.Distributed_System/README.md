@@ -153,4 +153,4 @@ network javaNode.ip.wlan PUBLIC_IP_OF_THE_JAVA_NODE_HOSTING_MACHINE
 Now, click on the **jsNode** and **Push** your new model. You should see the adaptations taking part on both runtimes if you switch back to their console.
 
 #### Conclusion
-You have successfully built a distributed reconfigurable cross-platform system using **Kevoree** that sends messages from a Java ticker component to a JavaScript console printer component and la Dotnet console printer component, using a fragmented (Java/Js/Dotnet) channel that communicates through the use of Web Sockets.
+You have successfully built a distributed reconfigurable cross-platform system using **Kevoree** that sends messages from a Java ticker component to a JavaScript console printer component and a Dotnet console printer component, using a fragmented (Java/Js/Dotnet) channel that communicates through the use of Web Sockets.
