@@ -14,7 +14,7 @@ The distributed system you are about to build and run is composed of:
   - **JavascriptNode**: to host a ConsolePrinter
       - **ConsolePrinter**: to display the received message from Ticker to the console
   - **DotnetNode**: to also host a ConsolePrinter
-  - **WSChan**: to relay the messages between the 3 components  
+  - **RemoteWSChan**: to relay the messages between the 3 components  
     This channel creates a client that connects to the specified server (in its dictionary attributes)
 
 #### The big picture
