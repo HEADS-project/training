@@ -2,8 +2,8 @@
 add node0 : JavascriptNode
 
 //instantiate Kevoree/ThingML components
-add node0.HomeGW_0 : my.package.HomeGW/1.0.0
-set node0.HomeGW_0.HomeGW_lightControllerServer_LightController_deviceId__var = "magnusuuiddevicen"
+add node0.HomeGWLightController_0 : my.package.HomeGWLightController/1.0.0
+set node0.HomeGWLightController_0.HomeGWLightController_lightControllerServer_LightController_deviceId__var = "magnusuuiddevicen"
 
 add node0.broker : WSMsgBroker
 
@@ -28,10 +28,10 @@ set node0.mqttGatewayToSmarttracker.port = '1883'
 
 add smarttrackerToGatewayChannel : LocalChannel
 bind node0.mqttSmarttrackerToGateway.onMsg smarttrackerToGatewayChannel
-bind node0.HomeGW_0.Hom_sma_commandJson_in smarttrackerToGatewayChannel
+bind node0.HomeGWLightController_0.Hom_sma_commandJson_in smarttrackerToGatewayChannel
 
 add gatewayToSmarttrackerChannel : LocalChannel
-bind node0.HomeGW_0.Hom_sma_postJson_out gatewayToSmarttrackerChannel
+bind node0.HomeGWLightController_0.Hom_sma_postJson_out gatewayToSmarttrackerChannel
 bind node0.mqttGatewayToSmarttracker.pub gatewayToSmarttrackerChannel
 
 add node0.mqttFieldNodeToGateway : MQTTSubClient
@@ -40,7 +40,7 @@ set node0.mqttFieldNodeToGateway.host = '10.3.1.150'
 set node0.mqttFieldNodeToGateway.port = '1883'
 
 add fieldNodeSenseChannel : LocalChannel
-bind node0.HomeGW_0.Hom_sen_readingJson_in fieldNodeSenseChannel
+bind node0.HomeGWLightController_0.Hom_sen_readingJson_in fieldNodeSenseChannel
 bind node0.mqttFieldNodeToGateway.onMsg fieldNodeSenseChannel
 
 
