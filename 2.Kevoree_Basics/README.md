@@ -5,7 +5,7 @@ HEADS Kevoree runtime management basics
 
 Learn the basics of Kevoree. How to write your own components targeting the Kevoree Java or Kevoree JavaScript platforms, and use the different Kevoree tools in order to apply some reconfigurations over your running systems.
 
-> You need a **JDK 8** in order to compile and run Kevoree for **Java**  
+> You need a **JDK 8** in order to compile and run Kevoree for **Java**
 > You also need the **.NET** framework to be installed on Windows for the JavaScript platform
 
 
@@ -23,18 +23,18 @@ Learn the basics of Kevoree. How to write your own components targeting the Kevo
 
 ### 0.General features of the HEADS IDE
   - **New Kevoree Java Project**
-    - *From existing sources*: **File** > **Import** > **Maven** > **Existing Maven Project**  
-      - Select a java tutorial folder like  `path/to/2.Kevoree_Basics/1.HelloWorld/java` and import it  
-      - **Right-click** on the project name > **Configure** > Then be sure it says *Remove Kevoree nature*  
+    - *From existing sources*: **File** > **Import** > **Maven** > **Existing Maven Project**
+      - Select a java tutorial folder like  `path/to/2.Kevoree_Basics/1.HelloWorld/java` and import it
+      - **Right-click** on the project name > **Configure** > Then be sure it says *Remove Kevoree nature*
         If it says *Add Kevoree nature*, then click on it, otherwise you are good to go.
-    - *From scratch*: **File** > **New** > **Project** > **Kevoree** > **New Kevoree Project** > **Next**  
+    - *From scratch*: **File** > **New** > **Project** > **Kevoree** > **New Kevoree Project** > **Next**
       - Give a project name
       - [optional] Set the location of your new project
       - Click **Finish**
 
 
-  - **New Kevoree JavaScript Project**  
-    - *From existing sources*: **File** > **New** > **Project** > **Kevoree JS** > **Kevoree JS Project**  
+  - **New Kevoree JavaScript Project**
+    - *From existing sources*: **File** > **New** > **Project** > **Kevoree JS** > **Kevoree JS Project**
       - Set the project name
       - Set the location of your sources (**unckeck Default location and specify the proper path**)
       - Use template HelloWorld
@@ -50,19 +50,23 @@ Learn the basics of Kevoree. How to write your own components targeting the Kevo
 
 ### 1.HelloWorld
 [Java Tutorial](https://github.com/HEADS-project/training/tree/master/2.Kevoree_Basics/1.HelloWorld/java)  
-[JavaScript Tutorial](https://github.com/HEADS-project/training/tree/master/2.Kevoree_Basics/1.HelloWorld/js)
+[JavaScript Tutorial](https://github.com/HEADS-project/training/tree/master/2.Kevoree_Basics/1.HelloWorld/js)  
+[.NET Tutorial](https://github.com/kgiannakakisATC/training/tree/master/2.Kevoree_Basics/1.HelloWorld/dotnet)
 
 ### 2.HelloWorld++
 [Java Tutorial](https://github.com/HEADS-project/training/tree/master/2.Kevoree_Basics/2.HelloWorld++/java)  
-[JavaScript Tutorial](https://github.com/HEADS-project/training/tree/master/2.Kevoree_Basics/2.HelloWorld++/js)
+[JavaScript Tutorial](https://github.com/HEADS-project/training/tree/master/2.Kevoree_Basics/2.HelloWorld++/js)  
+[.NET Tutorial](https://github.com/HEADS-project/training/tree/master/2.Kevoree_Basics/2.HelloWorld++/dotnet)
 
 ### 3.Runtime reconfigurations using the Kevoree Web Editor
 [Java Tutorial](https://github.com/HEADS-project/training/tree/master/2.Kevoree_Basics/3.Runtime_Reconfigurations/java)  
-[JavaScript Tutorial](https://github.com/HEADS-project/training/tree/master/2.Kevoree_Basics/3.Runtime_Reconfigurations/js)
+[JavaScript Tutorial](https://github.com/HEADS-project/training/tree/master/2.Kevoree_Basics/3.Runtime_Reconfigurations/js)  
+[.NET Tutorial](https://github.com/HEADS-project/training/tree/master/2.Kevoree_Basics/3.Runtime_Reconfigurations/dotnet)
 
 ### 4.It's about sending a message
 [Java Tutorial](https://github.com/HEADS-project/training/tree/master/2.Kevoree_Basics/4.Its_About_Sending_A_Message/java)  
-[JavaScript Tutorial](https://github.com/HEADS-project/training/tree/master/2.Kevoree_Basics/4.Its_About_Sending_A_Message/js)
+[JavaScript Tutorial](https://github.com/HEADS-project/training/tree/master/2.Kevoree_Basics/4.Its_About_Sending_A_Message/js)  
+[.NET Tutorial](https://github.com/HEADS-project/training/tree/master/2.Kevoree_Basics/4.Its_About_Sending_A_Message/dotnet)
 
 ### 5.Distributed System
 [Tutorial](https://github.com/HEADS-project/training/tree/master/2.Kevoree_Basics/5.Distributed_System)

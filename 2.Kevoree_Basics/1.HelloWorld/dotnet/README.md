@@ -1,6 +1,17 @@
 #### First step
 In order to develop Kevoree Dotnet components you will need [Visual Studio](https://www.visualstudio.com/)  
 
+#### Dependencies
+The project requires some Kevoree packages. These are easily installed from NuGet Package Manager. Perform a search for *kevoree* and install Kevoree Api and Kevoree Annotation packages.
+
+![Kevoree Api](.readme/KevoreeApi.png)
+
+![Kevoree Annotation](.readme/KevoreeAnnotation.png)
+
+You may also need to add a reference for SystemComponent.Model.Composition dll.
+
+![Kevoree Annotation](.readme/SystemComponentModelComposition.png)
+
 #### Purpose of the HelloWorld component
 The `HelloWorld` component has a basic behavior to help users understand the concepts and code/project structures of Kevoree Dotnet.
 
@@ -46,16 +57,16 @@ You can use msbuild or open the project in Visual Studio and compile it from her
 ##### Publishing the component
 Once developed, a component must be published in a registry before it can be started in a Kevoree instance.
 
-To to so you can refere to [the official NuGet documentation](https://docs.NuGet.org/create/creating-and-publishing-a-package).
+To to so you can refer to [the official NuGet documentation](https://docs.NuGet.org/create/creating-and-publishing-a-package).
 
-You are free to publish your code to any NuGet repository. My advice is to only publish stable component in the official NuGet repository (https://www.NuGet.org/) and to use a local registry for you developments (for exemple [ProGet](http://inedo.com/proget) is a nice free solution, fast and stable).
+You are free to publish your code to any NuGet repository. My advice is to only publish stable component in the official NuGet repository (https://www.NuGet.org/) and to use a local registry for you developments (for example [ProGet](http://inedo.com/proget) is a nice free solution, fast and stable).
 
 ##### Releasing the component
 The [Model Generator](https://github.com/kevoree/kevoree-dotnet-model-generator/releases/latest) allows you to publish a component to an http Kevoree registry or to save you component's model into a file.
 
 My advice is to only publish stable components in the [official Kevoree registry](http://registry.kevoree.org/) and to generate files during development.
 
-Both operations uses the same executable :
+Both operations use the same executable :
 
 ```
 .\kevoree-dotnet-model-generator.exe --help
@@ -95,13 +106,13 @@ Copyright ©  2015
 To publish a component in a file you just have to set the path to a file in the *output.path* option.
 
 ###### In a registry
-To publish a component to a http Kevoree registry you can either ignore the option and the component will be publish in the [offial Kevoree registry](http://registry.kevoree.org) or a valid http url (you can, for example, deploy you own registry instances using ou [docker image](https://github.com/kevoree/docker-image-registry-replica)).
+To publish a component to a http Kevoree registry you can either ignore the option and the component will be published in the [official Kevoree registry](http://registry.kevoree.org) or a valid http url (you can, for example, deploy you own registry instances using [docker image](https://github.com/kevoree/docker-image-registry-replica)).
 
 ##### Defining the model
-If your component have been published into an http Kevoree registry it should be available in the "Registry Libraries" tab of the [online editor](http://editor.kevoree.org/).
+If your component has been published into an http Kevoree registry, it should be available in the "Registry Libraries" tab of the [online editor](http://editor.kevoree.org/).
 If it has been generated into a file, you can merge into your model using the File -> Merge menu of the "Model Editor" tab.
 
-One your component are loaded you just have to define and push your model to your nodes as usual.
+Once your component is loaded, you just have to define and push your model to your nodes as usual.
 
 #### Understand the HelloWorld component
 Kevoree Dotnet is using attributes to let you specify what's what in your code.  
@@ -125,7 +136,7 @@ public void Stop()
 }
 ```
 
-Kevoree Java knows several other `attributes` but they will be explained in a later tutorial.
+Kevoree Dotnet knows several other `attributes` but they will be explained in a later tutorial.
 
 Kevoree Dotnet provides a logger by component injection using the KevoreeInject.
 The ILogger interface is provided by the Logger API (Org.Kevoree.Log.Api in NuGet).
