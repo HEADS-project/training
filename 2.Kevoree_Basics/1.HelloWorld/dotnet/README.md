@@ -1,6 +1,17 @@
 #### First step
 In order to develop Kevoree Dotnet components you will need [Visual Studio](https://www.visualstudio.com/)  
 
+#### Dependencies
+The project requires some Kevoree packages. These are easily installed from NuGet Package Manager. Perform a search for *kevoree* and install Kevoree Model and Kevoree Annotation packages.
+
+![Kevoree Model](.readme/KevoreeModel.png)
+
+![Kevoree Annotation](.readme/KevoreeAnnotation.png)
+
+You may also need to add a reference for SystemComponent.Model.Composition dll.
+
+![Kevoree Annotation](.readme/SystemComponentModelComposition.png)
+
 #### Purpose of the HelloWorld component
 The `HelloWorld` component has a basic behavior to help users understand the concepts and code/project structures of Kevoree Dotnet.
 
