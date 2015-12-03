@@ -2,9 +2,9 @@
 In order to develop Kevoree Dotnet components you will need [Visual Studio](https://www.visualstudio.com/)  
 
 #### Dependencies
-The project requires some Kevoree packages. These are easily installed from NuGet Package Manager. Perform a search for *kevoree* and install Kevoree Model and Kevoree Annotation packages.
+The project requires some Kevoree packages. These are easily installed from NuGet Package Manager. Perform a search for *kevoree* and install Kevoree Api and Kevoree Annotation packages.
 
-![Kevoree Model](.readme/KevoreeModel.png)
+![Kevoree Api](.readme/KevoreeApi.png)
 
 ![Kevoree Annotation](.readme/KevoreeAnnotation.png)
 
