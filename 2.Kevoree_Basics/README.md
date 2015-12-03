@@ -49,23 +49,23 @@ Learn the basics of Kevoree. How to write your own components targeting the Kevo
 > Nb2: if the right-click on `package.json > Run as > npm install` throws an exception, then be sure that `Nodeclipse` is well configured.
 
 ### 1.HelloWorld
-[Java Tutorial](https://github.com/HEADS-project/training/tree/master/2.Kevoree_Basics/1.HelloWorld/java)
-[JavaScript Tutorial](https://github.com/HEADS-project/training/tree/master/2.Kevoree_Basics/1.HelloWorld/js)
+[Java Tutorial](https://github.com/HEADS-project/training/tree/master/2.Kevoree_Basics/1.HelloWorld/java)  
+[JavaScript Tutorial](https://github.com/HEADS-project/training/tree/master/2.Kevoree_Basics/1.HelloWorld/js)  
 [.NET Tutorial](https://github.com/kgiannakakisATC/training/tree/master/2.Kevoree_Basics/1.HelloWorld/dotnet)
 
 ### 2.HelloWorld++
-[Java Tutorial](https://github.com/HEADS-project/training/tree/master/2.Kevoree_Basics/2.HelloWorld++/java)
-[JavaScript Tutorial](https://github.com/HEADS-project/training/tree/master/2.Kevoree_Basics/2.HelloWorld++/js)
+[Java Tutorial](https://github.com/HEADS-project/training/tree/master/2.Kevoree_Basics/2.HelloWorld++/java)  
+[JavaScript Tutorial](https://github.com/HEADS-project/training/tree/master/2.Kevoree_Basics/2.HelloWorld++/js)  
 [.NET Tutorial](https://github.com/HEADS-project/training/tree/master/2.Kevoree_Basics/2.HelloWorld++/dotnet)
 
 ### 3.Runtime reconfigurations using the Kevoree Web Editor
-[Java Tutorial](https://github.com/HEADS-project/training/tree/master/2.Kevoree_Basics/3.Runtime_Reconfigurations/java)
-[JavaScript Tutorial](https://github.com/HEADS-project/training/tree/master/2.Kevoree_Basics/3.Runtime_Reconfigurations/js)
+[Java Tutorial](https://github.com/HEADS-project/training/tree/master/2.Kevoree_Basics/3.Runtime_Reconfigurations/java)  
+[JavaScript Tutorial](https://github.com/HEADS-project/training/tree/master/2.Kevoree_Basics/3.Runtime_Reconfigurations/js)  
 [.NET Tutorial](https://github.com/HEADS-project/training/tree/master/2.Kevoree_Basics/3.Runtime_Reconfigurations/dotnet)
 
 ### 4.It's about sending a message
-[Java Tutorial](https://github.com/HEADS-project/training/tree/master/2.Kevoree_Basics/4.Its_About_Sending_A_Message/java)
-[JavaScript Tutorial](https://github.com/HEADS-project/training/tree/master/2.Kevoree_Basics/4.Its_About_Sending_A_Message/js)
+[Java Tutorial](https://github.com/HEADS-project/training/tree/master/2.Kevoree_Basics/4.Its_About_Sending_A_Message/java)  
+[JavaScript Tutorial](https://github.com/HEADS-project/training/tree/master/2.Kevoree_Basics/4.Its_About_Sending_A_Message/js)  
 [.NET Tutorial](https://github.com/HEADS-project/training/tree/master/2.Kevoree_Basics/4.Its_About_Sending_A_Message/dotnet)
 
 ### 5.Distributed System
