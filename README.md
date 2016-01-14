@@ -11,7 +11,7 @@ These tutorials are currently used internally in the HEADS project in order to e
 
 The recommended way to run the tutorials is to install the HEADS IDE.
 
-- [Download HEADS IDE](http://coreff5.istic.univ-rennes1.fr/jenkins/job/headside/ws/products.minimal/target/products/) that correspond to your environment (OS + 32/64 bits)
+- [Download HEADS IDE](http://headside.gforge.inria.fr/) that correspond to your environment (OS + 32/64 bits)
 - Unzip the archive
 - Run the eclipse(.exe) binary
 
