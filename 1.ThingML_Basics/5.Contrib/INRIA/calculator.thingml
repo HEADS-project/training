@@ -2,7 +2,7 @@ import "printer.thingml"
 import "timer.thingml"
 import "random.thingml"
 
- datatype Integer	
+ datatype Integer<2>	
 	@c_type "int"
 	@c_byte_size "2"
 	@java_type "short"
@@ -11,7 +11,7 @@ import "random.thingml"
     @SenML_type "Double"
     @ros_type "int16";
     
-datatype String
+object String
 	@c_type "char *"
 	@c_byte_size "*"
 	@java_type "String"

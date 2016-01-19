@@ -1,6 +1,6 @@
 import "datatypes.thingml"
 
-datatype Map
+object Map
     @js_type "var";
     
 

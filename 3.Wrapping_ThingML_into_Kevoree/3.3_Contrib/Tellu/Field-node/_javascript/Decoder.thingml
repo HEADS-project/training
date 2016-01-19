@@ -3,7 +3,7 @@ import "../Filter.thingml"
 import "../Sensor.thingml"
 import "../Properties.thingml"
 
-datatype Map
+object Map
     @js_type "var";
 
 thing Decoder includes BLEClient, DecoderMsg, Properties{

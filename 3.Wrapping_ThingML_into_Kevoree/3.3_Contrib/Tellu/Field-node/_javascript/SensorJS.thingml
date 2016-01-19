@@ -2,7 +2,7 @@ import "../Sensor.thingml"
 import "../Properties.thingml"
 import "Filter.thingml"
 
-datatype Analog
+object Analog
     @js_type "var";
 
 thing SensorJS includes Sensor, Filter, Properties

@@ -1,12 +1,12 @@
-datatype Integer	
-	@c_type "int"
+datatype Integer<2>	
+	@c_type "int16_t"
 	@c_byte_size "2"
 	@java_type "short"
     @js_type "short"
 	@java_primitive "true";
     
-datatype Long
-	@c_type "int"
+datatype Long<4>
+	@c_type "int32_t"
 	@c_byte_size "4"
 	@java_type "int"
     @js_type "int"

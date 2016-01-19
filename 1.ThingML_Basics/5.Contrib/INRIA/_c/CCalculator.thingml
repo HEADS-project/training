@@ -2,7 +2,7 @@ import "../calculator.thingml"
 import "../random.thingml"
 import "../printer.thingml"
 
-datatype Boolean	
+datatype Boolean<1>	
 	@c_type "uint8_t"
 	@c_byte_size "2"
 	@java_type "boolean"

@@ -5,7 +5,7 @@ We will detail how we can wrap the print facilities of the different platforms (
 that we can use as a replacement of the print statement of ThingML
 */
 
-datatype String
+object String
 @c_type "char *"
 @c_byte_size "*"
 @java_type "String"

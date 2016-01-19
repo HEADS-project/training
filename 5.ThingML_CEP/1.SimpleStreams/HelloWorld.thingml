@@ -1,7 +1,7 @@
-datatype Integer
+datatype Integer<2>
 @java_type "int";
 
-datatype Boolean
+datatype Boolean<1>
 @java_type "boolean";
  
 /**

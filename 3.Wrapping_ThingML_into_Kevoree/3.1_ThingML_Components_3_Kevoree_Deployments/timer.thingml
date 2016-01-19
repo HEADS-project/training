@@ -1,11 +1,11 @@
-datatype Integer	
+datatype Integer<2>	
 	@c_type "int"
 	@c_byte_size "2"
 	@java_type "int"
     @js_type "short"
 	@java_primitive "true";
     
-datatype Long
+datatype Long<4>
 	@c_type "int"
 	@c_byte_size "4"
 	@java_type "long"

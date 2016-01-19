@@ -1,11 +1,11 @@
  
 
 
-datatype String
+object String
 	@java_type "String"
 	@js_type "String";
 
-datatype Integer	
+datatype Integer<2>	
 	@java_type "int"
 	@js_type "short";
 

@@ -2,7 +2,7 @@ import "SensorTimer.thingml"
 import "Filter.thingml"
 
 
-datatype String
+object String
 	@c_type "char *"
 	@c_byte_size "2"
 	@java_type "String"

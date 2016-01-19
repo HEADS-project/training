@@ -1,9 +1,9 @@
-datatype Integer
+datatype Integer<2>
     @js_type "int"
     @java_type "int"
     @java_primitive "true";
     
-datatype Boolean
+datatype Boolean<1>
     @js_type "bool"
     @java_type "boolean"
     @java_primitive "true";

@@ -1,9 +1,9 @@
 import "./Timer.thingml"
 
-datatype Integer
+datatype Integer<2>
 @java_type "int";
 
-datatype Float
+datatype Float<4>
 @java_type "float";
 
 thing fragment TestMsgs {

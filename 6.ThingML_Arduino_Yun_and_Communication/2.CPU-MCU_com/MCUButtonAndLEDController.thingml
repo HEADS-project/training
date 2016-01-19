@@ -15,6 +15,8 @@
 import "../lib/_Datatypes.thingml"
 import "Msgs.thingml"
 
+protocol Serial1;
+
 configuration MCUButtonAndLEDControllersCfg
 // This annotation allows to use the ThingML command "print" and to use generated traces on the serial port.
 // Be aware that it means the arduino serial library will be told to initialize Serial0 at 9600bps, so the port won't be available for other use

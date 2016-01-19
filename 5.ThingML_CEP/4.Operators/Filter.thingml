@@ -1,4 +1,4 @@
-datatype Boolean
+datatype Boolean<1>
 @java_type "boolean";
 
 thing fragment TestMsgs {

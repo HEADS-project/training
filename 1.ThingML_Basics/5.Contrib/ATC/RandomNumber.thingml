@@ -1,4 +1,4 @@
-datatype Integer	
+datatype Integer<2>	
 	@c_type "int"
 	@c_byte_size "2"
 	@java_type "short"
