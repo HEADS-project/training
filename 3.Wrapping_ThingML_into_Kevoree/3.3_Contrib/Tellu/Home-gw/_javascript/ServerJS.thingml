@@ -1,22 +1,26 @@
 import "../Server.thingml"
 
+protocol kevoree;
     
 thing FallServer includes SensorServer
 @pim "SensorServer"
 @platform "javascript"
 {
 
- 	property reading : String
  	property fallMap : Map
  	property curFieldNode : Map
  	property curFallState : Map
+ 	property curLocWeight : Map
  	property fallReport : String
- 	property FALL_LIMIT : Integer = -4 @kevoree "true"
+ 	property LOC_HYSTERESIS : Integer = 5 @kevoree "instance"
+ 	property FALL_LIMIT : Integer = -4 @kevoree "instance"
+ 	
  	
  	
  	function initialize() do
  		''&fallMap&' = {};
  		'&curFieldNode&' = {};
+ 		'&curLocWeight&' = {};
  		'&curFallState&' = {}'
  	end
  	
@@ -51,6 +55,7 @@ thing FallServer includes SensorServer
 		var sensorId = '&fallReport&'.sensor_id;
 		var fnId = '&fallReport&'.fn_id;
 		var fallIndex = '&fallReport&'.fall_index;
+		
 		json.topic=sensorId+"/smarttracker/fallIndex";
 		var msg = {};
 		msg.deviceId = sensorId;
@@ -64,51 +69,49 @@ thing FallServer includes SensorServer
 			observations[2] = {"tag.id" : fnId};
 			observations[3] = {"tag.type" : "beacon"};
 			'&curFieldNode&'[sensorId] = fnId;
+			'&curLocWeight&'[sensorId] = 0;
 			'&curFallState&'[sensorId] = true;
 			json.message=JSON.stringify(msg);
 			var res = JSON.stringify(json);
 			return res;
 		} else if(fallIndex > '&FALL_LIMIT&') {
 			'&curFallState&'[sensorId] = false;
-		} 
+		}
 		
-		if(fnId != '&curFieldNode&'[sensorId]){
+		if(!'&curFieldNode&'[sensorId]){
 			observations[0] = {"tag.id" : fnId};
 			observations[1] = {"tag.type" : "beacon"};
 			'&curFieldNode&'[sensorId] = fnId;
+			'&curLocWeight&'[sensorId] = 0;
 			json.message=JSON.stringify(msg);
 			var res = JSON.stringify(json);
 			return res;
 		}
+				
+		if(fnId != '&curFieldNode&'[sensorId]){
+			if('&curLocWeight&'[sensorId] > '&LOC_HYSTERESIS&') {
+				observations[0] = {"tag.id" : fnId};
+				observations[1] = {"tag.type" : "beacon"};
+				'&curFieldNode&'[sensorId] = fnId;
+				'&curLocWeight&'[sensorId] = 0;
+				json.message=JSON.stringify(msg);
+				var res = JSON.stringify(json);
+				return res;
+			} else {
+				'&curLocWeight&'[sensorId] = '&curLocWeight&'[sensorId] + 1;
+			}
+		} 
 		return "";
 		'
 	end
-
 	
-	  statechart Server init reading {
-               
-        state reading {
-        
-         	on entry do
-         		initialize()
-         		print "Server starting!\n"
-         	end
-            
-            internal event readingJson : sensor_mqtt?readingJson
-            action do
-            	print "Sensor reading"
-                print readingJson.value
-                fallReport = fallControl(readingJson.value)
-                if(not(fallReport==""))
-                do                                            
-            		print("to send")
-            		smarttracker!reading(fallReport)
-                end                            
-            end     
-        }
-    }
 }
 
-configuration HomeGW {
+configuration HomeGW  
+@kevscript "C:/Users/KnutEilif/Heads_13.02/workspace/Training/3.Wrapping_ThingML_into_Kevoree/3.3_Contrib/Tellu/Home-gw/kevs/dynHomeGW.kevs"
+{
     instance server : FallServer   
+    connector server.sensor_mqtt over kevoree
+    connector server.smarttracker over kevoree
 }
+

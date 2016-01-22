@@ -3,6 +3,14 @@ import "../Field-node/Sensor.thingml"
 
 thing SensorServer includes SensorMsgs {
 
+property reading : String
+
+ 	property fallReport : String
+ 	
+ 	
+ 	
+ 	function initialize() @abstract "true" do end
+
 	//required port sensor_service 
 	//@public "true" 
 	//{
@@ -24,6 +32,31 @@ thing SensorServer includes SensorMsgs {
 	 		sends reading
 	 		receives read
 	}
+	
+	function fallControl(fallReport : String) @abstract "true" : String do end 
+	
+	statechart Server init reading {
+               
+        state reading {
+        
+         	on entry do
+         		initialize()
+         		print "Server starting!\n"
+         	end
+            
+            internal event readingJson : sensor_mqtt?readingJson
+            action do
+            	print "Sensor reading"
+                print readingJson.value
+                fallReport = fallControl(readingJson.value)
+                if(not(fallReport==""))
+                do                                            
+            		print("to send")
+            		smarttracker!reading(fallReport)
+                end                            
+            end     
+        }
+    }
 
   
 }

@@ -10,7 +10,7 @@ add node0.broker : WSMsgBroker
 set node0.broker.port = '9050'
 
 //create a default group to manage the node(s)
-add sync : WSGroup/5.2.11-SNAPSHOT
+add sync : WSGroup/5.3.1
 set sync.port/node0 = "9000"
 attach node0 sync
 set sync.master = 'node0'
@@ -20,7 +20,7 @@ remove {nodeName}
 '
 
 set sync.onConnect = '
-add {nodeName}.FieldNode_0 : no.tellu.FieldNode/1.0.17
+add {nodeName}.FieldNode_0 : no.tellu.FieldNode/1.0.21
 set {nodeName}.FieldNode_0.FieldNode_sensor_Properties_nodeName__var = "{nodeName}"
 
 //add chan: WSChan

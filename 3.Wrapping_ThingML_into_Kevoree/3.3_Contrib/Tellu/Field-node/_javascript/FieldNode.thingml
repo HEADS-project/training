@@ -4,11 +4,16 @@ import "Filter.thingml"
 import "DecoderFilter.thingml"
 import "Comparator.thingml"
 
+protocol kevoree;
+
 thing FieldNodeJS {
+
 }
 
 
-configuration FieldNode {
+configuration FieldNode 
+@kevscript "C:/Users/KnutEilif/Heads_13.02/workspace/Training/3.Wrapping_ThingML_into_Kevoree/3.3_Contrib/Tellu/Field-node/kevs/dynFieldNode.kevs"
+{
     instance timer : SensorTimerJS
     instance sensor : SensorJS 
     instance pfilter : DecoderFilter
@@ -31,4 +36,6 @@ configuration FieldNode {
 	//connector blefilter.decoder => sensor.decoder
 	connector comparator.ble => blefilter.filtered
 	connector sensor.filtered => blefilter.filtered
+	
+	connector sensor.sensor_mqtt over kevoree 
 }

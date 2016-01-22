@@ -6,8 +6,8 @@ import "../datatypes.thingml"
 
 thing Filter includes DecoderMsg{
 
-    message output(value : Integer);
-	message tmp(msg: String, value: Integer);
+    message output(pressure : Integer);
+	message tmp(msg: String, pressure: Integer);
 	message tmp2(msg: Map);
 
 
@@ -82,8 +82,8 @@ thing Filter includes DecoderMsg{
 	
 	
 	stream compansation @TTL1 "0" @TTL2 "7000" do 
-		from e : [e1  : decoder?decoded  & e2 : outputRecv?output -> tmp(e1.msg, e2.value)]::lengthWindow(3,1)
-		select compensated : filterComp(e.msg[], e.value[])
+		from e : [e1  : decoder?decoded  & e2 : outputRecv?output -> tmp(e1.msg, e2.pressure)]::lengthWindow(3,1)
+		select compensated : filterComp(e.msg[], e.pressure[])
 		action output!tmp2(compensated)
 	
 	end
@@ -126,6 +126,12 @@ thing Filter includes DecoderMsg{
 	}
 
 }
+configuration Filter {
+	instance pfilter : Filter
+	connector pfilter.output => pfilter.outputRecv  
+
+}
+
 
 
 
