@@ -72,17 +72,13 @@ var HelloWorld = AbstractComponent.extend({
     toString: 'HelloWorld',
 
     start: function (done) {
-        this._super(function () {
-            this.log.info(this.toString(), 'Hello, world!');
-            done();
-        }.bind(this));
+        this.log.info(this.toString(), 'Hello, world!');
+        done();
     },
 
     stop: function (done) {
-        this._super(function () {
-            this.log.info(this.toString(), 'Bye, world!');
-            done();
-        }.bind(this));
+        this.log.info(this.toString(), 'Bye, world!');
+        done();
     }
 });
 
@@ -140,21 +136,17 @@ the framework.
 When Kevoree will have to **start** your component, it will call
 ```js
 start: function (done) {
-  this._super(function () {
     // do what you want to do when your component starts
     // call done() when you are done starting
     done();
-  });
 }
 ```
 When Kevoree will have to **stop** your component, it will call
 ```js
 stop: function (done) {
-  this._super(function () {
     // do what you want to do when your component stops
     // call done() when you are done stopping
     done();
-  });
 }
 ```
 
