@@ -127,6 +127,16 @@ Output of the `grunt kevoree` command:
 
 If you can see **"Bootstrap model deployed successfully"** then you have successfully started a new KevoreeJS runtime using your `kevs/main.kevs` model.
 
+#### Publishing a component
+To publish a component you just have to execute
+
+```sh
+npm publish
+```
+
+If you are already connected to your npm account it will automatically publish your component to npm and then trigger the *grunt publish* command at the *postpublish* step.
+
+Once this is done you can use your component to build Kevoree models.
 
 #### Understand the HelloWorld component
 KevoreeJS is all about **naming-convention**.  
