@@ -1,4 +1,5 @@
 { "dependencies" : { "kevoree-entities" : "^8.0.0",
+	  "colors":"^1.1.2",
       "state.js" : "^5.3.4"
     },
   "description" : "HomeGW configuration generated from ThingML",
@@ -8,11 +9,11 @@
       "grunt-kevoree-registry" : "^2.0.0"
     },
   "kevoree" : { "package" : "no.tellu" },
-  "main" : "lib/HomeGW.js",
-  "name" : "home-gw",
+  "main" : "lib/HomeGWLightController.js",
+  "name" : "lightcontrol",
   "private" : false,
   "scripts" : { "postpublish" : "grunt publish",
       "prepublish" : "grunt"
     },
-  "version" : "1.0.3"
+  "version" : "1.0.34"
 }

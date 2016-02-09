@@ -22,8 +22,9 @@ thing fragment SensorMsgs {
 	message readingJson(value : String);
 	// Notification that sensor is online
 	message ready();
+	
+	message fall(sensorId : String, fnId : String);
 }
-
 
 
 thing Sensor includes TimerMsgs, SensorMsgs, DecoderMsg {

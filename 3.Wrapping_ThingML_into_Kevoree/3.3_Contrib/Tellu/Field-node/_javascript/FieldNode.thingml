@@ -2,7 +2,7 @@ import "SensorJS.thingml"
 import "SensorTimerJS.thingml"
 import "Filter.thingml"
 import "DecoderFilter.thingml"
-import "Comparator.thingml"
+import "ComparatorNew.thingml"
 
 protocol kevoree;
 
@@ -17,7 +17,7 @@ configuration FieldNode
     instance timer : SensorTimerJS
     instance sensor : SensorJS 
     instance pfilter : DecoderFilter
-    instance comparator : Comparator @debug "false"
+    instance comparator : ComparatorNew @debug "false"
     //instance pfilter : Filter  
     connector sensor.timer => timer.timer
     connector pfilter.decoder => sensor.decoder 

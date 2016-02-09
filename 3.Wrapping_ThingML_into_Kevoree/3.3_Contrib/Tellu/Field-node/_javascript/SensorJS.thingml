@@ -186,7 +186,7 @@ thing SensorJS includes Sensor, Filter, Properties
     do
     	'var metering = JSON.parse('&str&');
 		var json = {};
-		if(metering.fall_index) {
+		if(metering.fall_index != null) {
 			json.topic="sensor/fallIndex";
 		} else {
 	    	json.topic="sensor/metering";

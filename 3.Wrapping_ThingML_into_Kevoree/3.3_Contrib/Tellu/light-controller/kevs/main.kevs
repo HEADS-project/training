@@ -16,31 +16,31 @@ set sync.port/node0 = "9000"
 attach node0 sync
 set sync.master = 'node0'
 
-add node0.mqttSmarttrackerToGateway : MQTTSubClient
+add node0.mqttSmarttrackerToGateway : MQTTSubClient/2.0.2
 set node0.mqttSmarttrackerToGateway.topic = 'meg/smarttracker'
-set node0.mqttSmarttrackerToGateway.host = 'ri.smarttracker.no'
+set node0.mqttSmarttrackerToGateway.host = 'localhost'
 set node0.mqttSmarttrackerToGateway.port = '1883'
 
 add node0.mqttGatewayToSmarttracker : MQTTPubClient
 set node0.mqttGatewayToSmarttracker.topic = 'device/smarttracker/observation'
-set node0.mqttGatewayToSmarttracker.host = 'ri.smarttracker.no'
+set node0.mqttGatewayToSmarttracker.host = 'localhost'
 set node0.mqttGatewayToSmarttracker.port = '1883'
 
 add smarttrackerToGatewayChannel : LocalChannel
 bind node0.mqttSmarttrackerToGateway.onMsg smarttrackerToGatewayChannel
-bind node0.HomeGWLightController_0.Hom_sma_commandJson_in smarttrackerToGatewayChannel
+bind node0.HomeGWLightController_0.lig_sma_commandJson_in smarttrackerToGatewayChannel
 
 add gatewayToSmarttrackerChannel : LocalChannel
-bind node0.HomeGWLightController_0.Hom_sma_postJson_out gatewayToSmarttrackerChannel
+bind node0.HomeGWLightController_0.lig_sma_postJson_out gatewayToSmarttrackerChannel
 bind node0.mqttGatewayToSmarttracker.pub gatewayToSmarttrackerChannel
 
-add node0.mqttFieldNodeToGateway : MQTTSubClient
-set node0.mqttFieldNodeToGateway.topic = 'sensor/#'
-set node0.mqttFieldNodeToGateway.host = '10.3.1.150'
+add node0.mqttFieldNodeToGateway : MQTTSubClient/2.0.2
+set node0.mqttFieldNodeToGateway.topic = 'sensor/button'
+set node0.mqttFieldNodeToGateway.host = 'localhost'
 set node0.mqttFieldNodeToGateway.port = '1883'
 
 add fieldNodeSenseChannel : LocalChannel
-bind node0.HomeGWLightController_0.Hom_sen_readingJson_in fieldNodeSenseChannel
+bind node0.HomeGWLightController_0.lig_sen_readingJson_in fieldNodeSenseChannel
 bind node0.mqttFieldNodeToGateway.onMsg fieldNodeSenseChannel
 
 
