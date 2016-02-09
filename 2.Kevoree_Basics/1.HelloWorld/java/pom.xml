@@ -7,7 +7,7 @@
     <version>0.0.1-SNAPSHOT</version>
 
     <properties>
-        <kevoree.version>5.2.5</kevoree.version>
+        <kevoree.version>5.3.1</kevoree.version>
     </properties>
 
     <dependencies>
@@ -54,4 +54,3 @@
     </build>
 
 </project>
-

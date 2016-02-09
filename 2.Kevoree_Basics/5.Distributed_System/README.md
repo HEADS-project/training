@@ -36,7 +36,7 @@ add sync : WSGroup
 
 attach javaNode, dotnetNode, jsNode sync
 
-set sync.master = 'node0'
+set sync.master = 'javaNode'
 
 network javaNode.ip.wlan PUBLIC_IP_OF_THE_JAVA_NODE_HOSTING_MACHINE
 ```
