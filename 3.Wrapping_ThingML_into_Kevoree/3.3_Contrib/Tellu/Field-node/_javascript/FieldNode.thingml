@@ -16,16 +16,16 @@ configuration FieldNode
 {
     instance timer : SensorTimerJS
     instance sensor : SensorJS 
-    instance pfilter : DecoderFilter
+    instance pfilter : DecoderFilter //commented out
     instance comparator : ComparatorNew @debug "false"
-    //instance pfilter : Filter  
+    //instance pfilter : Filter  //to be commented out
     connector sensor.timer => timer.timer
     connector pfilter.decoder => sensor.decoder 
     connector sensor.filtered => pfilter.filtered 
     connector comparator.comparedInternal => comparator.comparedInternalRec
     connector comparator.ref => pfilter.filtered
     connector sensor.filtered => comparator.compared
-    //connector pfilter.output => pfilter.outputRecv
+    //connector pfilter.output => pfilter.outputRecv //to be commented out
     
     instance ble : BLE
 	instance decoder : Decoder 

@@ -1,0 +1,242 @@
+import "Decoder.thingml"
+import "../Filter.thingml"
+import "../datatypes.thingml"
+
+
+
+thing ComparatorNew includes DecoderMsg{
+
+
+	function initialize() do
+		''&ref&' = new Array(10);
+		'&ble&' = {};
+		'&sensorDataMap&' = {};'
+	end
+
+	function addRef(refmsg : Map) do
+		
+		'
+		for (var i = 1; i < '&ref&'.length; i++) {
+			'&ref&'['&ref&'.length-i] = '&ref&'['&ref&'.length-1-i];
+		}
+		var json = JSON.parse('&refmsg&');
+		
+		'&ref&'[0] = json;
+		
+		var refSampleSet = json.data.sample_set;
+		
+		var keys =Object.keys('&ble&');
+		
+		for (var i = 0; i < keys.length; i++) {
+			var cur_id = keys[i];
+			var msgs = '&ble&'[cur_id];
+			
+			for (var j = 0; j < msgs.length; j++) {
+				if(msgs[j] && msgs[j].data.sample_set == refSampleSet) {
+					generateDiff(msgs[j], json);
+					msgs[j] = null;
+					break;
+				}
+			}
+			for (var j = 1; j < msgs.length; j++) {
+				msgs[msgs.length - j] = msgs[msgs.length -1 - j]
+			}
+		}
+		'
+	end
+	
+	function addBle(blemsg : Map) : Map do
+		'
+		json = JSON.parse('&blemsg&');
+		var curId = json.data.sensor_id;
+		var sampleSet = json.data.sample_set;
+		
+		var msgs = '&ble&'[curId];
+		if(!msgs){
+			msgs = new Array(10);
+			'&ble&'[curId] = msgs;
+		}
+		
+		for (var j = 0; j < '&ref&'.length; j++) {
+			if('&ref&'[j] && '&ref&'[j].data.sample_set == sampleSet) {
+				generateDiff(json, '&ref&'[j]);
+				return;
+			}
+		}
+		
+		for (var i = 1; i < msgs.length; i++) {
+			msgs[msgs.length-i] = msgs[msgs.length-1-i];
+		}
+		
+		msgs[0] = json;
+		'
+	end
+	
+	function generateDiff(blemsg : Map, refmsg : Map) do
+	
+	/*
+ 	{"data" :
+                {"pressure":[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
+                "temperature":21.2,
+                "sample_set":14,
+                "sensor_id":"IsensU 1"
+                },
+	"status" :                           
+                {"fn_id":"FN 1",
+                "bt_rssi": -41,
+                "last_resync": 7
+                }
+	}
+	*/
+		'
+		 var Ts = 0.2;
+		 var Tvent = 37;
+		 var Tmid = 5*Tvent;
+	 
+		 var a = 2*Ts/(Ts + 2*Tmid);
+		 var b = (2*Tmid-Ts)/(2*Tmid+Ts);	
+		 
+		 var prs = [];
+		 var diff_inn =[];
+		 var diff = [];
+		 var sensorId = '&blemsg&'.data.sensor_id;
+		 prs[1] = '&blemsg&'.data.pressure;
+		 prs[0] = '&refmsg&'.data.pressure;
+		 var sensorData = '&sensorDataMap&'[sensorId];
+		 
+		 if('&sensorDataMap&'[sensorId] == null) {
+		 	'&sensorDataMap&'[sensorId] = {}
+		 }
+		 
+		 var sensorData = '&sensorDataMap&'[sensorId];
+		 sensorData.fall = false;
+		 
+		 for (var i = 0; i < prs[0].length; i++) {
+		 	var stime = new Date().getTime();
+		 	diff_inn = prs[0][i]-prs[1][i];;
+			 if(sensorData.initDiff == null){
+				 sensorData.diffn = diff_inn;
+				 sensorData.diffn = (2/11)*diff_inn+(9/11)*sensorData.diffn;
+				 sensorData.mid = sensorData.diffn;
+				 sensorData.min = 0;
+				 sensorData.max = 0;
+				 sensorData.potFall = false;
+				 sensorData.initDiff = true;
+			 } else {
+			 	sensorData.diffn = (2/11)*diff_inn+(9/11)*sensorData.diffn;
+			 }
+			 	
+			diff[i] = sensorData.diffn;
+			
+			sensorData.mid = a*sensorData.diffn + b*sensorData.mid;
+				 
+			var diffm = sensorData.diffn - sensorData.mid; 
+			
+			var c = (2*Tvent-Ts)/(2*Tvent+Ts);
+			
+			
+			if (!sensorData.potFall ){
+				 if(sensorData.min > diffm){
+					 sensorData.min = diffm;
+				 } else {
+					 sensorData.min = c*sensorData.min;
+				 }
+				 
+				 sensorData.fallIndex = diffm - sensorData.min;
+				 
+				 if(diffm - sensorData.min > '&FALL_LIMIT&' && !sensorData.alarmRaised) {
+					 sensorData.potFall = true;
+					 sensorData.potFallTime = stime;
+					 sensorData.max = diffm;
+				 }
+			 } else {
+				 if(sensorData.max < diffm){
+					 sensorData.max = diffm;
+				 } else {
+					 sensorData.max = c*sensorData.max;
+				 }
+				 
+				 sensorData.fallIndex = sensorData.max - diffm;
+
+				 var time = stime - sensorData.potFallTime;
+                 console.log(\'time left: \'+time);
+
+				 if(sensorData.max - diffm > 0.5*'&FALL_LIMIT&' ) {
+					 sensorData.potFall = false;
+					 sensorData.min = diffm;
+				 } else if(stime - sensorData.potFallTime > '&FALL_DELAY&'){
+					 sensorData.fall = true; //Send alarm raised here
+					 sensorData.potFall = false;
+					 sensorData.min = diffm;
+				 }
+			 }
+		 }
+		 
+		 var result = {};
+		 result.fall = sensorData.fall
+		 result.fall_index = sensorData.fallIndex
+		 result.bt_rssi = '&blemsg&'.status.bt_rssi
+		 result.sensor_id = '&blemsg&'.data.sensor_id
+		 result.sample_set = '&blemsg&'.data.sample_set
+		 result.fn_id = '&blemsg&'.status.fn_id
+		 var compStr = JSON.stringify(result)'
+		 comparedInternal!decoded('compStr')
+	end
+	
+	property ref : Map
+	property ble : Map
+	property compensate : Boolean = true @kevoree "instance"
+	property sensorDataMap : Map
+    property FALL_LIMIT : Integer = 6 @kevoree "instance"
+	property FALL_DELAY : Integer = 20000 @kevoree "instance"
+	
+	statechart Comparator init Active @debug "true" {
+	
+		state Active {
+			on entry do
+				initialize()
+				print "Comparator Ready"		
+			end
+			
+			internal event e: comparedInternalRec?decoded
+			action do
+				compared!decoded(e.msg)
+				//print(e.msg)
+			end
+			
+			internal event e : ref?decoded
+			action do
+				addRef(e.msg)
+			end
+			
+			internal event e : ble?decoded
+			action do
+				addBle(e.msg)
+			end
+		}
+	}
+	
+	required port ref {
+		receives decoded
+	}
+	
+	required port ble {
+		receives decoded
+	}
+	
+	provided port compared {
+		sends decoded
+	}
+	
+	required port comparedInternal {
+		sends decoded
+	}
+	
+	provided port comparedInternalRec {
+		receives decoded
+	}
+
+}
+
+
+
