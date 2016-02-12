@@ -53,6 +53,9 @@ thing Decoder includes BLEClient, DecoderMsg, Properties{
             '& deviceSeq &'[cur_device_no] = cur_sequence_no;
                         
             var temperature = data[1]; // Transmitted as 8 bits, note must handle negative numbers, not tested
+            if(temperature == -127){
+            	return ""; //skipping initiaalisation data
+            }
             if(temperature > 128){
             	temperature = temperature - 256;
             }
