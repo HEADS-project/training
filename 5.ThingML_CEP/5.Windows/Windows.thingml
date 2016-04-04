@@ -60,21 +60,21 @@ thing TestWindows includes TestMsgs, TimerClient
 	//For time windows. two parameters should be specified:
 	//   - timeSpan, the "size"/duration of the window
 	//   - timeShift, which creates a new output every timeShift milliseconds
-    stream lengthW do
-        from e : [recv?m2]::timeWindow(5000, 5000)
-        select avg : average(e.x[]), min : min(e.x[]), max : max(e.x[])
-        action send!res2(avg, min, max)
-    end
+    stream lengthW from e : recv?m2::during 5000 by 5000
+    select var avg : Float = average(e.x[]), 
+    	var min : Integer =  min(e.x[]), 
+    	var max : Integer = max(e.x[])
+    produce send!res2(avg, min, max)
     
     
     //Length windows take one or two parameters
     //    - size (mandatory)
     //    - step (optional, by default equals to size i.e. no overlap between windows)
-    stream lengthW do
-        from e : [recv?m1]::lengthWindow(5, 5)
-        select avg : average(e.x[]), min : min(e.x[]), max : max(e.x[])
-        action send!res(avg, min, max)
-    end
+    stream lengthW from e : recv?m1::buffer 5 by 5
+    select var avg : Float = average(e.x[]), 
+    	var min : Integer =  min(e.x[]), 
+    	var max : Integer = max(e.x[])
+    produce send!res(avg, min, max)
 
 
 

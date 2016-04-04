@@ -4,6 +4,7 @@ However, timers are usually important in your logic. We define below how to wrap
 */
 
 datatype Integer<2>	
+    @type_checker "Integer"
 	@c_type "int"
 	@c_byte_size "2"
 	@java_type "short"

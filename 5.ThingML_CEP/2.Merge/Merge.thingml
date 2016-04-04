@@ -1,0 +1,80 @@
+datatype Integer<2>	
+@type_checker "Integer"
+@java_type "int";
+
+datatype Boolean<1>
+@type_checker "Boolean"
+@java_type "boolean";
+ 
+thing MergeCEP {
+
+    message m1();
+    message m1b();
+    message m2(v1 : Integer, v2 : Integer);
+    message m3(x : Integer, y : Integer, z : Integer);
+    
+    message cep1();
+    message cep2(v1 : Integer, v2 : Integer);
+    
+    internal port cepPort {
+        sends m1, m1b, m2, m3, cep1, cep2
+        receives m1, m1b, m2, m3, cep1, cep2   
+    }
+        
+    //This is a very simple CEP join that merges two messages and forwards a message
+    //Merge can somehow be seen as a logical "or" on events (see http://reactivex.io/documentation/operators/merge.html)
+    stream simpleMerge
+    from result : [e1 : cepPort?m1 | e2 : cepPort?m1b -> cep1]
+    produce cepPort!cep1()
+    
+    //In a merge, we can only merge messages with the same signatures
+    stream simpleMergeWithParams
+    from result : [e1 : cepPort?m2 | e2 : cepPort?m3 -> cep2]
+    select var a : Integer = result.v1 * 2, 
+           var b : Integer = result.v2
+    produce cepPort!cep2(a, b)
+
+	statechart HelloWorld init Greetings {
+        
+        //Some booleans to keep track of the CEP results we receive
+        //Note: we could use proper CEP to manage that :-)
+        property cep1Rec : Integer = 0
+        property cep2Rec : Integer = 0
+	
+		state Greetings {
+
+            on entry do
+                print "Welcome!\n\n"
+                
+                cepPort!m1() // Those two messages should trigger cep1 twice
+                cepPort!m1b()
+                
+                cepPort!m2(1, 2) //This should trigger both cep2 (2, 2)
+                cepPort!m3(2, 3, 0) //This should trigger both cep2 (4, 3)
+                cepPort!m2(1, 2) //This should trigger both cep2 (2, 2)
+                cepPort!m3(2, 3, 0) //This should trigger both cep2 (4, 3)
+            end
+            
+            internal event cepPort?cep1
+            action do
+                cep1Rec = cep1Rec + 1
+                print "CEP1 received!\n"
+            end
+            
+            internal event result : cepPort?cep2
+            action do
+                cep2Rec = cep2Rec + 1
+                print "CEP2 received(" + result.v1 + ", " + result.v2 + ")!\n"
+            end
+            			
+			transition -> Bye 
+			guard cep1Rec == 2 and cep2Rec == 4 //exit when all CEP results have been received
+			
+		}
+	
+		state Bye {
+			on entry print "\nBye.\n\n"
+		}
+	
+	}
+}

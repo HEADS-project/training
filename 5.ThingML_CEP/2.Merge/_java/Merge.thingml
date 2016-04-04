@@ -6,7 +6,6 @@ TODO: compile and run this configuration for Java
 configuration MergeJavaCfg 
 {
 	instance my_instance: MergeCEP
-    connector my_instance.receivePort => my_instance.sendPort
 }
 
 /*

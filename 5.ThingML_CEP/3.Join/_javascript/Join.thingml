@@ -6,7 +6,6 @@ TODO: compile and run this configuration for Java
 configuration JoinJSCfg 
 {
 	instance my_instance: JoinCEP
-    connector my_instance.receivePort => my_instance.sendPort
 }
 
 /*
