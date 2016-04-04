@@ -6,13 +6,13 @@ import "../datatypes.thingml"
 
 thing Filter includes DecoderMsg{
 
-    message output(pressure : Integer);
-	message tmp(msg: String, pressure: Integer);
-	message tmp2(msg: Map);
+    message output(comp : Integer);
+	message tmp(pressure: Integer, temp: Integer, comp: Integer);
+	message split(pressure: Integer, temp: Integer);
 
 
 
-	function filterComp(msg : Map[], outp : Integer[]) : Map do
+	function filterComp(pressure : Integer[], temp : Integer[], comp : Integer[]) : Integer do
 	
 	//ekstraher temperatur for hver av msg
 	//gjør kalkulasjonen 
@@ -45,48 +45,51 @@ thing Filter includes DecoderMsg{
 	
 	var presCoeff = 0.03051758;
 	
+	var comp = coeff* (a*'&comp&'[i-1] + b*'&comp&'[i-2] + c*'&temp&'[i-1]);
+	var pressure = pressure - comp;
 	
-	var temperature = []
-	for (var i = 0; i < '&msg&'.length; i++) {
-		 var json = JSON.parse('&msg&'[i]);
-		 temperature[i] = json.data.temperature;
-	}
-	 
-	var comp = coeff* (a*'&outp&'[1] + b*'&outp&'[2] + c*temperature[1] + d*temperature[2]);
-	
-	var json = JSON.parse('&msg&'[0]); 
-	var pressure = json.data.pressure; 
-	
-	for (var i = 0; i < pressure.length; i++) {
- 	 	pressure[i] = pressure[i]-comp;
- 	}
-	
-	var res = {}
-	res.reading = json;
-	res.comp = comp;
-	
-	return res;
+	return pressure;
 	'
 	end
 	
 	
-	function getJson(msg: Map) : String 
+	function filterComp(pressure: Integer, temp: Integer) : String 
 	do
-		'return JSON.stringify('& msg & '.reading)'
+		'
+		'&reading&'.data.pressure['&index&'] = pressure[0]
+		'&index&'++
+		if('&index&' == 8){
+			return JSON.stringify('& reading & ')
+		} else {
+			return ''
+		}'
 	end
-	
-	function getComp(msg: Map) : Integer 
+		
+	function send(msg: String)  
 	do
-		'return '& msg & '.comp'
+		'
+		var json = JSON.parse('&msg&');
+		'&reading&'= json
+		'&index&' = 0
+		var temperature = json.data.temperature/9;
+		var pressure = json.data.pressure; 
+		
+		for (var i = 0; i < pressure.length; i++) {
+		 	'output!split('pressure[i]','temperature')'
+		}'
 	end
 	
 	
 	stream compansation @TTL1 "0" @TTL2 "7000" do 
-		from e : [e1  : decoder?decoded  & e2 : outputRecv?output -> tmp(e1.msg, e2.pressure)]::lengthWindow(3,1)
-		select compensated : filterComp(e.msg[], e.pressure[])
-		action output!tmp2(compensated)
+		from e : [e1  : outputRecv?split  & e2 : outputRecv?output -> tmp(e1.pressure, e1.temp, e2.comp)]::lengthWindow(3,1)
+		select compensated : filterComp(e.pressure[], e.temp[], e.comp[]), pressure : e.pressure[], temperature : e.temp
+		action output!tmp(pressure, temperature, compensated)
 	
 	end
+	
+	property compensated : Map
+	property reading : Map
+	property index : Integer = 0
 	
 	statechart Filter init Active @debug "false" {
 	
@@ -96,24 +99,34 @@ thing Filter includes DecoderMsg{
 				output!output(0)				
 			end
 			
-			internal event e: outputRecv?tmp2
+			internal event e: decoder?decoded
 			action do
-				output!output(getComp(e.msg))
-				filtered!decoded(getJson(e.msg))
-				print("----------------------")
-				//print(getJson(e.msg))
-				print("----------------------")
+				send(e.msg)
+			end
+			
+			internal event e: outputRecv?tmp
+			action do
+				output!output(e.comp)
+				
+				//bygge opp struktur igjen
+				compensated = filterComp(e.pressure, e.temp)
+				if(not(compensated == "")) do
+					filtered!decoded(compensated)
+					//print("----------------------\n")
+					//print(getJson(compensated))
+					//print("----------------------\n")
+				end
 			end
 		}
 	}
 	
 	
 	required port output {
-		sends output, tmp2
+		sends output, tmp,split
 	}
 	
 	provided port outputRecv{
-		receives output,tmp2
+		receives output,tmp,split
 	}
 	
 	

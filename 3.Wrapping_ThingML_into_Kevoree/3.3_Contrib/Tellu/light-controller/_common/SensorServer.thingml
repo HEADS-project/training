@@ -1,7 +1,7 @@
 import "../../Field-node/Sensor.thingml"
 import "Messages.thingml"
 
-thing SensorServer includes SensorMsgs, SmarttrackerMessages {
+thing SensorServer includes SensorMsgs, SmarttrackerMessages, LightIntensityMessages {
 
 	property delay : Integer = 1000
 
@@ -18,6 +18,18 @@ thing SensorServer includes SensorMsgs, SmarttrackerMessages {
 	{ 
 		receives readingJson
 	}
+	
+	required port lightswitch
+	{
+		sends lightOn, lightOff
+	}
+	
+	
+	required port fall
+	{
+		receives fall
+	}
+	
 	
 	provided port smarttracker 
 	@public "true" 

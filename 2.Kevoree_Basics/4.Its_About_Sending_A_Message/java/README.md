@@ -134,7 +134,7 @@ public class ConsolePrinter {
     private Context context;
 
     @Input
-    public void input(Object msg) {
+    public void input(String msg) {
         System.out.println(context.getInstanceName()+">"+msg);
     }
 }

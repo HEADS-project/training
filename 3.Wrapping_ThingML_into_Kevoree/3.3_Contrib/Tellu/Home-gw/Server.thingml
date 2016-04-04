@@ -1,7 +1,9 @@
 import "../Field-node/Sensor.thingml"
 
 
+
 thing SensorServer includes SensorMsgs {
+
 
 property reading : String
 
@@ -33,7 +35,14 @@ property reading : String
 	 		receives read
 	}
 	
-	function fallControl(fallReport : String) @abstract "true" : String do end 
+	provided port fall 
+	@public "true" 
+	@external "true"
+	{
+	 		sends fall
+	}
+	
+	function fallControl(fallReport : String) @abstract "true" : String do end
 	
 	statechart Server init reading {
                
@@ -53,6 +62,7 @@ property reading : String
                 do                                            
             		print("to send")
             		smarttracker!reading(fallReport)
+            		fall!fall("0", "0")
                 end                            
             end     
         }

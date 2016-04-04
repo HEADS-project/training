@@ -1,0 +1,106 @@
+import "zwave.thingml"
+import "../_common/Messages.thingml"
+import "../_common/LightSwitchServer.thingml"
+
+thing LightSwitch includes ZWaveClient, LightSwitchServer{
+
+property deviceId : String = "magnusuuiddevicen" @kevoree "instance"
+
+function createObservation(lightValue : String) : Integer
+ 	do
+ 		'var obsdata = [];'
+ 		if (lightValue == "off")
+		do
+			'obsdata.push({"lamp":"off"});'
+		end
+ 		if (lightValue == "on")
+		do
+			'obsdata.push({"lamp":"on"});'
+		end
+		
+		'
+		var obs = {deviceId: ' & deviceId & ', observations: obsdata};
+ 			
+ 		return JSON.stringify(obs);
+ 		'
+ 	end
+
+	statechart LightSwitch init Idle {
+		state Idle {
+			on entry do
+				ZWave!connect()
+			end
+			
+			transition CONNECTED -> Connected
+			event m : ZWave?driverReady
+			
+		}
+		
+		composite state Connected init LampOff{
+			internal event m : ZWave?nodeReady
+	        action do
+	        	print("Node ready: " +m.nodeid+":"+m.nodeinfo)
+	        end
+	        
+	        internal event m : ZWave?nodeAdded
+	        action do
+	           print("Node added: "+m.nodeid)      
+	        end
+	        
+	        internal event m : ZWave?valueAdded
+	        action do
+	           print("Value added: "+m.nodeid + "," + m.comclass + "," + m.value['\'index\''] +":"+ m.value['\'value\''])   
+	        end
+	        
+	        state LampOff {
+		        transition On -> LampOn
+		        event m : lightswitch?lightOn
+		        action do
+		           //print("Value changed: "+m.nodeid + "," + m.comclass + "," + m.value['\'value\''])
+		           ZWave!setValue("3", 37, 1, 0, true)
+		           smarttracker!postJson( createObservation("on"))
+		        end
+		        
+		        transition On2 -> LampOn
+		        event m : ZWave?valueChanged
+		        guard m.value['\'value\''] > 1 and m.nodeid == 3
+		        action do
+		           print("Value changed: "+m.nodeid + "," + m.comclass + "," + m.value['\'value\''])
+		           smarttracker!postJson( createObservation("on"))
+	        	end
+	        }
+	        
+	        state LampOn {
+	        	transition Off -> LampOff
+		        event m : lightswitch?lightOff
+		        action do
+		           //print("Value changed: "+m.nodeid + "," + m.comclass + "," + m.value['\'value\''])
+		           ZWave!setValue("3", 37, 1, 0, false)
+		           smarttracker!postJson( createObservation("off"))
+		        end
+	        
+		        transition Off2 -> LampOff
+		        event m : ZWave?valueChanged
+			    guard m.value['\'value\''] <= 1 and m.nodeid == 3
+		        action do
+		           print("Value changed: "+m.nodeid + "," + m.comclass + "," + m.value['\'value\''])
+		           smarttracker!postJson( createObservation("off"))
+		        end
+	        }
+	        
+	        /*internal event m : ZWave?valueChanged
+	        guard m.nodeid == 3
+	        action do
+	           print("Value changed: "+m.nodeid + "," + m.comclass + "," + m.value['\'value\''])
+	           if(m.value['\'value\''] < 1) do
+	           	smarttracker!postJson( createObservation("off"))
+	           end
+	           else do
+	           	smarttracker!postJson( createObservation("on"))
+	           end
+	        end*/
+	        
+		}
+	}
+}
+

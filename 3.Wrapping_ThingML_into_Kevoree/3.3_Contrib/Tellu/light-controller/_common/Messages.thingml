@@ -3,4 +3,11 @@ import "../../Field-node/Sensor.thingml"
 thing fragment SmarttrackerMessages {
 	message postJson(value : String);
 	message commandJson(value : String);
+	
 }
+
+thing fragment LightIntensityMessages {
+	message lightOn(LocId : String);
+	message lightOff(LocId : String);
+}
+

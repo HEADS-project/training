@@ -14,6 +14,9 @@
 
 import "../lib/_Datatypes.thingml"
 
+protocol Serial1;
+protocol MQTT;
+
 configuration MQTTButtonControllerCfg
 @trace_level "3"
 @c_compiler "/openwrt-yun/staging_dir/toolchain-mips_r2_gcc-4.6-linaro_uClibc-0.9.33.2/bin/mips-openwrt-linux-gcc"

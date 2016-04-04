@@ -1,0 +1,162 @@
+import "../_common/SensorServer.thingml"
+
+    
+thing LightController includes SensorServer
+@pim "SensorServer"
+@platform "javascript"
+{
+
+ 	property reading : String
+ 	property readValue : String = "0"
+ 	property topic : String
+ 	
+ 	property deviceId : String = "magnusuuiddevicen" @kevoree "instance"
+ 	message tmp(msg1: String, msg2: String);
+
+ 	function numberify(readValue : String) : Integer
+ 	do
+ 		'
+ 		var reading = JSON.parse('&readValue&')
+ 		return parseInt(String(reading.value));'
+ 	end
+ 	
+ 	function stringify(anyValue : String) : String
+ 	do
+ 		'return String('&anyValue&');'
+ 	end
+ 	
+ 	function createObservation(lightValue : Integer) : String
+ 	do
+ 		'var obsdata = [];'
+ 		if (lightValue == 0)
+		do
+			'obsdata.push({"light":"off"});'
+		end
+ 		if (lightValue == 100)
+		do
+			'obsdata.push({"light":"on"});'
+		end
+		
+		'
+		var obs = {deviceId: ' & deviceId & ', observations: obsdata};
+ 			
+ 		return JSON.stringify(obs);
+ 		'
+ 	end
+ 	 	 	
+ 	function extractIntensity(m : String) : Integer 
+ 	do
+ 		'console.log(\'Got here1\'+'&m&')
+ 		
+ 		var i = '&m&'[0].substring(0,6)
+ 		
+		if(i == \'000101\') {
+			return 0;
+		}
+		if(i == \'000102\') {
+			return 100;
+		}
+ 		
+ 		console.log(\'Got here2\')
+ 		return -1;
+ 		'
+ 	end
+ 	
+ 	
+ 	/*function extractIntensity(m : String) : Integer 
+ 	do
+ 		'var reading = JSON.parse('&m&')
+ 		console.log(\'Got here1\'+'&m&')
+ 		if(reading.topic == \'sensor/button\') {
+ 			if(reading.message == \'101\') {
+ 				return 0;
+ 			}
+ 			if(reading.message == \'102\') {
+ 				return 100;
+ 			}
+ 		}
+ 		console.log(\'Got here2\')
+ 		return -1;
+ 		'
+ 	end*/
+ 	
+ 	function extractFall(m : String) : Boolean 
+ 	do
+ 		'var reading = JSON.parse('&m&')
+ 		console.log(\'Got here3\'+'&m&')
+ 		if(reading.topic == \'sensor/fallIndex\') {
+ 			var msg = JSON.parse(reading.message)
+ 			console.log(\'Got here5: \'+msg.fall)
+ 			if(msg.fall == true) {
+ 			console.log(\'Got here6\')
+ 				return true;
+ 			}
+ 		}
+ 		return false;
+ 		'
+ 	end
+ 	
+ 	/*function control(m1 : String, m2: String) : String 
+ 	do
+ 	end
+ 	
+ 	stream lightcontrol do 
+		from e : [e1  : sensor_mqtt?readingJson  & e2 : sensor_mqtt?readingJson -> tmp(e1.value, e2.value)]
+		select command : control(#0, #1)
+		action lightswitch!commandJson(command)
+	
+	end
+	*/
+	
+	
+	
+	  statechart Server init reading {
+        
+        composite state reading init dark {
+        	
+        	state light {
+        		on entry print "Light\n"
+        		transition -> dark
+        		event m : sensor_mqtt?readingJson
+        		guard extractIntensity(m.value) == 0
+        		action do
+	            	print "Sensor readingJson <"
+	                print m.value      
+	            	print ">"
+					
+					print " readValue <"
+	                print extractIntensity(m.value)      
+	            	print ">"
+	
+	        		smarttracker!postJson( createObservation( extractIntensity(m.value)) )
+	            	print "sent on MQTT"     
+	            end     
+        	}
+        	
+        	state dark {
+        		on entry print "Dark\n"
+        		transition -> light
+        		event m : sensor_mqtt?readingJson
+        		guard extractIntensity(m.value) > 0
+        		action do
+	            	print "Sensor readingJson <"
+	                print m.value      
+	            	print ">"
+					
+					print " readValue <"
+	                print extractIntensity(m.value)      
+	            	print ">"
+	
+	        		smarttracker!postJson( createObservation( extractIntensity(m.value)) )
+	        		lightswitch!lightOn("3")
+	            	print "sent on MQTT"     
+	            end     
+        		
+        		internal event m : fall?fall        		
+        		action do
+        			lightswitch!lightOn(m.fnId)
+        		end
+        	}
+        }
+    }
+}

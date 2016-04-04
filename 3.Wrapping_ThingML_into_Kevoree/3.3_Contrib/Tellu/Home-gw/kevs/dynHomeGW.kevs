@@ -2,7 +2,7 @@
 add node0 : JavascriptNode
 
 //instantiate Kevoree/ThingML components
-add node0.HomeGW_0 : no.tellu.HomeGW/1.0.17
+add node0.HomeGW_0 : no.tellu.HomeGW/1.0.34
 
 add node0.broker : WSMsgBroker
 
@@ -11,17 +11,20 @@ set node0.broker.port = '9050'
 
 //create a default group to manage the node(s)
 add sync : WSGroup/5.3.1
+//add sync : WSGroup/5.2.11-SNAPSHOT
 set sync.port/node0 = "9000"
 attach node0 sync
 set sync.master = 'node0'
 
 set sync.onDisconnect = '
 remove {nodeName}
+remove pubchan-{nodeName}
+remove subchan-{nodeName}
 '
 
 set sync.onConnect = '
-add {nodeName}.FieldNode_0 : no.tellu.FieldNode/1.0.21
-set {nodeName}.FieldNode_0.FieldNode_sensor_Properties_nodeName__var = "{nodeName}"
+add {nodeName}.FieldNode_0 : no.tellu.FieldNode/1.0.28
+set {nodeName}.FieldNode_0.Properties_nodeName__var = "{nodeName}"
 
 //add chan: WSChan
 //set chan.port = "9050"
@@ -41,13 +44,13 @@ set {nodeName}.pubmqtt.topic = "test/smarttracker"
 set {nodeName}.pubmqtt.host = "10.10.0.1"
 set {nodeName}.pubmqtt.port = "1883"
 
-add pubchan : LocalChannel
-add subchan : LocalChannel
+add pubchan-{nodeName} : LocalChannel
+add subchan-{nodeName} : LocalChannel
 
-bind {nodeName}.FieldNode_0.Fie_sen_readingJson_out pubchan
+bind {nodeName}.FieldNode_0.sen_sen_readingJson_out pubchan-{nodeName}
 
-bind {nodeName}.pubmqtt.jsonPub pubchan
-bind {nodeName}.submqtt.onTopicAndMsg subchan
+bind {nodeName}.pubmqtt.jsonPub pubchan-{nodeName}
+bind {nodeName}.submqtt.onTopicAndMsg subchan-{nodeName}
 
 //bind {nodeName}.FieldNode_0.Fie_sen_reading_out chan
 //bind {nodeName}.FieldNode_0.Fie_sen_ready_out chan
@@ -79,8 +82,8 @@ set node0.pubmqtt.port = '1883'
 add pubchan : LocalChannel
 add subchan : LocalChannel
 
-bind node0.HomeGW_0.Hom_sma_reading_out pubchan
-bind node0.HomeGW_0.Hom_sma_read_in subchan
+bind node0.HomeGW_0.ser_sma_reading_out pubchan
+bind node0.HomeGW_0.ser_sma_read_in subchan
 
 bind node0.pubmqtt.jsonPub pubchan
 bind node0.submqtt.onTopicAndMsg subchan
@@ -97,11 +100,9 @@ set node0.fnsubmqtt.port = '1883'
 
 add fnsubchan : LocalChannel
 
-bind node0.HomeGW_0.Hom_sen_readingJson_in fnsubchan
+bind node0.HomeGW_0.ser_sen_readingJson_in fnsubchan
 bind node0.fnsubmqtt.onMsg fnsubchan
 
 
 start sync
 //start node0
-
-

@@ -37,11 +37,41 @@ mvn install
 ```
 This command will compile your Java sources to `target/`
 
+#### How to publish the project
+```sh
+mvn kev:deploy
+```
+This command will send the Type Definition and the Deploy Unit of the components/groups/nodes/channels found in the project to the official Kevoree registry.
+
+You can target an alternate registry by adding the *-Dpublish.registry.url* option to the command, for example :
+
+```sh
+mvn -Dpublish.registry.url=http://localhost:8080 kev:deploy
+```
+
+### How to make a jar publicly available
+Now that your component is publish to a Kevoree registry, you can use it to build a model and deploy it in a Kevoree runtime.
+
+The problem is, you jar is only available in your computer (in your ~/.m2).
+
+To makes your component publicly available you have to publish it to a maven registry.
+
+The following table summarize a few repository technologies and their publication guides.
+
+| Repository | Site | Publication documentation |
+|---|---|---|
+| Artifactory  | https://www.jfrog.com/open-source/  |  https://www.jfrog.com/confluence/display/RTF/Deploying+Artifacts |
+| Archiva  | https://archiva.apache.org/index.cgi  | https://archiva.apache.org/docs/2.2.0/userguide/deploy.html  |
+| Sonatype Central  | http://central.sonatype.org/  | http://central.sonatype.org/pages/ossrh-guide.html  |
+
+
+
+
 #### How to run the project
 ```sh
 mvn kev:run
 ```
-This command starts a new Kevoree Java Runtime.  
+This command starts a new Kevoree Java Runtime.
 By default, it will use the KevScript `src/main/kevs/main.kevs`.  
 If you have a look at that KevScript file, you can see that it defines a Kevoree model using your own component "HelloWorld":
 ```txt

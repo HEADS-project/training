@@ -1,0 +1,22 @@
+import "../../Field-node/Sensor.thingml"
+import "Messages.thingml"
+
+thing LightSwitchServer includes SensorMsgs, SmarttrackerMessages, LightIntensityMessages {
+
+	
+	provided port lightswitch
+	{
+		receives lightOn, lightOff
+	}
+	
+	
+	provided port smarttracker 
+	@public "true" 
+	@external "true"
+	{
+	 		sends postJson
+	 		receives commandJson
+	}
+
+  
+}
