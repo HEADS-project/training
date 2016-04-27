@@ -1,0 +1,9 @@
+import "JSTimer.thingml"
+import "../Session.thingml"
+
+configuration JavaScriptSessions {
+    instance timer : TimerJS
+    instance gateway : Gateway
+    
+    connector gateway.timer => timer.timer
+}

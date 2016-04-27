@@ -1,0 +1,54 @@
+/**
+Unlike the print statement, ThingML does not provide any timing facilities directly in the language.
+However, timers are usually important in your logic. We define below how to wrap timers for the different platforms.
+*/
+
+datatype Integer<2>	
+	@c_type "int"
+	@c_byte_size "2"
+	@java_type "short"
+	@java_primitive "true"
+	@js_type "short";
+
+/**
+First, declare the messages that make sense for the timer:
+- timer start
+- timer cancel
+- timer timeout
+*/
+
+thing fragment TimerMsgs {
+	// Start the Timer
+	message timer_start(delay : Integer);
+	// Cancel the Timer
+	message timer_cancel();
+	// Notification that the timer has expired
+	message timer_timeout();
+}
+
+/**
+Second, organize your messages into a port. The timer can receive a timer_start and a timer_cancel,
+and will eventually send a timer_timeout
+*/
+thing fragment Timer includes TimerMsgs
+{
+	provided port timer
+    {
+		sends timer_timeout
+		receives timer_start, timer_cancel
+	}
+}
+
+/**
+A typical client for the timer will have a mirror port, able to send timer_start and timer_cancel,
+and able to receive a timer_timeout
+*/
+thing fragment TimerClient includes TimerMsgs
+{
+	required port timer
+    {
+		receives timer_timeout
+		sends timer_start, timer_cancel
+	}
+    
+}

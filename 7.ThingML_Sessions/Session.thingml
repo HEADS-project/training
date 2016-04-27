@@ -1,0 +1,123 @@
+import "Timer.thingml"
+
+thing Gateway includes TimerClient {
+    property ID : Integer = 0 //keep the session's ID
+    
+    readonly property delay : Integer = 2000
+    
+    
+    /**
+     * Sesssions are connected exactly the same way
+     * as the root thing. Whatever the root can send and receive, 
+     * they sessions can, too.
+     * Internal ports are a convenient way to communicate between
+     * the root things and its sessions, typically by passing 
+     * the session ID as a parameter. 
+     */
+    message hello(id : Integer)
+    message howAreYou(id : Integer)
+    internal port hello {
+        sends hello, howAreYou
+        receives hello, howAreYou
+    }
+    
+    statechart behavior init Init {
+        
+        internal event h : hello?hello
+        action do
+            print "hello from session #"
+            print h.id
+            print "\n"
+            hello!howAreYou(h.id)
+        end
+        
+        state Init {
+            on entry print "Testing Sessions\n"    
+            transition -> Fork
+        }
+        
+        state Fork {
+            on entry do
+                /**
+                 * This is how we instantiate a session
+                 * Typically sessions will be instantiated by
+                 * platform-specific listeners, e.g.
+                 * whenever a device enters the network
+                 */
+                ID++
+                fork s
+                
+                /**
+                 * Forked sessions are instances of the current thing,
+                 * with their behavior (root statechart) initialized with
+                 * the content the the session. They do not execute 
+                 * the root statechart, and the root thing does not execute
+                 * the behavior of the sessions.
+                 * Sessions' attributes are initialized with the attribute
+                 * of the root thing, at the moment of the fork.
+                 */
+            end
+            
+            transition -> Wait
+            guard ID < 10
+            
+            transition -> Stop
+            guard ID == 10
+        }    
+        
+        state Wait {
+            on entry timer!timer_start(delay)
+            
+            transition -> Fork
+            event timeout : timer?timer_timeout
+            
+        }
+        
+        final state Stop {
+            on entry print "Stop forking\n"    
+        }
+        
+        /**
+        * Sessions are defined pretty much like
+        * (static) parallel regions. However,
+        * they are not active by default and
+        * have to be explicitly forked
+        */
+        session s init Init {
+            state Init {
+                on entry do
+                    print "I am session #"
+                    print ID
+                    print "\n"                    
+                end    
+                
+                transition -> Greet
+            }
+            
+            state Greet {
+                
+                on entry do
+                    print "Greeting\n"
+                    hello!hello(ID)
+                end
+                
+                transition -> Stop
+                event hay : hello?howAreYou
+                guard hay.id == ID                
+            }
+            
+            /**
+            * It is a good idea to make sure
+            * sessions will eventually reach a final state:
+            * this is the only way to "kill" sessions.
+            */
+            final state Stop {
+                on entry do
+                    print "RIP session #"
+                    print ID
+                    print "\n"
+                end
+            }
+        }        
+    }
+}
