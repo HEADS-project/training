@@ -15,10 +15,10 @@ thing Gateway includes TimerClient {
      * the session ID as a parameter. 
      */
     message hello(id : Integer)
-    message howAreYou(id : Integer)
+    message kill(id : Integer)
     internal port hello {
-        sends hello, howAreYou
-        receives hello, howAreYou
+        sends hello, kill
+        receives hello, kill
     }
     
     statechart behavior init Init {
@@ -28,7 +28,6 @@ thing Gateway includes TimerClient {
             print "hello from session #"
             print h.id
             print "\n"
-            hello!howAreYou(h.id)
         end
         
         state Init {
@@ -59,10 +58,10 @@ thing Gateway includes TimerClient {
             end
             
             transition -> Wait
-            guard ID < 10
+            guard ID < 9
             
             transition -> Stop
-            guard ID == 10
+            guard ID == 9
         }    
         
         state Wait {
@@ -74,7 +73,14 @@ thing Gateway includes TimerClient {
         }
         
         final state Stop {
-            on entry print "Stop forking\n"    
+            on entry do
+		print "Slaughtering Sessions \n" 
+		var i : Integer = 1
+		while (i <= 9) do
+			hello!kill(i)
+			i = i + 1
+		end
+	    end    
         }
         
         /**
@@ -101,8 +107,8 @@ thing Gateway includes TimerClient {
                     hello!hello(ID)
                 end
                 
-                transition -> Stop
-                event hay : hello?howAreYou
+                transition -> Die
+                event hay : hello?kill
                 guard hay.id == ID                
             }
             
@@ -111,13 +117,13 @@ thing Gateway includes TimerClient {
             * sessions will eventually reach a final state:
             * this is the only way to "kill" sessions.
             */
-            final state Stop {
-                on entry do
-                    print "RIP session #"
-                    print ID
-                    print "\n"
-                end
-            }
+	
+	    final state Die {
+		on entry do
+			print ID
+		end
+
+	    }
         }        
     }
 }
