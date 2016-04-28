@@ -1,7 +1,7 @@
 import "../Windows.thingml"
 import "./JavaTimer.thingml"
   
-configuration WindowsJSCfg 
+configuration WindowsJavaCfg 
 {
 	instance my_instance: TestWindows
 	instance timer : TimerJava

@@ -15,44 +15,56 @@ thing fragment TestMsgs {
 
 thing TestWindows includes TestMsgs, TimerClient
 {
-    provided port send {
+    internal port intPort {
         sends m1, m2, res, res2
+        receives m1, m2, res, res2
     }
 
-    required port recv {
-        receives m1, m2, res, res2
-    }   
-
 	function average(x : Integer[]) : Float do
-		var i : Integer = 0
-		var sum : Integer = 0
-		while (i < x.length) do
-			sum = sum + x[i]
-			i = i + 1
-		end
-		return sum / x.length
+        if (x.length > 0) do
+		  var i : Integer = 0
+		  var sum : Integer = 0
+		  while (i < x.length) do
+		     sum = sum + x[i]
+			 i = i + 1
+		  end
+		  return sum / x.length
+        end else do
+            error "Cannot compute average out of empty array\n"
+            return 0
+        end
 	end
 	
 	function min(x : Integer[]) : Integer do
-		var i : Integer = 0
-		var min : Integer = x[0]
-		while (i < x.length) do
+        if (x.length > 0) do
+		  var i : Integer = 0
+		  var min : Integer = x[0]
+		  while (i < x.length) do
 			if (x[i] < min) 
 				min = x[i]
 			i = i + 1
-		end
-		return min
+		  end
+		  return min
+       end else do
+            error "Cannot compute min out of empty array\n"
+            return 0       
+       end
 	end
 	
 	function max(x : Integer[]) : Integer do
-		var i : Integer = 0
-		var max : Integer = x[0]
-		while (i < x.length) do
+        if (x.length > 0) do
+		  var i : Integer = 0
+		  var max : Integer = x[0]
+		  while (i < x.length) do
 			if (x[i] > max) 
 				max = x[i]
 			i = i + 1
-		end
-		return max
+		  end
+		  return max
+        end else do
+            error "Cannot compute max out of empty array\n"
+            return 0           
+        end
 	end
 
 	//Time and length windows can be defined to aggregate a set of events
@@ -60,21 +72,21 @@ thing TestWindows includes TestMsgs, TimerClient
 	//For time windows. two parameters should be specified:
 	//   - timeSpan, the "size"/duration of the window
 	//   - timeShift, which creates a new output every timeShift milliseconds
-    stream lengthW from e : recv?m2::during 5000 by 5000
+    stream lengthW from e : intPort?m2::during 5000 by 5000
     select var avg : Float = average(e.x[]), 
     	var min : Integer =  min(e.x[]), 
     	var max : Integer = max(e.x[])
-    produce send!res2(avg, min, max)
+    produce intPort!res2(avg, min, max)
     
     
     //Length windows take one or two parameters
     //    - size (mandatory)
     //    - step (optional, by default equals to size i.e. no overlap between windows)
-    stream lengthW from e : recv?m1::buffer 5 by 5
+    stream lengthW from e : intPort?m1::buffer 5 by 5
     select var avg : Float = average(e.x[]), 
     	var min : Integer =  min(e.x[]), 
     	var max : Integer = max(e.x[])
-    produce send!res(avg, min, max)
+    produce intPort!res(avg, min, max)
 
 
 
@@ -84,21 +96,21 @@ thing TestWindows includes TestMsgs, TimerClient
     
         state Init {
             on entry do
-                send!m1(1)                
-                send!m1(2)                             
-                send!m1(0)                
-                send!m1(-1)
-                send!m1(-2)                
+                intPort!m1(1)                
+                intPort!m1(2)                             
+                intPort!m1(0)                
+                intPort!m1(-1)
+                intPort!m1(-2)                
                 
-                send!m1(2)                
-                send!m1(4)                             
-                send!m1(0)                
-                send!m1(2)
-                send!m1(2)                               
+                intPort!m1(2)                
+                intPort!m1(4)                             
+                intPort!m1(0)                
+                intPort!m1(2)
+                intPort!m1(2)                               
             end
             
             internal 
-            event e: recv?res
+            event e: intPort?res
             action do            	
 	       		print "res(" + e.avg + ", " + e.min + ", " + e.max + ")\n"
             end            
@@ -114,12 +126,12 @@ thing TestWindows includes TestMsgs, TimerClient
         		transition -> Init
         		event timer?timer_timeout
         		action do
-        			send!m2(i)
+        			intPort!m2(i)
         			i = i + 1
         		end
         		
         		internal 
-            	event e: recv?res2
+            	event e: intPort?res2
             	action do            	
 	       			print "res2(" + e.avg + ", " + e.min + ", " + e.max + ")\n"
             	end
