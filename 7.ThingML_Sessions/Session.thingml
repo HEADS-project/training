@@ -72,15 +72,24 @@ thing Gateway includes TimerClient {
             
         }
         
-        final state Stop {
+        state Stop {
             on entry do
-		print "Slaughtering Sessions \n" 
-		var i : Integer = 1
-		while (i <= 9) do
-			hello!kill(i)
-			i = i + 1
-		end
-	    end    
+		      print "Slaughtering Sessions \n" 
+		      var i : Integer = 1
+		      while (i <= 9) do
+			     hello!kill(i)
+			     i = i + 1
+		      end
+              timer!timer_start(delay)
+	       end    
+            
+            transition -> End
+            event timeout : timer?timer_timeout
+
+        }
+        
+        final state End {
+            on entry print "RIP!\n"    
         }
         
         /**
