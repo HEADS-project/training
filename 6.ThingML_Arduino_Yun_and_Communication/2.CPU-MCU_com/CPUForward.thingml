@@ -16,7 +16,11 @@
 import "Msgs.thingml"
 import "../lib/_Datatypes.thingml"
 
-protocol Serial1;
+protocol Serial
+	@serial_trace_level "3"
+	@serial_path_to_device "/dev/ttyATH0"
+	@serial_baudrate "115200"
+;
 
 configuration CPUForwarderCfg
 @serial_trace_level "3"
@@ -24,10 +28,7 @@ configuration CPUForwarderCfg
 {
 	instance bc : CPUForwarder
 	
-	connector bc.LEDport over Serial1
-	@serial_trace_level "3"
-	@serial_path_to_device "/dev/ttyATH0"
-	@serial_baudrate "115200"
+	connector bc.LEDport over Serial
 }
 
 thing CPUForwarder includes Msgs
