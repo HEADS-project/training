@@ -14,8 +14,15 @@
 
 import "../lib/_Datatypes.thingml"
 
-protocol Serial1;
-protocol Websocket;
+protocol Serial
+	@serial_path_to_device "/dev/ttyATH0"
+	@serial_baudrate "115200"
+;
+
+protocol Websocket
+	@trace_level "3"
+	@websocket_enable_unicast "true"
+;
 
 configuration UbberButtonControllerCfg
 @trace_level "1"
@@ -31,14 +38,10 @@ configuration UbberButtonControllerCfg
 {
 	instance bc : ButtonController
 	
-	connector bc.LEDport over Serial1
-	@serial_path_to_device "/dev/ttyATH0"
-	@serial_baudrate "115200"
+	connector bc.LEDport over Serial
 	
 	connector bc.WS over Websocket
 	@generate_debugGUI "true"
-	@trace_level "3"
-	@websocket_enable_unicast "true"
 }
 
 thing fragment Msgs {
