@@ -19,6 +19,7 @@ protocol Serial
 ;
 
 protocol Websocket
+        @serializer "PosixJSONSerializerPlugin"
 	@trace_level "3"
 ;
 
