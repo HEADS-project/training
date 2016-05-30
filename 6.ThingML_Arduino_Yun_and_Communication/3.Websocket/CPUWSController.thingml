@@ -12,8 +12,16 @@
 import "Msgs.thingml"
 import "../lib/_Datatypes.thingml"
 
-protocol Serial1;
-protocol Websocket;
+protocol Serial
+	@trace_level "3"
+	@serial_path_to_device "/dev/ttyATH0"
+	@serial_baudrate "115200"
+;
+
+protocol Websocket
+        @serializer "PosixJSONSerializerPlugin"
+	@trace_level "3"
+;
 
 configuration CPUWSControllerCfg
 @c_compiler "/openwrt-yun/staging_dir/toolchain-mips_r2_gcc-4.6-linaro_uClibc-0.9.33.2/bin/mips-openwrt-linux-gcc"
@@ -28,13 +36,9 @@ configuration CPUWSControllerCfg
 {
 	instance bc : ButtonController
 	
-	connector bc.LEDport over Serial1
-	@trace_level "3"
-	@serial_path_to_device "/dev/ttyATH0"
-	@serial_baudrate "115200"
+	connector bc.LEDport over Serial
 	
 	connector bc.WS over Websocket
-	@trace_level "3"
 }
 
 thing ButtonController includes Msgs

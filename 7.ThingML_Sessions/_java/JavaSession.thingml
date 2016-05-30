@@ -1,0 +1,9 @@
+import "JavaTimer.thingml"
+import "../Session.thingml"
+
+configuration JavaSessions {
+    instance timer : TimerJava
+    instance gateway : Gateway
+    
+    connector gateway.timer => timer.timer
+}

@@ -14,8 +14,18 @@
 
 import "../lib/_Datatypes.thingml"
 
-protocol Serial1;
-protocol MQTT;
+protocol Serial
+	@serial_path_to_device "/dev/ttyATH0"
+	@serial_baudrate "115200"
+	@trace_level "3"
+;
+protocol MQTT
+	@trace_level "3"
+	@mqtt_broker_address "192.168.1.127"
+	@mqtt_topic "ThingML"
+	@mqtt_topic "ThingML2"
+	@mqtt_multi_topic_publish_selection "true"
+;
 
 
 configuration MQTTButtonControllerCfg
@@ -29,17 +39,9 @@ configuration MQTTButtonControllerCfg
 {
 	instance bc : ButtonController
 	
-	connector bc.LEDport over Serial1
-	@serial_path_to_device "/dev/ttyATH0"
-	@serial_baudrate "115200"
-	@trace_level "3"
+	connector bc.LEDport over Serial
 	
 	connector bc.mqttport over MQTT
-	@trace_level "3"
-	@mqtt_broker_address "192.168.1.127"
-	@mqtt_topic "ThingML"
-	@mqtt_topic "ThingML2"
-	@mqtt_multi_topic_publish_selection "true"
 }
 
 thing fragment Msgs {

@@ -30,14 +30,15 @@ thing TimerJS includes Timer
                 _start(m.delay)
             end
             
-          internal event m : timer?timer_cancel
+          internal cancel
+            event m : timer?timer_cancel
             action cancel()    
         }
     }
 }
 
-/*configuration TestTimerJS {
+configuration TestTimerJS {
     instance timer : TimerJS
     instance client : HelloTimer//this is your application
     connector client.timer => timer.timer    
-}*/
+}

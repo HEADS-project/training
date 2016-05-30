@@ -1,6 +1,6 @@
 import "../Timer.thingml"
 
-object JThread
+datatype JThread
 @java_type "Thread";
 
 // Manage a set of software timers.
@@ -39,7 +39,8 @@ thing TimerJava includes Timer
               '' & timer & '.start();'                
             end
             
-          internal event m : timer?timer_cancel
+          internal cancel
+            event m : timer?timer_cancel
             action do
               if (not(timer == 'null')) do
                 'try {'
@@ -55,8 +56,8 @@ thing TimerJava includes Timer
     }
 }
 
-/*configuration TestTimerJava {
+configuration TestTimerJava {
     instance timer : TimerJava
     instance client : HelloTimer//this is your application
     connector client.timer => timer.timer    
-}*/
+}

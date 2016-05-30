@@ -36,8 +36,8 @@ thing TimerJS includes Timer
     }
 }
 
-/*configuration TestTimerJS {
+configuration TestTimerJS {
     instance timer : TimerJS
     instance client : HelloTimer//this is your application
     connector client.timer => timer.timer    
-}*/
+}

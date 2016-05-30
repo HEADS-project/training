@@ -10,11 +10,18 @@
 
 import "../lib/_Datatypes.thingml"
 
-protocol Serial1;
-protocol MQTT;
+protocol Serial
+	@serial_path_to_device "/dev/ttyATH0"
+	@serial_baudrate "115200"
+;
+
+protocol MQTT
+        @serializer "PosixJSONSerializerPlugin"
+	@mqtt_broker_address "192.168.1.127"
+	@mqtt_topic "ThingML"
+;
 
 configuration MQTTPublisherCfg
-@trace_level "3"
 @c_compiler "/openwrt-yun/staging_dir/toolchain-mips_r2_gcc-4.6-linaro_uClibc-0.9.33.2/bin/mips-openwrt-linux-gcc"
 @add_c_libraries "mosquitto"
 @add_c_libraries_rep "/openwrt-yun/staging_dir/target-mips_r2_uClibc-0.9.33.2/lib"
@@ -24,15 +31,9 @@ configuration MQTTPublisherCfg
 {
 	instance bc : ButtonController
 	
-	connector bc.LEDport over Serial1
-	@serial_path_to_device "/dev/ttyATH0"
-	@serial_baudrate "115200"
-	@trace_level "3"
+	connector bc.LEDport over Serial
 	
 	connector bc.mqttport over MQTT
-	@trace_level "3"
-	@mqtt_broker_address "192.168.1.127"
-	@mqtt_topic "ThingML"
 }
 
 thing fragment Msgs {
@@ -46,7 +47,6 @@ thing fragment WSMsgs {
 }
 
 thing ButtonController includes Msgs, WSMsgs
-@trace_level "3"
 {
 	
 	required port LEDport {

@@ -55,8 +55,8 @@ thing TimerJava includes Timer
     }
 }
 
-/*configuration TestTimerJava {
+configuration TestTimerJava {
     instance timer : TimerJava
     instance client : HelloTimer//this is your application
     connector client.timer => timer.timer    
-}*/
+}

@@ -11,8 +11,16 @@
 
 import "../lib/_Datatypes.thingml"
 
-protocol Serial1;
-protocol MQTT;
+protocol Serial
+	@serial_path_to_device "/dev/ttyATH0"
+	@serial_baudrate "115200"
+;
+
+protocol MQTT
+        @serializer "PosixJSONSerializerPlugin"
+	@mqtt_broker_address "192.168.1.229"
+	@mqtt_topic "ThingML"
+;
 
 configuration MQTTSubscriberCfg
 @c_compiler "/openwrt-yun/staging_dir/toolchain-mips_r2_gcc-4.6-linaro_uClibc-0.9.33.2/bin/mips-openwrt-linux-gcc"
@@ -24,13 +32,9 @@ configuration MQTTSubscriberCfg
 {
 	instance bc : ButtonController
 	
-	connector bc.LEDport over Serial1
-	@serial_path_to_device "/dev/ttyATH0"
-	@serial_baudrate "115200"
+	connector bc.LEDport over Serial
 	
 	connector bc.mqttport over MQTT
-	@mqtt_broker_address "192.168.1.127"
-	@mqtt_topic "ThingML"
 }
 
 thing fragment Msgs {

@@ -1,7 +1,9 @@
 datatype Integer<2>
+@type_checker "Integer"
 @java_type "int";
 
 datatype Boolean<1>
+@type_checker "Boolean"
 @java_type "boolean";
  
 /**
@@ -20,37 +22,31 @@ thing SimpleCEP {
     message cep2(v1 : Integer, v2 : Integer);
     message cep2b(v1 : Integer, v2 : Integer);
     
-    provided port sendPort {
-        sends m1, m2, cep1, cep2, cep2b   
+    //Internal ports can be used so that state machine and streams can exchange messages asynchronously
+    //Note: internal ports do not have to (and cannot) be connected in the configuration. They are connected by default (to themselves)
+    internal port cepPort {
+        sends m1, m2, cep1, cep2, cep2b
+        receives m1, m2, cep1, cep2, cep2b   
     }
-    
-    required port receivePort {
-        receives m1, m2, cep1, cep2, cep2b    
-    }
-    
-    /*Streams are defined at the same level as ports, so that we can reuse 
-    the same stream in different places in the implementation (state machine)*/
-    
+            
     //This is a very simple CEP stream that just forwards a message
     //Note: we wouldn't really need CEP for that, it is just a slow introduction to the syntax of streams
-    stream forwardSimpleMessage do
-        from receivePort?m1
-        action sendPort!cep1()
-    end
+    //IMPORTANT: the m1 messages consumed by this stream remain available for the state machine, which can also react on m1.
+    stream forwardSimpleMessage from evt : cepPort?m1
+    produce cepPort!cep1()
     
-    //If you want to manipulate message parameters in CEP queries, use the folling syntax
-    stream forwardSimpleMessageWithParams do
-        from evt : [receivePort?m2]
-        select a : evt.v1, b : evt.v2
-        action sendPort!cep2(a,b)
-    end
+    //If you want to manipulate message parameters in CEP queries, use the following syntax
+    stream forwardSimpleMessageWithParams from evt : cepPort?m2
+    select var a : Integer = evt.v1, 
+           var b : Integer = evt.v2
+    produce cepPort!cep2(a,b)
     
-    //You can transform message parameters directly in the select
-    stream transformAndForward do
-        from evt : [receivePort?m2]
-        select a : (evt.v1 * 2), b : transform(evt.v2)
-        action sendPort!cep2b(a, b)
-    end
+    //You can transform message parameters directly in the select e.g. by calling a function
+    //Select contains a set of variable, which can be assigned from any expression including function call, arithmetic operation, etc
+    stream transformAndForward from evt : cepPort?m2
+    select var a : Integer = (evt.v1 * 2), 
+           var b : Integer = transform(evt.v2)
+    produce cepPort!cep2b(a, b)
     
     function transform(v : Integer) : Integer do
         return v * v
@@ -68,23 +64,23 @@ thing SimpleCEP {
 
             on entry do
                 print "Welcome!\n\n"
-                sendPort!m1() // This should trigger cep1
-                sendPort!m2(1, 2) //This should trigger both cep2 and cep2b
+                cepPort!m1() // This should trigger cep1
+                cepPort!m2(1, 2) //This should trigger both cep2 and cep2b
             end
             
-            internal event receivePort?cep1
+            internal event cepPort?cep1
             action do
                 cep1Rec = true
                 print "CEP1 received!\n"
             end
             
-            internal event receivePort?cep2
+            internal event cepPort?cep2
             action do
                 cep2Rec = true
                 print "CEP2 received!\n"
             end
             
-            internal event receivePort?cep2b
+            internal event cepPort?cep2b
             action do
                 cep2bRec = true
                 print "CEP2B received!\n"
@@ -110,8 +106,5 @@ HEADS / ThingML -> Javascript for NodeJS
 **/
 configuration SimpleCEPCfg 
 {
-
 	instance my_instance: SimpleCEP
-    connector my_instance.receivePort => my_instance.sendPort
-
 }

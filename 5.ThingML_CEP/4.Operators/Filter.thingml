@@ -1,93 +1,64 @@
 datatype Boolean<1>
+@type_checker "Boolean"
 @java_type "boolean";
 
 thing fragment TestMsgs {
-    message m1(b : Boolean, b2 : Boolean);
-    message m2(b : Boolean, b2 : Boolean);  
+    message m1(b : Boolean);
+    message m2(b : Boolean);  
     
-    message res(b : Boolean, b2 : Boolean);
-    message res2(b : Boolean, b2 : Boolean);
+    message res(b : Boolean);
+    message res2(b : Boolean);
 }
 
 thing TestMergeFilter includes TestMsgs
 {
-    provided port send {
+    internal port cep {
         sends m1, m2, res, res2
-    }
-
-    required port recv {
         receives m1, m2, res, res2
     }
 
-    operator m1Filter(m : m1) : Boolean do
-        return m.b
-    end    
-    
-    operator Notm1Filter(m : m1) : Boolean do
-        return not m.b
-    end
-    
-    operator m2Filter(m : m2) : Boolean do
-        return m.b
-    end    
-    
-    operator Notm2Filter(m : m2) : Boolean do
-        return not m.b
-    end
-    
-    operator resFilter(m : res) : Boolean do
-    	return m.b2
-    end
-    
-    operator res2Filter(m : res2) : Boolean do
-    	return m.b2
-    end    
-
     //filter all m1(true) | m2(false)
-    //note: filters are limited to operator calls (do not put expressions directly in the filter)
-	//You can filter individual input streams and/or the output stream
-    stream filteredMergeOK do
-        from m : [ e1 : [recv?m1]::filter(m1Filter(e1)) | e2 : [recv?m2]::filter(Notm2Filter(e2)) -> res(#0, #1)]::filter(resFilter(m))
-        select a : #0, b : #1
-        action send!res(a, b)
-    end
+    //You can filter individual input streams and/or the output stream
+    //Filter (keep if) can declare any boolean expression, including a call to a function returning a boolean (in case the filter is complex)
+    stream filteredMergeOK
+    from m : [ e1 : cep?m1::keep if e1.b | e2 : cep?m2::keep if not e2.b -> res]::keep if m.b
+    select var a : Boolean = m.b
+    produce cep!res(a)
+    
     
     //filter all m1(true) | m2(false) + additional filter on the result (false)
-    stream filteredMergeFail do
-        from m : [ e1 : [recv?m1]::filter(Notm1Filter(e1)) | e2 : [recv?m2]::filter(m2Filter(e2)) -> res2(#0, #1)]::filter(res2Filter(m))
-        select a : #0, b : #1
-        action send!res2(a, b)
-    end
-
+    stream filteredMergeFail
+    from m : [ e1 : cep?m1::keep if not e1.b | e2 : cep?m2::keep if e2.b -> res2]::keep if not m.b
+    select var a : Boolean = m.b 
+    produce cep!res2(a)
 
 
     statechart testSimpleFilter init Init {
         state Init {
             on entry do
-                send!m1(true, true)
-                send!m2(false, true)
+                cep!m1(true)   //->res
+                cep!m2(false)  //->res
                 
-                send!m1(false, true)
-                send!m2(true, true)
+                cep!m1(false)
+                cep!m2(true)
+                                
+                cep!m1(true)  //->res
+                cep!m2(false) //->res
                 
-                
-                send!m1(true, false)
-                send!m2(false, false)
-                
-                send!m1(false, false)
-                send!m2(true, false)                               
+                cep!m1(false)
+                cep!m2(true)                               
             end
             
             internal 
-            event e: recv?res
+            event e: cep?res
             action do            	
-	       		print "res(" + e.b + ", " + e.b2 + ")\n"
+	       		print "res(" + e.b + ")\n"
             end
             
             internal 
-            event e : recv?res2
+            event e : cep?res2
             action do
-            	print "res2(" + e.b + ", " + e.b2 + ")\n"
+            	print "res2(" + e.b + ")\n"
             end
         }
     }
@@ -97,5 +68,4 @@ thing TestMergeFilter includes TestMsgs
 
 configuration filterCfg {
 	instance myinstance : TestMergeFilter
-	connector myinstance.recv => myinstance.send
 }

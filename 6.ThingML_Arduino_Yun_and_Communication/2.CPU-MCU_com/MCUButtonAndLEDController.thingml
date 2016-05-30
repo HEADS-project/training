@@ -15,7 +15,10 @@
 import "../lib/_Datatypes.thingml"
 import "Msgs.thingml"
 
-protocol Serial1;
+protocol Serial1
+	@port_name "Serial1"
+	@serial_baudrate "115200"
+;
 
 configuration MCUButtonAndLEDControllersCfg
 // This annotation allows to use the ThingML command "print" and to use generated traces on the serial port.
@@ -28,10 +31,8 @@ configuration MCUButtonAndLEDControllersCfg
 	
 	connector lc.LEDport => b.LEDport
 	connector bc.LEDport => b.LEDport
-	//Each Physical port should not be initialized more than once. In order to use it with several instances a multiplexer instance should be added. in this case it is Bridge
+	
 	connector b.Bridge over Serial1
-	@port_name "Serial1"
-	@serial_baudrate "115200"
 	
 }
 
