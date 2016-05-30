@@ -11,7 +11,7 @@ thing SensorTimerJS includes SensorTimer
         'clearTimeout(this.timer);'
     end
     
-    function start(delay : Integer)
+    function starting(delay : Integer)
     do
         'this.timer = setTimeout(onTimeout,' & delay & ');'
     end
@@ -29,11 +29,11 @@ thing SensorTimerJS includes SensorTimer
     statechart SoftTimer init default {
         state default {
             
-          internal start
+          internal startState
             event m : timer?timer_start
             guard m.delay > 0
             action do
-                start(m.delay)
+                starting(m.delay)
             end
             
            internal startInterval

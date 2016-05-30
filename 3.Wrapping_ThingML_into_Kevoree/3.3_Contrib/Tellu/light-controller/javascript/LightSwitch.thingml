@@ -87,19 +87,6 @@ function createObservation(lightValue : String) : Integer
 		           smarttracker!postJson( createObservation("off"))
 		        end
 	        }
-	        
-	        /*internal event m : ZWave?valueChanged
-	        guard m.nodeid == 3
-	        action do
-	           print("Value changed: "+m.nodeid + "," + m.comclass + "," + m.value['\'value\''])
-	           if(m.value['\'value\''] < 1) do
-	           	smarttracker!postJson( createObservation("off"))
-	           end
-	           else do
-	           	smarttracker!postJson( createObservation("on"))
-	           end
-	        end*/
-	        
 		}
 	}
 }

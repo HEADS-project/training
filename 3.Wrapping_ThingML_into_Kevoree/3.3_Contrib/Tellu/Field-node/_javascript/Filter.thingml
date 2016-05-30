@@ -6,17 +6,12 @@ import "../datatypes.thingml"
 
 thing Filter includes DecoderMsg{
 
-    message output(comp : Integer);
-	message tmp(pressure: Integer, temp: Integer, comp: Integer);
-	message split(pressure: Integer, temp: Integer);
+    message outputMsg(comp : Double);
+	message tmpMsg(pressure: Double, temp: Double, comp: Double);
+	message splitMsg(pressure: Double, temp: Double);
 
-
-
-	function filterComp(pressure : Integer[], temp : Integer[], comp : Integer[]) : Integer do
+	function filterComp(pressure : Double[], temp : Double[], comp : Double[]) : Double do
 	
-	//ekstraher temperatur for hver av msg
-	//gjør kalkulasjonen 
-	//returner kompenserte verdier og kompensasjons verdi i en kombinert map
 	
 	//y = ay-1 + by-2 + cx-1 + dx-2
 	
@@ -53,7 +48,7 @@ thing Filter includes DecoderMsg{
 	end
 	
 	
-	function filterComp(pressure: Integer, temp: Integer) : String 
+	function filterCompResurrect(pressure: Double, temp: Double) : String 
 	do
 		'
 		'&reading&'.data.pressure['&index&'] = pressure[0]
@@ -65,7 +60,7 @@ thing Filter includes DecoderMsg{
 		}'
 	end
 		
-	function send(msg: String)  
+	function splitAndSendToStream(msg: String)  
 	do
 		'
 		var json = JSON.parse('&msg&');
@@ -75,20 +70,25 @@ thing Filter includes DecoderMsg{
 		var pressure = json.data.pressure; 
 		
 		for (var i = 0; i < pressure.length; i++) {
-		 	'output!split('pressure[i]','temperature')'
+		 	'output!splitMsg('pressure[i]','temperature')'
 		}'
 	end
 	
 	
-	stream compansation @TTL1 "0" @TTL2 "7000" do 
-		from e : [e1  : outputRecv?split  & e2 : outputRecv?output -> tmp(e1.pressure, e1.temp, e2.comp)]::lengthWindow(3,1)
-		select compensated : filterComp(e.pressure[], e.temp[], e.comp[]), pressure : e.pressure[], temperature : e.temp
-		action output!tmp(pressure, temperature, compensated)
+	stream compansation @TTL1 "0" @TTL2 "7000"
+		from e : [e1  : outputRecv?splitMsg & e2 : outputRecv?outputMsg -> tmpMsg(e1.pressure, e1.temp, e2.comp)]::buffer 3 by 1
+		select var compensation : Double = filterComp(e.pressure[], e.temp[], e.comp[]),
+			var pressure : Double[] = e.pressure[],
+			var temperature : Double[] = e.temp
+		produce output!tmpMsg(pressure, temperature, compensation)
 	
-	end
 	
-	property compensated : Map
-	property reading : Map
+	
+	//variable to store the incoming reading
+	property reading : String
+	//variable to store the temperature compensated reading
+	property compensated : String
+	//An index variable used to keep track of number of compensated pressure readings
 	property index : Integer = 0
 	
 	statechart Filter init Active @debug "false" {
@@ -96,20 +96,24 @@ thing Filter includes DecoderMsg{
 		state Active {
 			on entry do
 				print "Filter Ready"
-				output!output(0)				
+				//Initialising loopback of stream with 0
+				output!outputMsg(0)				
 			end
 			
 			internal event e: decoder?decoded
 			action do
-				send(e.msg)
+				//This component receives a json formatted message. The splitAndSend method formats this into a "ThingML" message with parameters before sending to the stream
+				splitAndSendToStream(e.msg)
 			end
 			
-			internal event e: outputRecv?tmp
+			internal event e: outputRecv?tmpMsg
 			action do
-				output!output(e.comp)
+				//stream loopback
+				output!outputMsg(e.comp)
 				
-				//bygge opp struktur igjen
-				compensated = filterComp(e.pressure, e.temp)
+				//Resurrect json structure
+				compensated = filterCompResurrect(e.pressure, e.temp)
+				//Send compensated reading when 9 compensated pressure readings are added to report 
 				if(not(compensated == "")) do
 					filtered!decoded(compensated)
 					//print("----------------------\n")
@@ -122,13 +126,12 @@ thing Filter includes DecoderMsg{
 	
 	
 	required port output {
-		sends output, tmp,split
+		sends outputMsg, tmpMsg, splitMsg
 	}
 	
 	provided port outputRecv{
-		receives output,tmp,split
+		receives outputMsg, tmpMsg, splitMsg
 	}
-	
 	
 	required port decoder {
 		receives decoded

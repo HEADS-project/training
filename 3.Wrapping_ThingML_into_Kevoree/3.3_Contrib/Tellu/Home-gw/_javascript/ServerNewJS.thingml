@@ -74,6 +74,7 @@ thing FallServerNew includes SensorServer
 			'&curFallState&'[sensorId] = true;
 			json.message=JSON.stringify(msg);
 			var res = JSON.stringify(json);
+			'&sendFall('sensorId', 'fnId')&'
 			return res;
 		} else if(!fall) {
 			'&curFallState&'[sensorId] = false;

@@ -1,4 +1,5 @@
-import "SensorJS.thingml"
+//import "SensorJS.thingml"
+import "SensorBMP280JS.thingml"
 import "SensorTimerJS.thingml"
 import "Filter.thingml"
 import "DecoderFilter.thingml"
@@ -16,16 +17,15 @@ configuration FieldNode
 {
     instance timer : SensorTimerJS
     instance sensor : SensorJS 
-    instance pfilter : DecoderFilter //commented out
+    instance pfilter : DecoderFilter 
     instance comparator : ComparatorNew @debug "false"
-    //instance pfilter : Filter  //to be commented out
     connector sensor.timer => timer.timer
-    connector pfilter.decoder => sensor.decoder 
+    //connector pfilter.decoder => sensor.decoder 
     connector sensor.filtered => pfilter.filtered 
     connector comparator.comparedInternal => comparator.comparedInternalRec
     connector comparator.ref => pfilter.filtered
     connector sensor.filtered => comparator.compared
-    //connector pfilter.output => pfilter.outputRecv //to be commented out
+    
     
     instance ble : BLE
 	instance decoder : Decoder 
@@ -33,9 +33,14 @@ configuration FieldNode
 	connector ble.BLEInternalRec => ble.BLEInternal
 	connector decoder.BLE => ble.BLE
 	connector blefilter.decoder => decoder.decoder
-	//connector blefilter.decoder => sensor.decoder
 	connector comparator.ble => blefilter.filtered
 	connector sensor.filtered => blefilter.filtered
-	
 	connector sensor.sensor_mqtt over kevoree 
+	
+	
+	
+	
+	//connector blefilter.decoder => sensor.decoder
+	//instance pfilter : Filter  //to be commented out
+	//connector pfilter.output => pfilter.outputRecv //to be commented out
 }

@@ -1,13 +1,14 @@
 {
    "name":"field-node",
-   "version":"1.0.29",
+   "version":"1.0.33",
    "description":"FieldNode configuration generated from ThingML",
    "main":"lib/FieldNode.js",
    "private":false,
    "dependencies":{
       "state.js":"^5.3.4",
       "colors":"^1.1.2",
-      "kevoree-entities":"^8.0.0"
+      "kevoree-entities":"^8.0.0",
+      "bmp280":"^0.1.0"
    },
    "devDependencies":{
       "grunt":"^0.4.1",

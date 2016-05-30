@@ -19,34 +19,13 @@ thing SensorJS includes Sensor, Filter, Properties
     end 
     else
     do
-         ''& mraa &' =  require(\'mraa\');
-         console.log(\'MRAA Version: \' + '& mraa &'.getVersion());'
+         ''& bmp280 &' =  require(\'bmp280\');
+         '& bmp280 &'.init('& bmp280 &');'
          
-         analogPin0 = 'new '& mraa &'.I2c(1);'
-        
-         & analogPin0 & '.address(0x0b);'
          & vals &' = [];'
          
     end
-    
-    function initializeTemp()
-    if (test==true) 
-    do
-    	'console.log(\'initialize\');'
-    end
-    else
-    do
        
-         ''& temp & '= new '& mraa &'.I2c(1);'
-         & temp &'.address(0x48);'
-         & temp & '.writeReg(0x03, 0x40);
-         var data =  '& temp & '.readReg(0x0b);
-         console.log(\'DT7410 ID reg = \' + data);'
-         & temp & '.writeReg(0x03, 0x40);
-         var config =  '& temp & '.readReg(0x03);
-         console.log(\'DT7410 ID config = \' + config);'
-    end
-    
     function calculateStart() : Integer
     do
     	'var time = new Date().getTime();
@@ -80,57 +59,14 @@ thing SensorJS includes Sensor, Filter, Properties
 	end
 	else   
     do
-    	''&analogPin0&'.read(4);
-    	
-	    var now = new Date().getTime();
-	    while(new Date().getTime() < now + 5){ /* do nothing */ } 
-
-    	
-    	var array = '&analogPin0&'.read(4);
-
-        //console.log(array[0]);
-        //console.log(array[1]);
-        //console.log(array[2]);
-        //console.log(array[3]);
-
-        //console.log("pressure:");
-        var pressure = ((array[0]<<8 | array[1])&0x3FFF)-8192;
-        //console.log(pressure);
-
-        var utmp = (array[2]<<3|array[3]>>5);
-
-        var tmp = (((utmp * 200.0) / 2047.0) - 50.0);
-
-        //console.log("temperature:");
-        //console.log(tmp);
-        //console.log("----------------------");'
-      
+    	'var temp = '&bmp280&'.readTemperatureData('&bmp280&');
+    	'&tempValue&' = temp.temp;
+    	pressure = '&bmp280&'.readPressureData('&bmp280&',temp.tempFine);'
+    	     
         return 'pressure'
     end
     
-    function readTemp() : Integer
-    if (test==true)
-    do
-    	if(testval < 10) do
-	    		return 0
-	    	end else do
-	    		return 1
-	    	end
-    end
-    else
-    do
-	   // Read temperature register
-	   'var data =  []
-	   data[0] = '& temp & '.readReg(0x00);
-	   data[1] = '& temp & '.readReg(0x01);
-	   var temperature = ((data[0]<<5|data[1]>>3)&0x1FFF)/16
-	   
-	   //console.log("temperature:");
-	   //console.log(temperature);
-	   return temperature'
-   
-    end
-    
+        
     
     /*
  	{"data" :
@@ -230,9 +166,9 @@ thing SensorJS includes Sensor, Filter, Properties
     property tempValue : Integer = 0
     property curTempValue : Integer = 100000
     property msg : String
-    property analogPin0 : Analog
+    property bus : Analog
     property temp : Analog
-    property mraa : Analog
+    property bmp280 : Analog
     property vals : Analog
     
     statechart SensorMachine init Idle {
@@ -240,9 +176,7 @@ thing SensorJS includes Sensor, Filter, Properties
 		state Idle {
 			on entry do 
 				initialize()
-				print "Pressure Sensor Ready"	
-				initializeTemp()
-				print "Temperature Sensor Ready"				
+				print "Pressure Sensor Ready"				
 				timer!timer_start(calculateStart())
 			end
 			
@@ -255,25 +189,23 @@ thing SensorJS includes Sensor, Filter, Properties
 			    timer!timer_start(calculateDelay())
 				print "Sensor Reading"
 				value = read()
-				tempValue = readTemp()
 				msg = append(value, tempValue)
 				if (not (msg == ""))
 				do
 					decoder!decoded(msg)
-					//sensor_mqtt!readingJson(addTopic(msg))
+					sensor_mqtt!readingJson(addTopic(msg))
 				end
 			end
 			
 			internal event timer?timer_timeout
 			action do				
 				value = read()
-				tempValue = readTemp()
 				//printReadPeriod()
 				msg = append(value, tempValue)
 				if (not (msg == ""))
 				do
 					decoder!decoded(msg)
-					//sensor_mqtt!readingJson(addTopic(msg))
+					sensor_mqtt!readingJson(addTopic(msg))
 					
 					//printSendPeriod()
 					timer!timer_start(calculateStart())

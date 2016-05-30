@@ -44,6 +44,10 @@ property reading : String
 	
 	function fallControl(fallReport : String) @abstract "true" : String do end
 	
+	function sendFall(sensorId : String, fnId : String) do
+		fall!fall(sensorId, fnId)
+	end
+	
 	statechart Server init reading {
                
         state reading {
@@ -62,7 +66,6 @@ property reading : String
                 do                                            
             		print("to send")
             		smarttracker!reading(fallReport)
-            		fall!fall("0", "0")
                 end                            
             end     
         }
