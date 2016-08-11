@@ -34,7 +34,7 @@ thing JoinCEP {
     
     stream simpleJoinWithParams @TTL "250"
     from result : [e2 : cepPort?m2 & e3 : cepPort?m3 -> cep2(e2.v1 + e3.v1, e2.v2)]
-    select var a : Integer = result.v1 
+    select var a : Integer = result.v1, 
            var b : Integer = result.v2
     produce cepPort!cep2(a, b)
 
