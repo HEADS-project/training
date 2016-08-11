@@ -1,0 +1,271 @@
+import "zwave.thingml"
+import "../_common/Messages.thingml"
+import "../_common/LightSwitchServer.thingml"
+
+thing DeviceSession includes ZWaveClient, LightSwitchServer{
+
+property deviceId : String = "zwave" //@kevoree "instance"
+
+
+internal port cmdInt 
+	{
+	 		sends lightOff, lightOn
+	 		receives lightOff, lightOn
+	}
+	
+
+function createObservation(key: String, value : String) : Integer
+ 	do
+ 		'var obsdata = [];
+ 		obsdata.push({"'&key&'":"'&value&'"});
+		
+		var obs = {deviceId: "zwave-"+' & deviceId & ', observations: obsdata};
+ 			
+ 		return JSON.stringify(obs);
+ 		'
+ 	end
+ 	
+ 	function extractCommandMsg(commandJson : String)
+ 	do
+ 		'var cmd = JSON.parse('&commandJson&')
+ 		cmd.message = cmd.message.replace(/\\/g, "")
+ 		var mesg = JSON.parse(cmd.message)'
+ 		if ('mesg.command' == "off")
+		do
+			cmdInt!lightOff('mesg.nodeId')
+		end
+ 		if ('mesg.command' == "on")
+		do
+			cmdInt!lightOn('mesg.nodeId')
+		end
+ 		
+ 	end
+ 	
+
+	statechart DeviceSession init Init {
+		state Init {
+			on entry do
+				ZWave!connect()
+			end
+			
+			transition CONNECTED -> Connected
+			event m : ZWave?driverReady
+			
+		}
+		
+		state Connected {
+			internal event m : ZWave?nodeAdded
+	        action do
+	           print("Node added: "+m.nodeid)
+	           deviceId = m.nodeid
+	           fork sess     
+	        end
+	        
+	        internal event m : smarttracker?commandJson
+	        action do
+	          extractCommandMsg(m.value)  
+	        end	
+		}
+		
+		
+		session sess init Running{
+			state Running {
+		        internal event m : ZWave?nodeReady
+		        guard m.nodeid == deviceId
+		        action do
+		        	print("Node ready: " +m.nodeid+":"+'JSON.stringify('& m.nodeinfo &')')
+		        end
+		        
+		        internal event m : ZWave?valueAdded
+		        guard m.nodeid == deviceId
+		        action do
+		           print("Value added: "+m.nodeid + "," + m.comclass + "," +'JSON.stringify('& m.value &')')   
+		        end
+		        
+		        internal event m : ZWave?notification
+		        guard m.nodeId == deviceId
+		        action do
+		           print("Value added: "+m.nodeId + "," + m.msg)   
+		        end
+		        
+		        
+		        /*internal event m : ZWave?valueChanged
+		        guard m.value['\'value\''] > 1 and m.comclass == 49 and m.nodeid == deviceId
+		        action do
+		           print("Value changed: "+m.nodeid + "," + m.comclass + "," +'JSON.stringify('& m.value &')')
+		           smarttracker!postJson( createObservation("on"))
+	        	end*/
+	        	
+		        internal event m : cmdInt?lightOn
+		        guard m.LocId == deviceId
+		        action do
+		           //print("Value changed: "+m.nodeid + "," + m.comclass + "," + m.value['\'value\''])
+		           ZWave!setValue(deviceId, 37, 1, 0, true)
+		           smarttracker!postJson( createObservation("lamp", "on"))
+		        end
+			        
+	        	internal event m : ZWave?valueChanged //Flood
+		        guard m.value['\'value\''] == 255 and m.comclass == 156 and m.nodeid == deviceId
+		        action do
+		           print("Value changed: "+m.nodeid + "," + m.comclass + "," +'JSON.stringify('& m.value &')')
+		           smarttracker!postJson( createObservation("lamp", "on"))
+	        	end
+	        	
+		        internal event m : ZWave?valueChanged //Switch - Wall Plug
+		        guard m.value['\'value\''] == true and m.comclass == 37 and m.nodeid == deviceId
+		        action do
+		           print("Value changed: "+m.nodeid + "," + m.comclass + "," +'JSON.stringify('& m.value &')')
+		           smarttracker!postJson( createObservation("lamp", "on"))
+	        	end
+	        	
+		        internal event m : ZWave?valueChanged //Switch - door sensor
+		        guard m.value['\'value\''] == true and m.comclass == 48 and m.nodeid == deviceId
+		        action do
+		           print("Value changed: "+m.nodeid + "," + m.comclass + "," +'JSON.stringify('& m.value &')')
+		           smarttracker!postJson( createObservation("lamp", "on"))
+	        	end
+	        	
+	        	internal event m : ZWave?valueChanged //Eye - burglar sensor
+			    guard m.value['\'value\''] > 0 and m.comclass == 113 and m.nodeid == deviceId
+		        action do
+		           print("Value changed: "+m.nodeid + "," + m.comclass + "," +'JSON.stringify('& m.value &')')
+		           smarttracker!postJson( createObservation("burglar", "on"))
+		        end
+	        	
+	        	
+		        internal event m : lightswitch?lightOff
+		        guard m.LocId == deviceId 
+		        action do
+		           //print("Value changed: "+m.nodeid + "," + m.comclass + "," + m.value['\'value\''])
+		           ZWave!setValue(deviceId, 37, 1, 0, false)
+		           smarttracker!postJson( createObservation("lamp", "off"))
+		        end
+		        
+		        internal event m : cmdInt?lightOff
+		        guard m.LocId == deviceId 
+		        action do
+		        	
+		           //print("Value changed: "+m.nodeid + "," + m.comclass + "," + m.value['\'value\''])
+		           ZWave!setValue(deviceId, 37, 1, 0, false)
+		           smarttracker!postJson( createObservation("lamp", "off"))
+		        end
+	        
+		        /*internal event m : ZWave?valueChanged
+			    guard m.value['\'value\''] <= 1 and m.comclass == 49 and m.nodeid == deviceId
+		        action do
+		           print("Value changed: "+m.nodeid + "," + m.comclass + "," +'JSON.stringify('& m.value &')')
+		           smarttracker!postJson( createObservation("off"))
+		        end*/
+		        
+		        internal event m : ZWave?valueChanged //Flood
+			    guard m.value['\'value\''] == 0 and m.comclass == 156 and m.nodeid == deviceId
+		        action do
+		           print("Value changed: "+m.nodeid + "," + m.comclass + "," +'JSON.stringify('& m.value &')')
+		           smarttracker!postJson( createObservation("lamp", "off"))
+		        end
+		        
+		        internal event m : ZWave?valueChanged //Switch - Wall Plug
+			    guard m.value['\'value\''] == false and m.comclass == 37 and m.nodeid == deviceId
+		        action do
+		           print("Value changed: "+m.nodeid + "," + m.comclass + "," +'JSON.stringify('& m.value &')')
+		           smarttracker!postJson( createObservation("lamp", "off"))
+		        end
+		        
+		        internal event m : ZWave?valueChanged //Switch - door sensor
+			    guard m.value['\'value\''] == false and m.comclass == 48 and m.nodeid == deviceId
+		        action do
+		           print("Value changed: "+m.nodeid + "," + m.comclass + "," +'JSON.stringify('& m.value &')')
+		           smarttracker!postJson( createObservation("lamp", "off"))
+		        end
+		        
+		        internal event m : ZWave?valueChanged //Eye - burglar sensor
+			    guard m.value['\'value\''] == 0 and m.comclass == 113 and m.nodeid == deviceId
+		        action do
+		           print("Value changed: "+m.nodeid + "," + m.comclass + "," +'JSON.stringify('& m.value &')')
+		           smarttracker!postJson( createObservation("burglar", "off"))
+		        end
+		        
+		        /*internal event m : ZWave?valueChanged
+		        guard m.nodeid == deviceId
+		        action do
+		           print("Value changed: "+m.nodeid + "," + m.comclass + "," +'JSON.stringify('& m.value &')')   
+		        end*/
+	        }
+	       
+	        
+	        
+	        /*composite state BinarySwitch init SwitchOff {
+		        state SwitchOff {
+			        transition On -> SwitchOn
+			        event m : lightswitch?lightOn
+			        guard m.LocId == deviceId
+			        action do
+			           //print("Value changed: "+m.nodeid + "," + m.comclass + "," + m.value['\'value\''])
+			           ZWave!setValue(deviceId, 37, 1, 0, true)
+			           smarttracker!postJson( createObservation("on"))
+			        end
+			        
+			        transition On2 -> SwitchOn
+			        event m : ZWave?valueChanged
+			        guard m.value['\'value\''] > 1 and m.comclass == 49 and m.nodeid == deviceId
+			        action do
+			           print("Value changed: "+m.nodeid + "," + m.comclass + "," +'JSON.stringify('& m.value &')')
+			           smarttracker!postJson( createObservation("on"))
+		        	end
+		        	
+		        	transition On3 -> SwitchOn
+			        event m : ZWave?valueChanged
+			        guard m.value['\'value\''] == true and m.comclass == 37 and m.nodeid == deviceId
+			        action do
+			           print("Value changed: "+m.nodeid + "," + m.comclass + "," +'JSON.stringify('& m.value &')')
+			           smarttracker!postJson( createObservation("on"))
+		        	end
+		        	
+		        	transition On4 -> SwitchOn
+			        event m : ZWave?valueChanged
+			        guard m.value['\'value\''] == true and m.comclass == 48 and m.nodeid == deviceId
+			        action do
+			           print("Value changed: "+m.nodeid + "," + m.comclass + "," +'JSON.stringify('& m.value &')')
+			           smarttracker!postJson( createObservation("on"))
+		        	end
+		        }
+		        
+		        state SwitchOn {
+		        	transition Off -> SwitchOff
+			        event m : lightswitch?lightOff
+			        guard m.LocId == deviceId
+			        action do
+			           //print("Value changed: "+m.nodeid + "," + m.comclass + "," + m.value['\'value\''])
+			           ZWave!setValue(deviceId, 37, 1, 0, false)
+			           smarttracker!postJson( createObservation("off"))
+			        end
+		        
+			        transition Off2 -> SwitchOff
+			        event m : ZWave?valueChanged
+				    guard m.value['\'value\''] <= 1 and m.comclass == 49 and m.nodeid == deviceId
+			        action do
+			           print("Value changed: "+m.nodeid + "," + m.comclass + "," +'JSON.stringify('& m.value &')')
+			           smarttracker!postJson( createObservation("off"))
+			        end
+			        
+			        transition Off3 -> SwitchOff
+			        event m : ZWave?valueChanged
+				    guard m.value['\'value\''] == false and m.comclass == 37 and m.nodeid == deviceId
+			        action do
+			           print("Value changed: "+m.nodeid + "," + m.comclass + "," +'JSON.stringify('& m.value &')')
+			           smarttracker!postJson( createObservation("off"))
+			        end
+			        
+			        transition Off4 -> SwitchOff
+			        event m : ZWave?valueChanged
+				    guard m.value['\'value\''] == false and m.comclass == 48 and m.nodeid == deviceId
+			        action do
+			           print("Value changed: "+m.nodeid + "," + m.comclass + "," +'JSON.stringify('& m.value &')')
+			           smarttracker!postJson( createObservation("off"))
+			        end
+		        }
+	        }*/
+		}
+	}
+}
+
