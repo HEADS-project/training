@@ -72,7 +72,7 @@ thing TestWindows includes TestMsgs, TimerClient
 	//For time windows. two parameters should be specified:
 	//   - timeSpan, the "size"/duration of the window
 	//   - timeShift, which creates a new output every timeShift milliseconds
-    stream lengthW from e : intPort?m2::during 5000 by 5000
+    stream timeW from e : intPort?m2::during 5000 by 5000
     select var avg : Float = average(e.x[]), 
     	var min : Integer =  min(e.x[]), 
     	var max : Integer = max(e.x[])
