@@ -21,11 +21,11 @@ thing ZWave includes ZWaveServer, ZWaveInternal
 	        &zHomeId&'=homeid;'
 	        &nodes&'=[];'
 	        ZWaveInt!driverReady(zHomeId)
-        '});'
+        '}.bind(this));'
         & zwave &'.on(\'driver failed\', function() {
 	        console.log(\'failed to start driver\');'
 	        ZWaveInt!driverFailed()             
-        '});'
+        '}.bind(this));'
         & zwave &'.on(\'node added\', function(nodeid) {
         ' & nodes & '[nodeid] = {
 	        manufacturer: \'\',
@@ -40,14 +40,14 @@ thing ZWave includes ZWaveServer, ZWaveInternal
 	        ready: false,
 	        };'
 	        ZWaveInt!nodeAdded('nodeid')
-        '});
+        '}.bind(this));
         '
         & zwave &'.on(\'value added\', function(nodeid, comclass, value) {
     	if (!' & nodes & '[nodeid][\'classes\'][comclass])
         	' & nodes & '[nodeid][\'classes\'][comclass] = {};
     	' & nodes & '[nodeid][\'classes\'][comclass][value.index] = value;'
     	ZWaveInt!valueAdded('nodeid', 'comclass', 'value')
-		'});
+		'}.bind(this));
         '
         & zwave &'.on(\'value changed\', function(nodeid, comclass, value) {
         if (' & nodes & '[nodeid][\'ready\']) {
@@ -58,7 +58,7 @@ thing ZWave includes ZWaveServer, ZWaveInternal
          }
     	' & nodes & '[nodeid][\'classes\'][comclass][value.index] = value;'
     	ZWaveInt!valueChanged('nodeid', 'comclass', 'value')
-		'});'
+		'}.bind(this));'
         
         & zwave &'.on(\'node ready\', function(nodeid, nodeinfo) {
 	    ' & nodes & '[nodeid][\'manufacturer\'] = nodeinfo.manufacturer;
@@ -93,12 +93,12 @@ thing ZWave includes ZWaveServer, ZWaveInternal
 	            console.log(\'node%d:   %s=%s\', nodeid, values[idx][\'label\'], values[idx][\'value\']);
 	    }'
 	    ZWaveInt!nodeReady('nodeid',' nodeinfo')   
-		'});'
+		'}.bind(this));'
 		
 		& zwave &'.on(\'scan complete\', function() {
 	    	console.log(\'scan complete.\');'
 			ZWaveInt!scanComplete()
-		'});
+		'}.bind(this));
 		
 		var notificationCodes = {
 		    0: \'message complete\',
@@ -113,7 +113,7 @@ thing ZWave includes ZWaveServer, ZWaveInternal
 		& zwave &'.on(\'notification\', function(nodeid, notif) {
 		    console.log(\'node%d: %s\', nodeid, notificationCodes[notif]);'
 		    ZWaveInt!notification('nodeid','notificationCodes[notif]')
-		'});
+		'}.bind(this));
 				
 		
 		var ctrlState = {
@@ -149,7 +149,7 @@ thing ZWave includes ZWaveServer, ZWaveInternal
 		& zwave &'.on(\'controller command\', function (state, error) {
     	console.log(\'controller command feedback: state:%d error:%d\', ctrlState[state], ctrlError[error]);'
     	ZWaveInt!controllerCommand('ctrlState[state]', 'ctrlError[error]')
-		'});'
+		'}.bind(this));'
 		
 		
 	end

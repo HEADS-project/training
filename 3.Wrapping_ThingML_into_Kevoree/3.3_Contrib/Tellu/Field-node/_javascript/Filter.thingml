@@ -17,7 +17,7 @@ thing Filter includes DecoderMsg{
 	
 		/*
  	{"data" :
-                {"pressure":[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
+                {"pressure":[0, 1, 2, 3, 4, 5, 6, 7, 8],
                 "temperature":21.2,
                 "sample_set":14,
                 "sensor_id":"IsensU 1"
@@ -75,8 +75,8 @@ thing Filter includes DecoderMsg{
 	end
 	
 	
-	stream compansation @TTL1 "0" @TTL2 "7000"
-		from e : [e1  : outputRecv?splitMsg & e2 : outputRecv?outputMsg -> tmpMsg(e1.pressure, e1.temp, e2.comp)]::buffer 3 by 1
+	stream compansation  
+		from e : [e1 : output?splitMsg & e2 @UseOnce "False" @TTL "7000": output?outputMsg -> tmpMsg(e1.pressure, e1.temp, e2.comp)]::buffer 3 by 1
 		select var compensation : Double = filterComp(e.pressure[], e.temp[], e.comp[]),
 			var pressure : Double[] = e.pressure[],
 			var temperature : Double[] = e.temp
@@ -106,7 +106,7 @@ thing Filter includes DecoderMsg{
 				splitAndSendToStream(e.msg)
 			end
 			
-			internal event e: outputRecv?tmpMsg
+			internal event e: output?tmpMsg
 			action do
 				//stream loopback
 				output!outputMsg(e.comp)
@@ -125,11 +125,8 @@ thing Filter includes DecoderMsg{
 	}
 	
 	
-	required port output {
+	internal port output {
 		sends outputMsg, tmpMsg, splitMsg
-	}
-	
-	provided port outputRecv{
 		receives outputMsg, tmpMsg, splitMsg
 	}
 	
@@ -144,7 +141,6 @@ thing Filter includes DecoderMsg{
 }
 configuration Filter {
 	instance pfilter : Filter
-	connector pfilter.output => pfilter.outputRecv  
 
 }
 

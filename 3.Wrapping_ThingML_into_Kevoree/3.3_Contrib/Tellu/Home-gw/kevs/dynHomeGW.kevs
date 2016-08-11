@@ -2,7 +2,7 @@
 add node0 : JavascriptNode
 
 //instantiate Kevoree/ThingML components
-add node0.HomeGW_0 : no.tellu.HomeGW/1.0.34
+add node0.HomeGW_0 : no.tellu.HomeGW/1.0.30
 
 add node0.broker : WSMsgBroker
 
@@ -23,7 +23,7 @@ remove subchan-{nodeName}
 '
 
 set sync.onConnect = '
-add {nodeName}.FieldNode_0 : no.tellu.FieldNode/1.0.28
+add {nodeName}.FieldNode_0 : no.tellu.FieldNode/1.0.33
 set {nodeName}.FieldNode_0.Properties_nodeName__var = "{nodeName}"
 
 //add chan: WSChan

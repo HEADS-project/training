@@ -1,5 +1,5 @@
 import "LightControllerNew.thingml"
-import "LightSwitch.thingml"
+import "DeviceSession.thingml"
 
 protocol kevoree;
 
@@ -7,14 +7,15 @@ configuration HomeGWLightController
 @kevscript "C:/Users/KnutEilif/Heads_13.02/workspace/Training/3.Wrapping_ThingML_into_Kevoree/3.3_Contrib/Tellu/light-controller/kevs/main.kevs"
  {
     instance lightControllerServer : LightController  @debug "true"
-    instance lightSwitch : LightSwitch @debug "true"
-    connector lightControllerServer.lightswitch  => lightSwitch.lightswitch @debug "true"
+    //instance lightSwitch : LightSwitch @debug "true"
+    instance deviceSession : DeviceSession @debug "true"
+    connector lightControllerServer.lightswitch  => deviceSession.lightswitch @debug "true"
     connector lightControllerServer.sensor_mqtt over kevoree @debug "true"
     connector lightControllerServer.smarttracker over kevoree @debug "true"
-    connector lightSwitch.smarttracker over kevoree @debug "true"
+    connector deviceSession.smarttracker over kevoree @debug "true"
     
     instance zwave : ZWave
 	
-	connector lightSwitch.ZWave => zwave.ZWave
+	connector deviceSession.ZWave => zwave.ZWave
 	connector zwave.ZWaveIntRec => zwave.ZWaveInt
 }
