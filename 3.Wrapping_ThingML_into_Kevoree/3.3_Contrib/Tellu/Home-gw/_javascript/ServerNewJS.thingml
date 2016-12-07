@@ -15,6 +15,9 @@ thing FallServerNew includes SensorServer
  	property LOC_HYSTERESIS : Integer = 5 @kevoree "instance"
  	property FALL_LIMIT : Integer = -4 @kevoree "instance"
  	
+ 	function sendFall(sensorId : String, fnId : String) do
+		fall!fall(sensorId, fnId)
+	end
  	
  	
  	function initialize() do
@@ -86,7 +89,7 @@ thing FallServerNew includes SensorServer
 			'&curFieldNode&'[sensorId] = fnId;
 			'&curLocWeight&'[sensorId] = 0;
 			json.message=JSON.stringify(msg);
-			var res = JSON.stringify(json);
+			let res = JSON.stringify(json);
 			return res;
 		}
 				
@@ -97,7 +100,7 @@ thing FallServerNew includes SensorServer
 				'&curFieldNode&'[sensorId] = fnId;
 				'&curLocWeight&'[sensorId] = 0;
 				json.message=JSON.stringify(msg);
-				var res = JSON.stringify(json);
+				let res = JSON.stringify(json);
 				return res;
 			} else {
 				'&curLocWeight&'[sensorId] = '&curLocWeight&'[sensorId] + 1;
@@ -110,6 +113,29 @@ thing FallServerNew includes SensorServer
 		return "";
 		'
 	end
+
+    statechart Server init reading {
+               
+        state reading {
+        
+         	on entry do
+         		initialize()
+         		print "Server starting!\n"
+         	end
+            
+            internal event readingJson : sensor_mqtt?readingJson
+            action do
+            	print "Sensor reading"
+                print readingJson.value
+                fallReport = fallControl(readingJson.value)
+                if(not(fallReport==""))
+                do                                            
+            		print("to send")
+            		smarttracker!reading(fallReport)
+                end                            
+            end     
+        }
+    }
 	
 }
 
