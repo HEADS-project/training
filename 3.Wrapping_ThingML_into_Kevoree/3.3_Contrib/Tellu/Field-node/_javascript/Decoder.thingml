@@ -160,11 +160,11 @@ thing Decoder includes BLEClient, DecoderMsg, Properties{
 
 
 
-configuration DecodeBle {
+/*configuration DecodeBle {
 		instance ble : BLE
 		instance decoder : Decoder @debug "false"
 		connector ble.BLEInternalRec => ble.BLEInternal
 		connector decoder.BLE => ble.BLE
 		
 	}
-
+*/

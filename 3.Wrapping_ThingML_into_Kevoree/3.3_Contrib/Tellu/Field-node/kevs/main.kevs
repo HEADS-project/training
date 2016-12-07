@@ -1,9 +1,9 @@
 // create a fieldnode JavaScript (node1)
 
-add node0 : JavascriptNode
-add node1 : JavascriptNode
+add node0 : JavascriptNode/LATEST/LATEST
+add node1 : JavascriptNode/LATEST/LATEST
 //create a default group to manage the node(s)
-add sync : WSGroup
+add sync : WSGroup/LATEST/LATEST
 set sync.port/node0 = "9000"
 attach node0, node1 sync
 set sync.master = 'node0'
@@ -11,13 +11,13 @@ set sync.master = 'node0'
 network node0.ip.lo 192.168.10.101
 
 //instantiate Kevoree/ThingML components
-add node1.FieldNode_0 : my.package.FieldNode
+add node1.FieldNode_0 : tellu.FieldNode/1/LATEST
 
-add chan: WSChan
+add chan: WSChan/LATEST/LATEST
 set chan.port = "9050"
 set chan.host = "192.168.10.101"
 
-add chan1: WSChan
+add chan1: WSChan/LATEST/LATEST
 set chan1.port = "9050"
 set chan1.host = "192.168.10.101"
 

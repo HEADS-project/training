@@ -75,13 +75,14 @@ thing Filter includes DecoderMsg{
 	end
 	
 	
-	/*stream compansation  
-		from e : [e1 : output?splitMsg & e2 @UseOnce "False" @TTL "7000": output?outputMsg -> tmpMsg(e1.pressure, e1.temp, e2.comp)]::buffer 3 by 1
+	stream compansation  
+		//from e : [e1 : output?splitMsg & e2 @UseOnce "False" @TTL "7000": output?outputMsg -> tmpMsg(e1.pressure, e1.temp, e2.comp)]::buffer 3 by 1
+from e : [e1 : output?splitMsg & e2 : output?outputMsg -> tmpMsg(e1.pressure, e1.temp, e2.comp)]::buffer 3 by 1
 		select var compensation : Double = filterComp(e.pressure[], e.temp[], e.comp[]),
 			var pressure : Double[] = e.pressure[],
 			var temperature : Double[] = e.temp
 		produce output!tmpMsg(pressure, temperature, compensation)
-	*/
+	
 	
 	
 	//variable to store the incoming reading
@@ -139,10 +140,10 @@ thing Filter includes DecoderMsg{
 	}
 
 }
-configuration Filter {
+/*configuration Filter {
 	instance pfilter : Filter
 
-}
+}*/
 
 
 

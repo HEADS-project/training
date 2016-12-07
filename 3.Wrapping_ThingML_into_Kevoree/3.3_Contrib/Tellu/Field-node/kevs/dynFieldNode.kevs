@@ -1,9 +1,9 @@
 // create a fieldnode JavaScript (node1)
 
-add node0 : JavascriptNode
-add %node% : JavascriptNode
+add node0 : JavascriptNode/LATEST/LATEST
+add %node% : JavascriptNode/LATEST/LATEST
 //create a default group to manage the node(s)
-add sync : WSGroup/5.3.1
+add sync : WSGroup/LATEST/LATEST
 set sync.port/node0 = "9000"
 attach %node% sync
 set sync.master = 'node0'

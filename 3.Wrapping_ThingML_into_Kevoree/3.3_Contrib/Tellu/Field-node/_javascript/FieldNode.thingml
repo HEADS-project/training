@@ -13,7 +13,7 @@ thing FieldNodeJS {
 
 
 configuration FieldNode 
-@kevscript "C:/Users/KnutEilif/Heads_13.02/workspace/Training/3.Wrapping_ThingML_into_Kevoree/3.3_Contrib/Tellu/Field-node/kevs/dynFieldNode.kevs"
+@kevscript "C:/Users/bmori/training/3.Wrapping_ThingML_into_Kevoree/3.3_Contrib/Tellu/Field-node/kevs/dynFieldNode.kevs"
 {
     instance timer : SensorTimerJS
     instance sensor : SensorJS 
