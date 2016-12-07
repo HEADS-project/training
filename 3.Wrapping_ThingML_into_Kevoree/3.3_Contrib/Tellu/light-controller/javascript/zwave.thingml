@@ -256,10 +256,10 @@ thing ZWave includes ZWaveServer, ZWaveInternal
 }
 
 
-configuration ZWave {
+/*configuration ZWave {
 	instance zwave : ZWave
 	//instance zwavetest : ZwaveTest
 	//connector zwavetest.ZWave => zwave.ZWave
 	connector zwave.ZWaveIntRec => zwave.ZWaveInt
-}
+}*/
 
