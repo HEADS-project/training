@@ -1,30 +1,30 @@
 add %%home_node%% : JavascriptNode/LATEST/LATEST
 add nodecs : JavascriptNode/LATEST/LATEST
-add %%home_node%%.HomeGW_0 : thingml.HomeGW/1/LATEST
+add %%home_node%%.HomeGW_0 : tellu.HomeGW/1/LATEST
 add %%home_node%%.submqtt, %%home_node%%.fnsubmqtt : MQTTSubClient/LATEST/LATEST
 add %%home_node%%.pubmqtt : MQTTPubClient/LATEST/LATEST
 add sync : WSGroup/LATEST/LATEST
-add pubchan, subchan, fnsubchan : LocalChannel/LATEST/LATEST
+add %%pubchan%%, %%subchan%%, %%fnsubchan%% : LocalChannel/LATEST/LATEST
 
 attach %%home_node%%, nodecs sync
 set sync.master = 'nodecs'
-set sync.port/nodecs = "9001"
-network nodecs.ip.eth0 172.17.0.2
 
-bind %%home_node%%.HomeGW_0.ser_sma_reading_out pubchan
-bind %%home_node%%.HomeGW_0.ser_sma_read_in subchan
-bind %%home_node%%.pubmqtt.jsonPub pubchan
-bind %%home_node%%.submqtt.onTopicAndMsg subchan
-bind %%home_node%%.HomeGW_0.ser_sen_readingJson_in fnsubchan
-bind %%home_node%%.fnsubmqtt.onMsg fnsubchan
+network nodecs.ip.eth0 192.168.1.126
+
+bind %%home_node%%.HomeGW_0.ser_sma_reading_out %%pubchan%%
+bind %%home_node%%.HomeGW_0.ser_sma_read_in %%subchan%%
+bind %%home_node%%.pubmqtt.jsonPub %%pubchan%%
+bind %%home_node%%.submqtt.onTopicAndMsg %%subchan%%
+bind %%home_node%%.HomeGW_0.ser_sen_readingJson_in %%fnsubchan%%
+bind %%home_node%%.fnsubmqtt.onMsg %%fnsubchan%%
 
 set %%home_node%%.logLevel = 'debug'
-set %%home_node%%.submqtt.host = '172.17.0.2'
+set %%home_node%%.submqtt.host = '192.168.1.126'
 set %%home_node%%.submqtt.port = '1883'
 set %%home_node%%.submqtt.topic = 'meg/smarttracker'
 set %%home_node%%.fnsubmqtt.host = 'localhost'
 set %%home_node%%.fnsubmqtt.port = '1883'
 set %%home_node%%.fnsubmqtt.topic = 'sensor/fallIndex'
-set %%home_node%%.pubmqtt.host = '172.17.0.2'
+set %%home_node%%.pubmqtt.host = '192.168.1.126'
 set %%home_node%%.pubmqtt.port = '1883'
 set %%home_node%%.pubmqtt.topic = 'test/smarttracker/pressure'
