@@ -159,7 +159,10 @@ thing ZWave includes ZWaveServer, ZWaveInternal
 	property nodes : Nodes
 
 	statechart ZwaveImpl init Idle {
-	
+		internal event m : ZWave?setValue
+	        action do
+	        ZWave!queryRes('JSON.stringify('& nodes &')')
+	        end
 		state Idle {
 	        on entry do
 	         	initialize()
@@ -195,19 +198,19 @@ thing ZWave includes ZWaveServer, ZWaveInternal
 			internal event m : ZWave?setValue
 	        action do
 	           'console.log(\'turning switch :%s\', '& m.value &');
-        		'& zwave &'.addon.setValue('& m.nodeid &','& m.commandclass &','& m.inst &','& m.index &','& m.value &');'   
+        		'& zwave &'.setValue('& m.nodeid &','& m.commandclass &','& m.inst &','& m.index &','& m.value &');'   
 	        end
 	        
 	        internal event m : ZWave?setNodeOn
 	        action do
 	           'console.log(\'set node on :%s\', '& m.nodeid &');
-        		'& zwave &'.addon.setNodeOn('& m.nodeid &');'   
+        		'& zwave &'.setNodeOn('& m.nodeid &');'   
 	        end
 	        
 	        internal event m : ZWave?setNodeOff
 	        action do
 	           'console.log(\'set node off :%s\', '& m.nodeid &');
-        		'& zwave &'.addon.setNodeOff('& m.nodeid &');'   
+        		'& zwave &'.setNodeOff('& m.nodeid &');'   
 	        end
 		
 	        internal event m : ZWaveIntRec?nodeReady

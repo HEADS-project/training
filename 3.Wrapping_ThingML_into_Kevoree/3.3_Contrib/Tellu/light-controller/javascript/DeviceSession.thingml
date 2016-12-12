@@ -2,24 +2,41 @@ import "zwave.thingml"
 import "../_common/Messages.thingml"
 import "../_common/LightSwitchServer.thingml"
 
+object Array
+    @js_type "var";
+    
 thing DeviceSession includes ZWaveClient, LightSwitchServer{
 
 property deviceId : String = "zwave" //@kevoree "instance"
+property homeId : String = "hjemme1" @kevoree "instance"
+
+
 
 
 internal port cmdInt 
 	{
-	 		sends lightOff, lightOn
-	 		receives lightOff, lightOn
+	 		sends lightOff, lightOn, query
+	 		receives lightOff, lightOn, query
 	}
 	
 
-function createObservation(key: String, value : String) : Integer
+	function createObservation(key: String, value : String) : Integer
  	do
  		'var obsdata = [];
- 		obsdata.push({"'&key&'":"'&value&'"});
+ 		var obs = {};
+ 		obs['&key&'] = '&value&';
+ 		obsdata.push(obs);
 		
-		var obs = {deviceId: "zwave-"+' & deviceId & ', observations: obsdata};
+		var obs = {deviceId: '&homeId&'+"/"+' & deviceId & ', observations: obsdata};
+ 			
+ 		return JSON.stringify(obs);
+ 		'
+ 	end
+ 	
+ 	function createObservation(obsdata : Array) : Integer
+ 	do
+ 				'
+		var obs = {deviceId: '&homeId&'+"/"+' & deviceId & ', observations: '& obsdata &'};
  			
  		return JSON.stringify(obs);
  		'
@@ -38,11 +55,27 @@ function createObservation(key: String, value : String) : Integer
 		do
 			cmdInt!lightOn('mesg.nodeId')
 		end
+		if ('mesg.command' == "query")
+		do
+			cmdInt!query()
+		end
  		
  	end
  	
 
 	statechart DeviceSession init Init {
+		internal event m : cmdInt?query
+		guard deviceId == "zwave"
+        action do
+          ZWave!query()  
+        end	
+        
+        internal event m : ZWave?queryRes
+		guard deviceId == "zwave"
+        action do
+          smarttracker!postJson( m.res)
+        end	
+	        
 		state Init {
 			on entry do
 				ZWave!connect()
@@ -175,14 +208,14 @@ function createObservation(key: String, value : String) : Integer
 			    guard m.value['\'value\''] == false and m.comclass == 48 and m.nodeid == deviceId
 		        action do
 		           print("Value changed: "+m.nodeid + "," + m.comclass + "," +'JSON.stringify('& m.value &')')
-		           smarttracker!postJson( createObservation("lamp", "off"))
+		           smarttracker!postJson( createObservation("security.event", "doorOpen"))
 		        end
 		        
 		        internal event m : ZWave?valueChanged //Eye - burglar sensor
 			    guard m.value['\'value\''] == 0 and m.comclass == 113 and m.nodeid == deviceId
 		        action do
 		           print("Value changed: "+m.nodeid + "," + m.comclass + "," +'JSON.stringify('& m.value &')')
-		           smarttracker!postJson( createObservation("burglar", "off"))
+		           smarttracker!postJson( createObservation("event", "burglar"))
 		        end
 		        
 		        /*internal event m : ZWave?valueChanged
