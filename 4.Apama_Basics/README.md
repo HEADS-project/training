@@ -4,21 +4,22 @@ HEADS Complex Event Processing basics with Apama
 ![HEADS](http://heads-project.eu/sites/default/files/heads_large.png)
 
 Learn the basics of Complex Event Processing (CEP) with Apama. Apama is the CEP engine of Software AG. For the product offering see 
-http://www.softwareag.com/corporate/products/apama_webmethods/analytics/overview/default.asp or 
-https://www.softwareag.com/corporate/res/download/default.asp for a free trial download.
+http://www.softwareag.com/corporate/products/apama_webmethods/analytics/overview/default.asp. 
+
+For the Apama Community Edition see http://www.apamacommunity.com/. Apama Community Edition is a freemium version of Apama by Software AG that can be used to learn about, develop and put streaming analytics applications into production. Find the latest version of Apama for download at http://www.apamacommunity.com/downloads/. The complete documentation is http://www.apamacommunity.com/docs/. A brief description of the functionality and technical key features are described in a 20-page white paper http://www.apamacommunity.com/wp-content/uploads/2016/06/SAG_The_Apama_Platform_20PG_WP_Jun16-Web.pdf.
+
 
 **This tutorial covers:**
 
-* Installing Apama 5.3 (CEP Engine and Eclipse based Apama Studio) on Windows.
+* Installing Apama (CEP Engine and Eclipse based Software AG Designer with Apama Studio) on Windows.
 * Using the tutorial on EPL monitor scripts.
 * Running the included demos.
 * Exploring the samples.
 * Exercises for Apama queries.
 
-### 0. Installing Apama 5.3
+### 0. Installing Apama
 
-Unpack the apama_5.3.0.0_win_64.zip and run apama_5.3.0.0_win_64.exe according to Installing_Apama.pdf (also in zip). Have the license file you 
-got from Software AG in hand.
+The Apama Community Edition can be installed without a license file.
 Install the developers option. Administrative privileges are needed.
 The installation for this tutorial requires Windows, because Apama Studio is not supported on other platforms. Please complain, if this is a show stopper.
 
@@ -27,7 +28,7 @@ Installation verification:
 * Import demo project 'Weather' from the samples of the welcome page.
 * This opens the Apama Workbench perspective with the Launch Control Panel on the lower left corner of the window and the readme.htm in the editor area.
 * Start the Apama correlator with the default settings.
-* You see in the Eclipse console log of this application 
+* If you start Apama with a license file, you see in the Eclipse console log of this application 
 ```
 2015-**-** xx:xx:xx.342 ##### [1384] - License information:
 2015-**-** xx:xx:xx.342 ##### [1384] -   D:\Users\xxxx\SoftwareAG\ApamaWork_5.3\license\license.txt
