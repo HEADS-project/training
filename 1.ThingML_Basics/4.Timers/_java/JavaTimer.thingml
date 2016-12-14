@@ -13,7 +13,7 @@ thing TimerJava includes Timer
     statechart SoftTimer init default {
         state default {
 
-          internal start
+          internal _start
             event m : timer?timer_start
             guard m.delay > 0
             action do

@@ -13,7 +13,7 @@ thing LightController includes SensorServer
  	property deviceId : String = "magnusuuiddevicen" @kevoree "instance"
  	message tmp(msg1: String, msg2: String);
 
- 	function numberify(readValue : String) : Integer
+ 	/*function numberify(readValue : String) : Integer
  	do
  		'
  		var reading = JSON.parse('&readValue&')
@@ -23,7 +23,7 @@ thing LightController includes SensorServer
  	function stringify(anyValue : String) : String
  	do
  		'return String('&anyValue&');'
- 	end
+ 	end*/
  	
  	function createObservation(lightValue : Integer) : String
  	do
@@ -80,7 +80,7 @@ thing LightController includes SensorServer
  		'
  	end*/
  	
- 	function extractFall(m : String) : Boolean 
+ 	/*function extractFall(m : String) : Boolean 
  	do
  		'var reading = JSON.parse('&m&')
  		console.log(\'Got here3\'+'&m&')
@@ -94,7 +94,7 @@ thing LightController includes SensorServer
  		}
  		return false;
  		'
- 	end
+ 	end*/
  	
  	/*function control(m1 : String, m2: String) : String 
  	do

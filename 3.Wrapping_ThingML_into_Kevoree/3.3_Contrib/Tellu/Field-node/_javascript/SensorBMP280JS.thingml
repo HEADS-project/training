@@ -89,9 +89,9 @@ thing SensorJS includes Sensor, Filter, Properties
     	
     	''&vals&'.push('&pressure&')
     	if ('&vals&'.length == Math.round('& setPeriod/samplePeriod &')){
-    		var tempDiff = 0;
+    		let tempDiff = 0;
     		if('&curTempValue&' != 100000){
-    			var tempDiff = '&temperature&' -'&curTempValue&';
+    			tempDiff = '&temperature&' -'&curTempValue&';
     		}
     		'&curTempValue&' = '&temperature&'
     		var data = {}

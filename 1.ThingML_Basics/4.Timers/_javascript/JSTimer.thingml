@@ -11,9 +11,9 @@ thing TimerJS includes Timer
         'clearTimeout(this.timer);'
     end
     
-    function start(delay : Integer)
+    function _start(delay : Integer)
     do
-        'this.timer = setTimeout(onTimeout,' & delay & ');'
+        'this.timer = setTimeout(onTimeout.bind(this),' & delay & ');'
     end
     
     function onTimeout() 
@@ -24,11 +24,11 @@ thing TimerJS includes Timer
     statechart SoftTimer init default {
         state default {
             
-          internal start
+          internal _start
             event m : timer?timer_start
             guard m.delay > 0
             action do
-                start(m.delay)
+                _start(m.delay)
             end
             
           internal cancel

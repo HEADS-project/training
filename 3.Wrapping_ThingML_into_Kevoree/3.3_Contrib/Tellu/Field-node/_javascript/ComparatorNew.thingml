@@ -16,7 +16,7 @@ thing ComparatorNew includes DecoderMsg{
 	function addRef(refmsg : Map) do
 		
 		'
-		for (var i = 1; i < '&ref&'.length; i++) {
+		for (let i = 1; i < '&ref&'.length; i++) {
 			'&ref&'['&ref&'.length-i] = '&ref&'['&ref&'.length-1-i];
 		}
 		var json = JSON.parse('&refmsg&');
@@ -27,7 +27,7 @@ thing ComparatorNew includes DecoderMsg{
 		
 		var keys =Object.keys('&ble&');
 		
-		for (var i = 0; i < keys.length; i++) {
+		for (let i = 0; i < keys.length; i++) {
 			var cur_id = keys[i];
 			var msgs = '&ble&'[cur_id];
 			
@@ -38,7 +38,7 @@ thing ComparatorNew includes DecoderMsg{
 					break;
 				}
 			}
-			for (var j = 1; j < msgs.length; j++) {
+			for (let j = 1; j < msgs.length; j++) {
 				msgs[msgs.length - j] = msgs[msgs.length -1 - j]
 			}
 		}
@@ -57,14 +57,14 @@ thing ComparatorNew includes DecoderMsg{
 			'&ble&'[curId] = msgs;
 		}
 		
-		for (var j = 0; j < '&ref&'.length; j++) {
+		for (let j = 0; j < '&ref&'.length; j++) {
 			if('&ref&'[j] && '&ref&'[j].data.sample_set == sampleSet) {
 				generateDiff(json, '&ref&'[j]);
 				return;
 			}
 		}
 		
-		for (var i = 1; i < msgs.length; i++) {
+		for (let i = 1; i < msgs.length; i++) {
 			msgs[msgs.length-i] = msgs[msgs.length-1-i];
 		}
 		
@@ -108,7 +108,7 @@ thing ComparatorNew includes DecoderMsg{
 		 	'&sensorDataMap&'[sensorId] = {}
 		 }
 		 
-		 var sensorData = '&sensorDataMap&'[sensorId];
+		 //var sensorData = '&sensorDataMap&'[sensorId];
 		 sensorData.fall = false;
 		 
 		 for (var i = 0; i < prs[0].length; i++) {

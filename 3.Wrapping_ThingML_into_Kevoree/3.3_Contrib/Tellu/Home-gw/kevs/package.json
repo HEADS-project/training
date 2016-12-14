@@ -1,25 +1,57 @@
 {
-   "name":"home-gw",
-   "version":"1.0.31",
-   "description":"HomeGW configuration generated from ThingML",
-   "main":"lib/HomeGW.js",
-   "private":false,
-   "dependencies":{
-      "state.js":"^5.3.4",
-      "colors":"^1.1.2",
-      "kevoree-entities":"^8.0.0"
-   },
-   "devDependencies":{
-      "grunt":"^0.4.1",
-      "grunt-kevoree":"^5.0.0",
-      "grunt-kevoree-genmodel":"^2.0.0",
-      "grunt-kevoree-registry":"^2.0.0"
-   },
-   "scripts":{
-      "prepublish":"grunt",
-      "postpublish":"grunt publish"
-   },
-   "kevoree":{
-      "package":"no.tellu"
-   }
+  "name": "home-gw",
+  "version": "1.0.31",
+  "description": "HomeGW configuration generated from ThingML",
+  "main": "lib/HomeGW.js",
+  "private": false,
+  "dependencies": {
+    "state.js": "^5.6.10",
+    "kevoree-entities": "^9.0.0"
+  },
+  "devDependencies": {
+    "grunt": "^1",
+    "grunt-kevoree": "^5",
+    "grunt-kevoree-genmodel": "^3",
+    "grunt-kevoree-registry": "^3",
+    "grunt-kevoree-registry": "^3",
+    "eslint": "^3.11.1",
+    "load-grunt-tasks": "^3"
+  },
+  "scripts": {
+    "prepublish": "npm run lint && grunt",
+    "postpublish": "grunt publish",
+    "lint": "eslint lib"
+  },
+  "repository": "https://github.com/HEADS-project/training/tree/master/3.Wrapping_ThingML_into_Kevoree/3.3_Contrib/Tellu/Home-gw",
+  "author": {
+    "name": "Knut Eilif Husa",
+    "email": "knut.eilif.husa@tellu.no"
+  },
+  "eslintConfig": {
+    "env": {
+      "node": true
+    },
+    "extends": [
+      "eslint:recommended"
+    ],
+    "parserOptions": {
+      "ecmaVersion": 6
+    },
+    "rules": {
+      "no-console": 0,
+      "no-unused-vars": [
+        "error",
+        {
+          "args": "none"
+        }
+      ],
+      "no-mixed-spaces-and-tabs": 0,
+      "no-unreachable": 0,
+      "no-extra-semi": 0,
+      "no-undef": 0
+    }
+  },
+  "kevoree": {
+    "namespace": "tellu"
+  }
 }

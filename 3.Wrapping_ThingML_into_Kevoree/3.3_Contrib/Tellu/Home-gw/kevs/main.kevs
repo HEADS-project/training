@@ -1,90 +1,30 @@
-//create server JavaScript node (node0)
-add node0 : JavascriptNode
+add %%home_node%% : JavascriptNode/LATEST/LATEST
+add nodecs : JavascriptNode/LATEST/LATEST
+add %%home_node%%.HomeGW_0 : tellu.HomeGW/1/LATEST
+add %%home_node%%.submqtt, %%home_node%%.fnsubmqtt : MQTTSubClient/LATEST/LATEST
+add %%home_node%%.pubmqtt : MQTTPubClient/LATEST/LATEST
+add sync : WSGroup/LATEST/LATEST
+add %%pubchan%%, %%subchan%%, %%fnsubchan%% : LocalChannel/LATEST/LATEST
 
-//instantiate Kevoree/ThingML components
-add node0.HomeGW_0 : no.tellu.HomeGW
+attach %%home_node%%, nodecs sync
+set sync.master = 'nodecs'
 
-add node0.broker : WSMsgBroker
+network nodecs.ip.eth0 192.168.1.126
 
-// define on which port the broker will start
-set node0.broker.port = '9050'
+bind %%home_node%%.HomeGW_0.ser_sma_reading_out %%pubchan%%
+bind %%home_node%%.HomeGW_0.ser_sma_read_in %%subchan%%
+bind %%home_node%%.pubmqtt.jsonPub %%pubchan%%
+bind %%home_node%%.submqtt.onTopicAndMsg %%subchan%%
+bind %%home_node%%.HomeGW_0.ser_sen_readingJson_in %%fnsubchan%%
+bind %%home_node%%.fnsubmqtt.onMsg %%fnsubchan%%
 
-//create a default group to manage the node(s)
-add sync : WSGroup
-set sync.port/node0 = "9000"
-attach node0 sync
-set sync.master = 'node0'
-
-set sync.onConnect = '
-add {nodeName}.FieldNode_0 : no.tellu.FieldNode
-
-add chan: WSChan
-set chan.port = "9050"
-set chan.host = "10.10.0.1"
-
-add chan1: WSChan
-set chan1.port = "9050"
-set chan1.host = "10.10.0.1"
-
-bind {nodeName}.FieldNode_0.FieldNode_sensor_sensor_service_out chan
-bind {nodeName}.FieldNode_0.FieldNode_sensor_sensor_service_in chan1
-
-add {nodeName}.submqtt : MQTTSubClient
-set {nodeName}.submqtt.topic = 'meg/smarttracker'
-set {nodeName}.submqtt.host = '10.10.0.1'
-set {nodeName}.submqtt.port = '1883'
-
-add {nodeName}.pubmqtt : MQTTPubClient
-set {nodeName}.pubmqtt.topic = 'test/smarttracker'
-set {nodeName}.pubmqtt.host = '10.10.0.1'
-set {nodeName}.pubmqtt.port = '1883'
-
-add pubchan : LocalChannel
-add subchan : LocalChannel
-
-bind {nodeName}.FieldNode_0.FieldNode_sensor_sensor_service_out pubchan
-bind {nodeName}.FieldNode_0.FieldNode_sensor_sensor_service_in subchan
-
-bind {nodeName}.pubmqtt.jsonPub pubchan
-bind {nodeName}.submqtt.onTopicAndMsg subchan
-
-'
-
-set sync.onDisconnect = '
-remove {nodeName}
-'
-
-add chan: WSChan
-set chan.port = "9050"
-set chan.host = "localhost"
-
-add chan1: WSChan
-set chan1.port = "9050"
-set chan1.host = "localhost"
-
-add node0.submqtt : MQTTSubClient
-set node0.submqtt.topic = 'meg/smarttracker'
-set node0.submqtt.host = 'ri.smarttracker.no'
-set node0.submqtt.port = '1883'
-
-add node0.pubmqtt : MQTTPubClient
-set node0.pubmqtt.topic = 'test/smarttracker'
-set node0.pubmqtt.host = 'ri.smarttracker.no'
-set node0.pubmqtt.port = '1883'
-
-add pubchan : LocalChannel
-add subchan : LocalChannel
-
-bind node0.HomeGW_0.HomeGW_server_smarttracker_out pubchan
-bind node0.HomeGW_0.HomeGW_server_smarttracker_in subchan
-
-bind node0.pubmqtt.pub pubchan
-bind node0.submqtt.onMsg subchan
-
-bind node0.HomeGW_0.HomeGW_server_sensor_service_out chan1
-bind node0.HomeGW_0.HomeGW_server_sensor_service_in chan
-
-start sync
-//start node0
-
-
+set %%home_node%%.logLevel = 'debug'
+set %%home_node%%.submqtt.host = '192.168.1.126'
+set %%home_node%%.submqtt.port = '1883'
+set %%home_node%%.submqtt.topic = 'meg/smarttracker'
+set %%home_node%%.fnsubmqtt.host = 'localhost'
+set %%home_node%%.fnsubmqtt.port = '1883'
+set %%home_node%%.fnsubmqtt.topic = 'sensor/fallIndex'
+set %%home_node%%.pubmqtt.host = '192.168.1.126'
+set %%home_node%%.pubmqtt.port = '1883'
+set %%home_node%%.pubmqtt.topic = 'test/smarttracker/pressure'

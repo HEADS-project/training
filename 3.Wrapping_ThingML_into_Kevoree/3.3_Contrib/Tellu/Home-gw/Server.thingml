@@ -44,9 +44,7 @@ property reading : String
 	
 	function fallControl(fallReport : String) @abstract "true" : String do end
 	
-	function sendFall(sensorId : String, fnId : String) do
-		fall!fall(sensorId, fnId)
-	end
+	
 	
 	statechart Server init reading {
                

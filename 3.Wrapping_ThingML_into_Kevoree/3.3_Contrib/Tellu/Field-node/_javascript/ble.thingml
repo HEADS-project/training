@@ -8,6 +8,7 @@ import "../ble.thingml"
 
 thing BLE includes BLEServer, BLEServerInternal
 @platform "javascript"
+@js_dep "noble:1.7.0"
 {
 
 	function initialize() do
@@ -84,8 +85,8 @@ thing BLE includes BLEServer, BLEServerInternal
 	}
 }
 
-configuration BLE {
+/*configuration BLE {
 	instance ble : BLE
 	connector ble.BLEInternalRec => ble.BLEInternal
-}
+}*/
 

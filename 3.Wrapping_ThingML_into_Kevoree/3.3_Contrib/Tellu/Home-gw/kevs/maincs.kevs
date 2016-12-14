@@ -1,0 +1,11 @@
+add nodecs : JavascriptNode/LATEST/LATEST
+add sync : WSGroup/LATEST/LATEST
+
+attach nodecs sync
+
+set nodecs.logLevel = 'debug'
+
+set sync.master = 'nodecs'
+set sync.port/nodecs = '9001'
+
+network nodecs.ip.lo 192.168.99.100
