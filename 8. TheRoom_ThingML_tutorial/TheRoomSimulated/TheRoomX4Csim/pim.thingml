@@ -1,0 +1,562 @@
+/* ThingML Framework */
+
+// Base datatypes
+import "datatypes.thingml"
+
+// Import everything in core [where is core?]
+// import "core/scheduler.thingml"
+// import "core/timer.thingml"
+
+/* PSM must be included */
+import "psm_sim.thingml"
+import "psm_datatypes_sim.thingml"
+import "pim_messages.thingml"
+import "timer.thingml"
+
+thing ThermoCtrl includes GeneralMsg, TemperatureMsg, OnOffMsg, TimerMsgs {
+	provided port get_sensor {
+		receives temperature
+	}
+	required port request_sensor {
+		sends add_thermometer, set_polling_interval
+	}
+	required port request_actuator{
+		sends add_device, SwitchOn, SwitchOff
+	}
+	provided port human_input {
+		receives add_thermometer, add_device, SwitchOn, SwitchOff, set_temperature, set_polling_interval
+	}
+	required port human_output {
+		sends temperature, prompt
+	}
+	
+	//timer ports - it does not hold to include TimerClient since it only has one port and therefore cannot distinguish between two timers
+	required port guard_temperature
+    {
+		receives timer_timeout
+		sends timer_start, timer_cancel
+	}
+    
+	required port guard_human
+    {
+		receives timer_timeout
+		sends timer_start, timer_cancel
+	}
+    
+	
+	
+	property tmrature:Double = 20 // the requested temperature for the room
+	property thermo_id:Integer // the single thermometer identifier
+	property switch_id:Integer // the single on-off switch identifier
+	
+	property lasttemp:Double = 0 // the last temperature recorded, buffering one measurement
+	
+	statechart ThermoCtrl_behavior init Build {
+		composite state Build init AddThermo keeps history {
+		on entry guard_human!timer_start(30000) // 30s to do the whole build 
+		on exit guard_human!timer_cancel()
+			state AddThermo {
+				transition -> AddDevice
+				event addt:human_input?add_thermometer
+				action do
+					thermo_id=addt.id
+					request_sensor!add_thermometer(thermo_id,addt.txt)
+					human_output!prompt("Please add one switch device") // SIMULATION: prompting on console for the user to react properly
+				end
+				transition -> AddThermo // Cover other messages
+				event human_input?add_device
+				event human_input?SwitchOn
+				event human_input?SwitchOff
+				event human_input?set_temperature
+				event human_input?set_polling_interval
+				action do
+					human_output!prompt("Please add thermometer")
+				end
+				// temperature is handled on Build level
+			}
+			state AddDevice {
+				transition -> SetThermostat
+				event adddev:human_input?add_device
+				action do
+					switch_id=adddev.did
+					request_actuator!add_device(switch_id)
+					human_output!prompt("Please give thermostat temperature setting") // SIMULATION: prompting on console for the user to react properly
+				end
+				
+				transition -> AddDevice
+				event human_input?SwitchOn
+				event human_input?SwitchOff
+				event human_input?set_polling_interval
+				action do
+					human_output!prompt("Please add device")
+				end
+				transition -> AddDevice
+				event human_input?add_thermometer
+				action do
+					human_output!prompt("Thermometer already added, add device")
+				end
+				// temperature and set_temperature handled on Build level
+			}
+			state SetThermostat {
+				// Here the only message we want is the set_temperature, but this is on one level up to move to Running
+				transition -> SetThermostat
+				event human_input?add_thermometer
+				event human_input?add_device
+				event human_input?SwitchOn
+				event human_input?SwitchOff
+				event human_input?set_polling_interval
+				action do
+					human_output!prompt("Please set temperature for Thermostat")
+				end			
+			}
+			
+			// Normal transition to the Running state
+			transition -> Running
+			event set_temp:human_input?set_temperature
+			action do
+				tmrature = set_temp.t
+				human_output!prompt("Now entering thermostat. Please give temperature observations") // SIMULATION: prompting on console for the user to react properly
+			end
+			
+			//Escape situations
+			transition -> Build
+			event get_sensor?temperature
+			action do 
+				// just discard, the thermostat is not running, yet (161103)
+			end
+				
+			transition -> Build
+			event tmout:guard_human?timer_timeout
+			action do
+				human_output!prompt("Please continue doing the build of the temperature control")
+			end
+			
+		} // end Build
+		
+		composite state Running init Thermostat keeps history {
+		
+		
+			composite state Thermostat init TemprDecide {  // notice that we are not keeping history, we do not know whether to turn on or off
+				state TemprDecide {
+				on entry guard_temperature!timer_start(15000)  // hardcoded 15s to get the next temperature 
+				on exit guard_temperature!timer_cancel()
+					transition -> TemprDecrease
+					event temp2:get_sensor?temperature
+					guard temp2.t>=tmrature-1  // We choose switch OFF as much as we can here
+					action do
+						request_actuator!SwitchOff(switch_id)
+						lasttemp = temp2.t
+					end
+					
+					transition -> TemprIncrease
+					event temp2:get_sensor?temperature
+					guard temp2.t<tmrature-1
+					action do
+						request_actuator!SwitchOn(switch_id)
+						lasttemp = temp2.t
+					end
+					
+					transition -> TemprDecide
+					event timout:guard_temperature?timer_timeout
+					action do
+						human_output!prompt("WARNING: @TemprDecide - temperature measurement is delayed")
+					end
+				}
+				
+				state TemprIncrease{ // Invariant: Switch is ON and temperature should increase
+				on entry guard_temperature!timer_start(15000)
+				on exit guard_temperature!timer_cancel()
+				
+					transition -> TemprIncrease 
+					event temp:get_sensor?temperature
+					guard temp.t<=tmrature+1
+					action do
+						// TRACING to follow thermostat print("TempIncrease: Observed=") print(temp.t) print(" Desired ") print(tmrature) print("\n") 
+						if (lasttemp>temp.t) request_actuator!SwitchOn(switch_id) // the temperature is still falling even though switch should be ON, reactivate
+						lasttemp = temp.t
+					end
+					
+					transition -> TemprDecrease
+					event temp2:get_sensor?temperature
+					guard temp2.t>tmrature+1 
+					action do
+						request_actuator!SwitchOff(switch_id)
+						lasttemp = temp2.t
+					end
+					
+					transition -> TemprIncrease
+					event timout:guard_temperature?timer_timeout
+					action do
+						human_output!prompt("WARNING: @TemprIncrease - temperature measurement is delayed")						
+					end
+				}
+
+				state TemprDecrease{ // Invariant: Switch is OFF and temperature should decrease
+				on entry guard_temperature!timer_start(15000) 
+				on exit guard_temperature!timer_cancel()
+				
+					transition-> TemprDecrease
+					event temp:get_sensor?temperature
+					guard temp.t>=tmrature-1
+					action do
+						// TRACING to follow thermostat print("TempDecrease: Observed=") print(temp.t) print(" Desired ") print(tmrature) print("\n") 
+						if (lasttemp<temp.t) request_actuator!SwitchOff(switch_id) // the temperature is still rising even though switch should be OFF, reactivate
+						lasttemp = temp.t
+					end
+					
+					transition -> TemprIncrease
+					event temp2:get_sensor?temperature
+					guard temp2.t<tmrature-1
+					action do
+						request_actuator!SwitchOn(switch_id)
+						lasttemp = temp2.t
+					end
+					
+					transition -> TemprDecrease
+					event timout:guard_temperature?timer_timeout
+					action do
+						human_output!prompt("WARNING: @TemprDecrease - temperature measurement is delayed")
+					end
+				}
+
+				
+				transition -> On
+				event swon:human_input?SwitchOn
+				action do
+					request_actuator!SwitchOn(swon.did)
+				end 
+				transition -> Off
+				event swoff:human_input?SwitchOff
+				action do
+					request_actuator!SwitchOff(swoff.did)
+				end 
+				transition -> Thermostat
+				event set_temp:human_input?set_temperature
+				action do
+					tmrature = set_temp.t
+				end
+			} // end Thermostat
+			
+			state On {
+				transition -> Off
+				event swoff:human_input?SwitchOff
+				action do
+					request_actuator!SwitchOff(swoff.did)
+				end 
+				transition -> On
+				event swon:human_input?SwitchOn
+				action do
+					request_actuator!SwitchOn(swon.did)
+				end
+				transition -> Thermostat
+				event set_temp:human_input?set_temperature
+				action do
+					tmrature = set_temp.t
+				end
+				transition -> On
+				event temp:get_sensor?temperature
+				action do
+					if (lasttemp>temp.t) request_actuator!SwitchOn(switch_id) // temperature is falling even when ON. Reactivate.
+					lasttemp = temp.t
+				end
+			}
+			state Off {
+				transition -> Off
+				event swoff:human_input?SwitchOff
+				action do
+					request_actuator!SwitchOff(swoff.did)
+				end 
+				transition -> On
+				event swon:human_input?SwitchOn
+				action do
+					request_actuator!SwitchOn(swon.did)
+				end
+				transition -> Thermostat
+				event set_temp:human_input?set_temperature
+				action do
+					tmrature = set_temp.t
+				end	
+				transition -> Off
+				event temp:get_sensor?temperature
+				action do
+					if (lasttemp<temp.t) request_actuator!SwitchOff(switch_id) // temperature is rising even when OFF. Reactivate.
+					lasttemp = temp.t
+				end
+			}
+			
+			// Transitions of the composite state Running
+			transition -> Running
+			event pollint:human_input?set_polling_interval
+			action do
+				// just forward the polling interval instructions to the PSM
+				request_sensor!set_polling_interval(pollint.intrvl)
+			end
+			
+			// Messages that should not occur
+			transition -> Running
+			event human_input?add_thermometer
+			event human_input?add_device
+			action do
+				human_output!prompt("Adding gadgets has been done and then blocked")
+			end			
+			// Messages the cannot occur - since they are always handled
+			transition -> Running
+			event human_input?SwitchOn
+			event human_input?SwitchOff
+			event human_input?set_temperature
+			action do
+				human_output!prompt("INTERNAL ERROR: Impossible messages at PIM.Running")
+			end		
+			transition -> Running
+			event temp:get_sensor?temperature
+			action do
+				human_output!prompt("INTERNAL ERROR: temperature received at PIM.Running")
+				lasttemp = temp.t
+			end
+		} // end Running
+	} // end ThermoCtrl_behavior
+} // end ThermoCtrl thing
+
+thing FreezeProtect includes GeneralMsg, TemperatureMsg, OnOffMsg, TimerMsgs {
+
+	provided port get_temp {
+		receives temperature
+	}
+	required port put_act {
+		sends add_device,SwitchOn, SwitchOff
+	}
+	provided port config {
+		receives add_device, SwitchOn, SwitchOff
+	}
+	required port human_output {
+		sends temperature, prompt
+	}
+
+	property device_id:Integer = 888 
+	property lasttemp: Double // the most recent temperature recorded before this in Emergency situation
+	property freeze_warning_temp:Double = 9 // the temperature when heating is forced
+	property freeze_critical_temp:Double = 6 // the temperature when an emergency message is sent to Human
+	
+	statechart FreezeProtect_behavior init Configure {
+		state Configure {
+			transition -> Monitoring
+			event ad:config?add_device
+			action do
+				put_act!add_device(ad.did)
+				device_id = ad.did
+			end
+			transition -> Configure
+			event tmp:get_temp?temperature
+			action do end // Do nothing, just discard the temperature until configuration is finished
+			transition -> Configure
+			event config?SwitchOn
+			event config?SwitchOff
+			action
+				human_output!prompt("FreezeProtect: Switch on or off during Configure")
+		}
+		composite state Monitoring init ObserveTemp keeps history {
+			state ObserveTemp {
+				transition -> FreezeWarning
+				event tmp:get_temp?temperature
+				guard tmp.t<freeze_warning_temp
+				action do
+					put_act!SwitchOn(device_id) 
+					human_output!prompt("Freeze WARNING: Temperature is now below warning level")
+				end
+				transition -> ObserveTemp
+				event tmp:get_temp?temperature
+				guard tmp.t>=freeze_warning_temp
+					// Just discard, everything is normal
+			}
+			state FreezeWarning {
+				transition -> ObserveTemp
+				event tmp:get_temp?temperature
+				guard tmp.t>freeze_warning_temp+3 // We give a little delta here with 3
+				action do
+					put_act!SwitchOff(device_id)
+					human_output!prompt("Freeze WARNING: Temperature is now above warning level")
+				end
+				transition -> FreezeWarning
+				event tmp:get_temp?temperature
+				guard tmp.t>freeze_critical_temp
+					// Just discard, we are still in Warning range
+				transition -> FreezeEmergency
+				event tmp:get_temp?temperature
+				guard tmp.t<=freeze_critical_temp
+				action do
+					put_act!SwitchOn(device_id)
+					human_output!prompt("Freeze EMERGENCY: Very low temperature")
+					human_output!temperature(tmp.id, tmp.txt, tmp.t)
+					lasttemp = tmp.t
+				end
+			}
+			state FreezeEmergency {
+				transition -> FreezeEmergency
+				event tmp:get_temp?temperature
+				guard tmp.t < freeze_warning_temp
+				action do
+					if (lasttemp>tmp.t)
+					do 
+						put_act!SwitchOn(device_id)
+						human_output!prompt("Freeze EMERGENCY: Temperature still falling")
+						human_output!temperature(tmp.id, tmp.txt, tmp.t)
+						lasttemp=tmp.t
+					end
+				end
+				transition -> ObserveTemp
+				event tmp:get_temp?temperature
+				guard tmp.t>= freeze_warning_temp
+				action
+					human_output!prompt("Freeze WARNING overcome, temperature is above warning level")
+			}
+			
+			transition -> Monitoring
+			event ad:config?add_device
+			action
+				human_output!prompt("FreezeProtect: add_device already done. No action taken.")		
+			transition -> Monitoring
+			event swon:config?SwitchOn
+			action do
+				put_act!SwitchOn(swon.did)
+			end
+			transition -> Monitoring
+			event swoff:config?SwitchOff
+			action do
+				put_act!SwitchOff(swoff.did)		
+			end
+		}
+	}
+} // end FreezeProtect
+	
+thing FireProtect includes GeneralMsg, OnOffMsg, TimerMsgs {
+
+	provided port get_act {
+		receives SwitchOn, SwitchOff, add_device
+	}
+	required port put_act {
+		sends SwitchOn, SwitchOff, add_device
+	}
+	
+	required port guard_timr
+    {
+		receives timer_timeout
+		sends timer_start, timer_cancel
+	}
+	required port human_output {
+		sends prompt
+	}
+	
+
+	property device_id:Integer = 888 
+	property max_duration:Long = 60000 // The maximum duration that the heater can be on before forced to turn off
+	property off_duration:Long = 10000 // The duration that the heater is forced to be off
+	property on_when_returning:Boolean = true // Flag to show whether switch should be on when returning from OFF
+		
+	statechart FireProtect_behavior init Configure {
+		state Configure { // To set the device_id which is the first thing that should be done
+			transition -> Init
+			event addd:get_act?add_device
+			action do
+				device_id = addd.did
+				put_act!add_device(device_id)
+			end
+			transition -> Configure
+			event get_act?SwitchOn
+			event get_act?SwitchOff
+			action
+				human_output!prompt("FireProtect: Switch on or off during Configure")
+		}
+		state Init { // Here the device_id is known, we need to set ON or OFF
+			transition -> ON
+			event turnon:get_act?SwitchOn
+			action do
+				device_id = turnon.did
+				put_act!SwitchOn(device_id)
+				on_when_returning = true
+			end
+			
+			transition -> OFF
+			event turnoff:get_act?SwitchOff
+			action do
+				device_id = turnoff.did
+				put_act!SwitchOff(device_id)
+				on_when_returning = false
+			end
+			
+			transition -> Init
+			event get_act?add_device
+			action human_output!prompt("IERROR in FireProtection: add_device should not come here, already established")
+		}
+		state ON { // Invariant: The heater is ON but should not be ON longer than max_duration
+		on entry do
+			guard_timr!timer_start(max_duration)
+			on_when_returning = true
+		end
+		on exit guard_timr!timer_cancel()
+			internal event turnon:get_act?SwitchOn
+			action do
+				put_act!SwitchOn(turnon.did)
+				on_when_returning = true
+			end
+			transition -> COOLING 
+			event turnoff:get_act?SwitchOff
+			action do
+				put_act!SwitchOff(turnoff.did)
+				on_when_returning = false
+			end
+			transition -> COOLING
+			event timout:guard_timr?timer_timeout
+			action do
+				// turn the heater off for fire protection
+				put_act!SwitchOff(device_id)
+				human_output!prompt("FireProtection: Turning off the heater for a period")
+				on_when_returning = true
+			end
+			internal event get_act?add_device
+			action human_output!prompt("IERROR in FireProtection: add_device at improper place ON")
+		}
+		state COOLING { // Invariant: The heater is turned off from ON and needs to be off at least off_duration
+		on entry guard_timr!timer_start(off_duration)
+		on exit guard_timr!timer_cancel()
+			internal event get_act?SwitchOn
+			action do
+				on_when_returning = true
+			end
+			
+			internal event get_act?SwitchOff
+			action do
+				on_when_returning = false
+			end
+			
+			internal event get_act?add_device
+			action do
+				human_output!prompt("IERROR in FireProtection: add_device at improper place COOLING")
+			end
+			
+			transition -> ON
+			event guard_timr?timer_timeout
+			guard on_when_returning
+			action do
+				human_output!prompt("FireProtection: Heater enabled, set to ON")
+				put_act!SwitchOn(device_id)
+			end
+			transition -> OFF
+			event guard_timr?timer_timeout
+			guard not on_when_returning
+			action do
+				human_output!prompt("FireProtection: Heater enabled, set to OFF")
+			end
+		}
+		state OFF { // Invariant: The heater is off from COOLING, and can be turned on at will
+			transition -> ON
+			event get_act?SwitchOn
+			action put_act!SwitchOn(device_id)
+			internal event get_act?SwitchOff
+			action put_act!SwitchOff(device_id)
+			internal event get_act?add_device
+			action human_output!prompt("IERRO in FireProtection: add_device at improper place OFF")
+		}
+	} // end FireProtect_behavior
+
+} // end FireProtect
+

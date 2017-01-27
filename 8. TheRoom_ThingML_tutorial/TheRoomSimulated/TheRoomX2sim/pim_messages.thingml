@@ -1,0 +1,30 @@
+/* This file contains message and port definitions for the PIM communication */
+
+import "datatypes.thingml"
+
+// General
+thing fragment GeneralMsg {
+	message sensorinfo(model:String,proto:String,sid:Integer,dataTypes:Integer,temperature:Double, humidity:Long, timeStamp:Long);
+	message deviceinfo(did:Integer,name:String,model:String,proto:String, ttype:String,meth:Integer,lastCmd:String,lastValue:Long);
+	message prompt(txt:String) // meant to send a textual message out to the user
+}
+
+//Temperature
+thing fragment TemperatureMsg {
+    message temperature(id:Integer, txt:String, t : Double);
+    message add_thermometer(id:Integer,txt:String);
+    message set_temperature(t:Double);
+}
+
+// Devices actuators in general
+
+thing fragment DeviceGeneral {
+	message add_device(did:Integer);
+}
+
+// On/Off actuators
+thing fragment OnOffMsg includes DeviceGeneral{
+	message SwitchOn(did:Integer);
+	message SwitchOff(did:Integer);
+}
+

@@ -1,0 +1,175 @@
+/* ThingML Framework */
+
+import "pim_messages.thingml"
+import "timer.thingml"
+
+thing PIM includes GeneralMsg, TemperatureMsg, OnOffMsg {
+	provided port get_sensor {
+		receives temperature
+	}
+	required port request_sensor {
+		sends add_thermometer, set_polling_interval
+	}
+	required port request_actuator{
+		sends add_device, SwitchOn, SwitchOff
+	}
+	provided port human_input {
+		receives add_thermometer, add_device, SwitchOn, SwitchOff, set_temperature, set_polling_interval
+	}
+	required port human_output {
+		sends temperature, prompt
+	}
+	
+	property tmrature:Double = 20 // the requested temperature for the room
+	property thermo_id:Integer // the single thermometer identifier
+	property switch_id:Integer // the single on-off switch identifier
+	
+	statechart PIM_behavior init AddThermo {
+		state AddThermo {
+			transition -> Setup
+			event addt:human_input?add_thermometer
+			action do
+				thermo_id=addt.id
+				request_sensor!add_thermometer(thermo_id,addt.txt)
+				human_output!prompt("Please add one switch device") // SIMULATION: prompting on console for the user to react properly
+			end
+		}
+		state Setup {
+			transition -> Setup
+			event adddev:human_input?add_device
+			action do
+				switch_id=adddev.did
+				request_actuator!add_device(switch_id)
+				human_output!prompt("Please give thermostat temperature setting") // SIMULATION: prompting on console for the user to react properly
+			end
+			transition -> Setup
+			event get_sensor?temperature
+			action do
+				// just discard, the thermostat is not running, yet (161103)
+			end
+			transition -> Running
+			event set_temp:human_input?set_temperature
+			action do
+				tmrature = set_temp.t
+				human_output!prompt("Now entering thermostat. Please give temperature observations") // SIMULATION: prompting on console for the user to react properly
+			end
+		}
+		
+		composite state Running init Thermostat keeps history {
+		
+		
+			composite state Thermostat init TemprDecide {  // notice that we are not keeping history, we do not know whether to turn on or off
+				state TemprDecide {
+					transition -> TemprDecrease
+					event temp2:get_sensor?temperature
+					guard temp2.t>=tmrature-1  // We choose switch OFF as much as we can here
+					action do
+						request_actuator!SwitchOff(switch_id)
+					end
+					
+					transition -> TemprIncrease
+					event temp2:get_sensor?temperature
+					guard temp2.t<tmrature-1
+					action do
+						request_actuator!SwitchOn(switch_id)
+					end
+				}
+				
+				state TemprIncrease{ // Invariant: Switch is ON and temperature should increase
+				
+					transition -> TemprIncrease 
+					event temp:get_sensor?temperature
+					guard temp.t<=tmrature+1 // it should keep increasing until well above the desired temperature
+					action do
+						// TRACING to follow thermostat print("TempIncrease: Observed=") print(temp.t) print(" Desired ") print(tmrature) print("\n") 
+					end
+					
+					transition -> TemprDecrease
+					event temp2:get_sensor?temperature
+					guard temp2.t>tmrature+1 
+					action do
+						request_actuator!SwitchOff(switch_id)
+					end
+				}
+
+				state TemprDecrease{ // Invariant: Switch is OFF and temperature should decrease
+				
+					transition-> TemprDecrease
+					event temp:get_sensor?temperature
+					guard temp.t>=tmrature-1 // it should keep decreasing until well below the desired temperature
+					action do
+						// TRACING to follow thermostat print("TempDecrease: Observed=") print(temp.t) print(" Desired ") print(tmrature) print("\n") 
+					end
+					
+					transition -> TemprIncrease
+					event temp2:get_sensor?temperature
+					guard temp2.t<tmrature-1
+					action do
+						request_actuator!SwitchOn(switch_id)
+					end
+				}
+
+				
+				transition -> On
+				event swon:human_input?SwitchOn
+				action do
+					request_actuator!SwitchOn(swon.did)
+				end 
+				transition -> Off
+				event swoff:human_input?SwitchOff
+				action do
+					request_actuator!SwitchOff(swoff.did)
+				end 
+				transition -> Thermostat
+				event set_temp:human_input?set_temperature
+				action do
+					tmrature = set_temp.t
+				end
+			}
+			
+			state On {
+				transition -> Off
+				event swoff:human_input?SwitchOff
+				action do
+					request_actuator!SwitchOff(swoff.did)
+				end 
+				transition -> On
+				event swon:human_input?SwitchOn
+				action do
+					request_actuator!SwitchOn(swon.did)
+				end
+				transition -> Thermostat
+				event set_temp:human_input?set_temperature
+				action do
+					tmrature = set_temp.t
+				end
+			}
+			state Off {
+				transition -> Off
+				event swoff:human_input?SwitchOff
+				action do
+					request_actuator!SwitchOff(swoff.did)
+				end 
+				transition -> On
+				event swon:human_input?SwitchOn
+				action do
+					request_actuator!SwitchOn(swon.did)
+				end
+				transition -> Thermostat
+				event set_temp:human_input?set_temperature
+				action do
+					tmrature = set_temp.t
+				end	
+			}
+			
+			// Transitions of the composite state Running
+			transition -> Running
+			event pollint:human_input?set_polling_interval
+			action do
+				// just forward the polling interval instructions to the PSM
+				request_sensor!set_polling_interval(pollint.intrvl)
+			end
+		}
+	}
+}
+

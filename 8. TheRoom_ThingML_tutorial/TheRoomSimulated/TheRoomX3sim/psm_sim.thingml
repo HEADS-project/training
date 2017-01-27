@@ -1,0 +1,312 @@
+/* This is the PSM the Platform Specific Model */
+/*** This version contains a SIMULATED platform */
+/* This version has possibility to change the polling intervals for temperature */
+/* This version introduced entry/exit clauses for timers in PSM */
+import "datatypes.thingml"
+import "pim_messages.thingml"
+import "psm_datatypes_sim.thingml"
+import "javatimer.thingml" // 160310
+
+// PSM specific messages
+
+thing fragment PSM_Msg {
+	message initialize(ts:Tellstick);
+}
+
+// Here we relate to the given jstick library and kick-down to it from ThingML
+
+thing fragment PSMSensor {
+	/* required port provide_val {} // TODO This does not work as override
+	provided port require_val {} */
+}
+
+thing fragment PSMSensorSet includes PSMSensor {
+property sensors: Integer
+}
+
+thing fragment PSMSensorSingle includes PSMSensorSet {
+}
+
+
+// We need a way to initialize the Tellstick etc
+// This defines the central kick-down concept. The maven_dep stuff refers to an installed Maven project
+thing TellstickManager includes PSM_Msg, GeneralMsg
+{ 	/* Ports may be defined here */
+	required port to_T1 {
+		sends initialize
+	}
+	
+	required port to_onoff1 {
+		sends initialize
+	}
+
+	required port to_gdg {
+		sends sensorinfo, deviceinfo
+	}
+	
+	/* properties defined here */
+	property ts : Tellstick // this is set in initialize() function
+	// property sensor_list:Sensor[25] removed at SIMULATION
+	// property device_list:Device[25] removed at SIMULATION
+	property i:Integer // runner index in list of sensors or devices
+	// property s:Sensor // temporary Sensor removed at SIMULATION
+	// property d:Device // temporary Device removed at SIMULATION
+	property model:String
+	property proto:String
+	property sid:Integer // sensor id
+	property did:Integer // device id
+	property dataTypes:Integer
+	property temperature:Double
+	property humidity:Long
+	property timeStamp:Long
+	property name:String
+	property devicetype:String
+	property devicemethods:Long
+	property devicelastcmd:String
+	property devicelastval:Long
+	
+	function observe_sensors() do
+		// Now we send to PIM all the Sensor gadgets which are managed by that Tellstick
+		
+		// SIMULATED VERSION: Hardcoded nonsense values, only the signal is considered useful
+		print("SIMULATION: Observe_sensors\n")
+		model="model"
+		proto="proto"
+		sid=0
+		dataTypes=0
+		temperature=100
+		humidity=27
+		timeStamp=99999		
+		to_gdg!sensorinfo(model,proto,sid,dataTypes,temperature,humidity,timeStamp)
+	end
+	
+	function observe_devices() do
+		// Now we send to PIM all the Devices actuators which are managed by that Tellstick
+		// SIMULATED VERSION: Hardcoded nonsense values, only the signal is considered useful
+		print("SIMULATION: Observe_devices\n")
+		did = 0
+		name = "name"
+		model= "model"
+		proto = "proto"
+		devicetype = "devicetype"
+		devicemethods = 5
+		devicelastcmd = "lastcommand"
+		devicelastval = 999
+		to_gdg!deviceinfo(did,name,model,proto,devicetype,devicemethods,devicelastcmd,devicelastval)
+		
+	end
+
+	function initialize() do
+	// kick-down initialization
+		ts = "Tellstick Duo" // SIMULATION	
+
+		to_T1!initialize(ts)
+		to_onoff1!initialize(ts)
+		
+		observe_sensors()
+		observe_devices()
+		
+		// Now we send to PIM all the Device i.e. actuator gadgets that exist in the system
+		
+	end //initialize
+	
+	statechart TellstickBehavior init Init {
+		state Init {
+		on entry do 
+			initialize()
+			
+		end }
+	}
+}
+
+thing ThermometerSet includes PSMSensorSet,TemperatureMsg, GeneralMsg, PSM_Msg, TimerClient {
+// TimerClient introduced 160310
+	required port provide_val {sends temperature}
+	required port show_values {sends temperature}
+	provided port require_val {receives add_thermometer, set_polling_interval}
+	provided port initial {receives initialize}
+	provided port get_values {receives temperature} // SIMULATION
+	
+	property ts:Tellstick // kick-down 
+	
+	property thermometers:Integer[25] // Identifiers of the thermometers in the set
+	property thermotext:String[25] // corresponding explanatory text 
+	
+	// SIMULATION
+	property thermoval:Double[25] // values to report from the corresponding thermometer
+	
+	property last_thermo:Integer = 0 // number of thermometers in the set 
+	property i:Integer // runner index in list
+	property poll_intrvl:Integer = 10000 // polling interval in milliseconds, default is like hardcoded value from X2.sim
+	// property s:Sensor // runner Sensor (removed at SIMULATION)
+	property id_s:Long // temporary id value (to be used with kick-down)
+	property sensortype:Integer // temporary value for sensor type
+	property temp_s:Double // temporary temperature value
+	property found:Boolean // temporary - true when item found in loop
+	
+	statechart behaviorThermometerSet init Init {
+		state Init {
+			transition -> Idle
+			event temp: initial?initialize
+			action do
+				ts = temp.ts
+			end
+		}
+		state Idle {
+		on entry timer!timer_start(poll_intrvl) // starting the polling cycle // 161202
+		on exit timer!timer_cancel() // semantically redundant, but useful as a principle
+		transition -> Idle
+			event timout:timer?timer_timeout // 160310
+			action do
+				i=0
+				while (i<last_thermo)do
+					id_s=thermometers[i]
+					temp_s=thermoval[i]	
+					// SIMULATION: if the temperature is outside reasonable range, do not return temperature. Simulates thermometer error
+					if (temp_s > -40 and temp_s < 50) do		
+						provide_val!temperature(id_s,thermotext[i],temp_s)
+						show_values!temperature(id_s,thermotext[i],temp_s)
+					end
+					i=i+1
+				end 
+			end
+			transition -> Idle
+			event pollintrvl:require_val?set_polling_interval
+			action do
+				poll_intrvl = pollintrvl.intrvl
+			end
+			transition -> Idle
+			event addt:require_val?add_thermometer
+			action do				
+				id_s=addt.id
+				thermometers[last_thermo]=id_s
+				thermotext[last_thermo]=addt.txt
+				thermoval[last_thermo]= 0 // just a default temperature
+				last_thermo = last_thermo+1
+			end
+			// SIMULATION receiving temperature from simulation interface
+			transition -> Idle
+			event put_temp:get_values?temperature
+			action do
+				id_s=put_temp.id
+				
+				i=0
+				found = false
+				while (i<last_thermo and (not found)) do
+					if (id_s==thermometers[i]) do
+						found=true // trick to terminate while loop
+					end
+					i=i+1
+				end
+				if (found) do
+					thermoval[i-1]=put_temp.t	
+				end
+			end
+		}
+	}
+} // ThermometerSet
+
+
+
+thing OnOffSet includes PSM_Msg, GeneralMsg, OnOffMsg{
+	provided port require_val {receives SwitchOn, SwitchOff, add_device}
+	provided port initial {receives initialize}
+	required port show_val {sends SwitchOn, SwitchOff}
+	
+	property ts:Tellstick // kick-down 
+	property onoffswitches:Integer[25] // Identifiers of the onoffswitches in the set
+	property last_onoff:Integer = 0 // number of onoff switches in the set 
+	
+	// SIMULATION
+	property poweron:Boolean[25] // SIMULATION false=OFF true=ON for corresponding switches
+	
+	property i:Integer // runner index in list
+	property did:Integer // temporary device id
+	// property d:Device // temporary device removed at SIMULATION
+	property mth:Long // temporary methods
+	property found:Boolean // temporary boolean used in while loop
+	property status:Long // of either ON or OFF not very reliable since no real result is returned
+	
+	statechart behaviorOnOffSet init Init {
+		state Init {
+			transition -> Idle
+			event initial: initial?initialize
+			action do
+				ts = initial.ts
+			end
+		}
+		state Idle {
+			transition -> Idle
+			event add_dev: require_val?add_device
+			action do
+				did=add_dev.did
+				
+				onoffswitches[last_onoff]=did
+				last_onoff = last_onoff+1
+			end
+			transition -> Idle
+			event swon: require_val?SwitchOn
+			action do
+				did=swon.did
+				i=0
+				found = false
+				while (i<last_onoff and (not found)) do
+					if (did==onoffswitches[i]) do
+						found=true // trick to terminate while loop
+					end
+					i=i+1
+				end
+				if (found) do
+					poweron[i-1]=true // ON by SIMULATION
+					show_val!SwitchOn(did)
+					// TODO remove when tested print("SIMULATION: Power ON on device #") print(did) print("\n")
+				end
+			end
+			transition -> Idle
+			event swoff: require_val?SwitchOff
+			action do
+				did=swoff.did
+				i=0
+				found = false
+				while (i<last_onoff and (not found)) do
+					if (did==onoffswitches[i]) do
+						found=true // trick to terminate while loop
+					end
+					i=i+1
+				end
+				if (found) do
+					poweron[i-1]=false // OFF by SIMULATION
+					show_val!SwitchOff(did)
+					// TODO remove when tested print("SIMULATION: Power OFF on device #") print(did) print("\n")
+				end
+			end
+			
+		}
+	}
+}
+
+//SIMULATION
+thing TempSim includes TemperatureMsg 
+@mock "true"
+{ 	required port give_values {
+		sends temperature
+	}
+	provided port show_values {
+		receives temperature
+	}
+}
+
+thing GadgetSim includes GeneralMsg
+@mock "true"
+{	provided port show_gadgets {
+		receives sensorinfo, deviceinfo
+	}
+}
+
+thing OnOffSim includes OnOffMsg 
+@mock "true"
+{	provided port show_onoff {
+		receives SwitchOn, SwitchOff
+	}
+}
+

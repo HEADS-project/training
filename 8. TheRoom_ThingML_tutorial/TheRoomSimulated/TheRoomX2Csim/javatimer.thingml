@@ -1,0 +1,61 @@
+import "timer.thingml"
+
+object JThread
+@java_type "Thread";
+
+// Manage a set of software timers.
+thing TimerJava includes Timer
+@pim "Timer"
+@platform "java"
+{
+    property timer : JThread
+    
+    function startTimer(delay : Integer) do
+           cancel()
+           'Thread t = new Thread(){
+               	public void run() {
+               	try {
+               	sleep(' & delay & ');'
+           		timer!timer_timeout()
+            '} catch (InterruptedException ex) {
+            	//timer canceled, do nothing and just terminate this thread
+			}  catch (Exception ex) {
+               ex.printStackTrace();
+               //looking at Javas Thread API, can only happen if delay if negative, but that is checked in the guard in the statemachine. Double precaution
+            } finally {
+            	yield();
+                interrupt();'
+             timer = 'null'   
+            '}
+                                                                   
+    		}
+            };'
+            timer = 't' 
+            '' & timer & '.start();'                
+    end
+            
+    function cancel() do
+        if (not(timer == 'null')) do
+            'try {'
+            '' & timer & '.interrupt();'
+            '}  catch (Exception ex) {
+                    ex.printStackTrace();//indicates a problem that is not part of the expected behavior.
+             }'
+        end
+    end
+
+    statechart SoftTimer init default {
+        state default {
+
+          internal event m : timer?timer_start
+            guard m.delay > 0
+            action do
+                startTimer(m.delay)
+            end
+            
+          internal cancel
+            event m : timer?timer_cancel
+            action cancel()
+        }
+    }
+}
