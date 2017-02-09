@@ -11,7 +11,7 @@ configuration CPS {
 	instance myself:Human
 	instance timer : TimerJava
 	
-	// SIMULATION
+	// Reporting the Telldus configured gadgets in dialog box
 	instance gdg:GadgetSim
 	
 	// PSM

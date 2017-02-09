@@ -5,7 +5,7 @@ import "datatypes.thingml"
 
 /* PSM must be included */
 import "psm.thingml"
-import "psm_datatypes_sim.thingml"
+import "psm_datatypes.thingml"
 import "pim_messages.thingml"
 
 thing PIM includes GeneralMsg, TemperatureMsg, OnOffMsg {
