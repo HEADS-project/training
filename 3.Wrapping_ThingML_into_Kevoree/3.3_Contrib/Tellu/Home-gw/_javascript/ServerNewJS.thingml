@@ -27,6 +27,9 @@ thing FallServerNew includes SensorServer
  		'&curFallState&' = {}'
  	end
  	
+ 	function sendFall(sensorId : String, fnId : String) do
+		fall!fall(sensorId, fnId)
+	end
  	
  	function fallControl(fallReport : String) : String do
  	
@@ -77,7 +80,7 @@ thing FallServerNew includes SensorServer
 			'&curFallState&'[sensorId] = true;
 			json.message=JSON.stringify(msg);
 			var res = JSON.stringify(json);
-			'&sendFall('sensorId', 'fnId')&'
+			'& sendFall('sensorId', 'fnId') &'
 			return res;
 		} else if(!fall) {
 			'&curFallState&'[sensorId] = false;

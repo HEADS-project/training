@@ -1,0 +1,139 @@
+/* ThingML Framework */
+
+// Base datatypes
+import "datatypes.thingml"
+
+/* PSM must be included */
+import "psm.thingml"
+import "psm_datatypes.thingml"
+import "pim_messages.thingml"
+
+thing PIM includes GeneralMsg, TemperatureMsg, OnOffMsg {
+	provided port get_sensor {
+		receives temperature, sensorinfo, deviceinfo
+	}
+	required port request_sensor {
+		sends add_thermometer
+	}
+	required port request_actuator{
+		sends add_device, SwitchOn, SwitchOff
+	}
+	provided port human_input {
+		receives add_thermometer, add_device, fetch_temp, fetch_all_temps, SwitchOn, SwitchOff
+	}
+	required port human_output {
+		sends temperature,  sensorinfo, deviceinfo
+	}
+	
+	property thermometers:Integer[25] // Identifiers of the thermometers in the set
+	property thermotext:String[25] // corresponding explanatory text 
+	property thermoval:Double[25] // storing the values received from the thermometers (through the PSM)
+	property last_thermo:Integer = 0 // number of thermometers in the set 
+
+	// temporary variables
+	property id_s:Long // temporary id value (to be used with kick-down)
+	property temp_s:Double // temporary temperature value
+	property found:Boolean // temporary - true when item found in loop
+	property i:Integer // runner index in list
+	
+	
+	statechart PIM_behavior init Init {
+		state Init {
+			transition -> Init
+			event snsr:get_sensor?sensorinfo
+			action do
+				human_output!sensorinfo(snsr.model,snsr.proto,snsr.sid,snsr.dataTypes,snsr.temperature,snsr.humidity,snsr.timeStamp)
+			end
+			transition -> Init
+			event dvcs:get_sensor?deviceinfo
+			action do
+				human_output!deviceinfo(dvcs.did,dvcs.name,dvcs.model,dvcs.proto, dvcs.ttype,dvcs.meth,dvcs.lastCmd,dvcs.lastValue)
+			end
+			transition -> Running // adding the first thermometer will start the normal operation
+			event addt:human_input?add_thermometer 
+			action do
+				request_sensor!add_thermometer(addt.id,addt.txt)
+				// we do some bookkeeping on thermometers both at the PSM and at the PIM
+				thermometers[last_thermo]=addt.id
+				thermotext[last_thermo]=addt.txt
+				thermoval[last_thermo]=66.66 //to indicate no temperature has been received
+				last_thermo=last_thermo+1 //increasing the number of thermometers in our set
+			end
+		}
+		state Running {
+			
+			transition -> Running
+			event temp:get_sensor?temperature
+			action do				
+				id_s=temp.id
+				
+				i=0
+				found = false
+				while (i<last_thermo and (not found)) do
+					if (id_s==thermometers[i]) do
+						found=true // trick to terminate while loop
+					end
+					i=i+1
+				end
+				if (found) do
+					thermoval[i-1]=temp.t
+				end
+			end
+			transition -> Running
+			event addt:human_input?add_thermometer
+			action do
+				request_sensor!add_thermometer(addt.id,addt.txt)
+				// we do some bookkeeping on thermometers both at the PSM and at the PIM
+				thermometers[last_thermo]=addt.id
+				thermotext[last_thermo]=addt.txt
+				thermoval[last_thermo]=66.66 //to indicate no temperature has been received
+				last_thermo=last_thermo+1 //increasing the number of thermometers in our set
+			end
+			transition -> Running
+			event fetch_t:human_input?fetch_temp
+			action do
+				id_s = fetch_t.id
+				// Find the value that is already recorded
+				i=0
+				found = false
+				while (i<last_thermo and (not found)) do
+					if (id_s==thermometers[i]) do
+						found=true // trick to terminate while loop
+					end
+					i=i+1
+				end
+				if (found) do
+					human_output!temperature(thermometers[i-1],thermotext[i-1],thermoval[i-1])
+				end
+				
+			end 
+			transition -> Running
+			event fetch_all:human_input?fetch_all_temps
+			action do
+				// reporting all temperature values
+				i=0
+				while (i<last_thermo) do
+					i=i+1
+					human_output!temperature(thermometers[i-1],thermotext[i-1],thermoval[i-1])
+				end
+			end
+						
+			transition -> Running
+			event adddev:human_input?add_device
+			action do
+				request_actuator!add_device(adddev.did)
+			end
+			transition -> Running
+			event swon:human_input?SwitchOn
+			action do
+				request_actuator!SwitchOn(swon.did)
+			end 
+			transition -> Running
+			event swoff:human_input?SwitchOff
+			action do
+				request_actuator!SwitchOff(swoff.did)
+			end 
+		}
+	}
+}
+

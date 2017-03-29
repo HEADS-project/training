@@ -11,3 +11,6 @@ thing fragment LightIntensityMessages {
 	message lightOff(LocId : String);
 }
 
+thing fragment ManagementMessages {
+	message query();
+}

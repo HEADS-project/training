@@ -1,12 +1,12 @@
 import "../../Field-node/Sensor.thingml"
 import "Messages.thingml"
 
-thing LightSwitchServer includes SensorMsgs, SmarttrackerMessages, LightIntensityMessages {
+thing LightSwitchServer includes SensorMsgs, SmarttrackerMessages, LightIntensityMessages, ManagementMessages {
 
 	
 	provided port lightswitch
 	{
-		receives lightOn, lightOff
+		receives lightOn, lightOff, query
 	}
 	
 	

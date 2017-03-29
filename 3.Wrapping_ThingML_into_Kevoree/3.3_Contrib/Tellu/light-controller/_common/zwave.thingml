@@ -27,6 +27,8 @@ thing fragment ZWaveMsgs
 	message softReset();    
 	message beginControllerCommand(cmdName : String, highPower : Boolean, node1_id : String, node2_id : String);
 	message cancelControllerCommand();
+	message query();
+	message queryRes(res : String);
 		
 }
 
@@ -34,8 +36,8 @@ thing fragment ZWaveClient includes ZWaveMsgs
 {   
 	required port ZWave @sync_send "true"
     {
-		sends connect, disconnect, setValue, setLevel, setNodeOn, setNodeOff, setLocation, setName, hardReset, softReset, beginControllerCommand, cancelControllerCommand
-		receives driverReady, driverFailed, nodeAdded, valueAdded, valueChanged, valueRemoved, nodeReady, pollingEnabled, pollingDisabled, notification, controllerCommand, scanComplete
+		sends connect, disconnect, setValue, setLevel, setNodeOn, setNodeOff, setLocation, setName, hardReset, softReset, beginControllerCommand, cancelControllerCommand, query
+		receives driverReady, driverFailed, nodeAdded, valueAdded, valueChanged, valueRemoved, nodeReady, pollingEnabled, pollingDisabled, notification, controllerCommand, scanComplete, queryRes
 	}
 }
 
@@ -43,8 +45,8 @@ thing fragment ZWaveServer includes ZWaveMsgs
 {   
 	provided port ZWave 
     {
-		receives connect, disconnect, setValue, setLevel, setNodeOn, setNodeOff, setLocation, setName, hardReset, softReset, beginControllerCommand, cancelControllerCommand
-		sends driverReady, driverFailed, nodeAdded, valueAdded, valueChanged, valueRemoved, nodeReady, pollingEnabled, pollingDisabled, notification, controllerCommand, scanComplete
+		receives connect, disconnect, setValue, setLevel, setNodeOn, setNodeOff, setLocation, setName, hardReset, softReset, beginControllerCommand, cancelControllerCommand, query
+		sends driverReady, driverFailed, nodeAdded, valueAdded, valueChanged, valueRemoved, nodeReady, pollingEnabled, pollingDisabled, notification, controllerCommand, scanComplete, queryRes
 	}
 }
 

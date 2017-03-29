@@ -1,0 +1,135 @@
+/* ThingML Framework */
+
+import "pim_messages.thingml"
+import "timer.thingml"
+
+thing PIM includes GeneralMsg, TemperatureMsg, OnOffMsg {
+	provided port get_sensor {
+		receives temperature
+	}
+	required port request_sensor {
+		sends add_thermometer, set_polling_interval
+	}
+	required port request_actuator{
+		sends add_device, SwitchOn, SwitchOff
+	}
+	provided port human_input {
+		receives add_thermometer, add_device, SwitchOn, SwitchOff, set_temperature, set_polling_interval
+	}
+	required port human_output {
+		sends temperature, prompt
+	}
+	
+	property tmrature:Double = 20 // the requested temperature for the room
+	property thermo_id:Integer // the single thermometer identifier
+	property switch_id:Integer // the single on-off switch identifier
+	
+	statechart PIM_behavior init DisplayGadgets {
+		state DisplayGadgets {
+			transition -> Setup
+			event addt:human_input?add_thermometer
+			action do
+				thermo_id=addt.id
+				request_sensor!add_thermometer(thermo_id,addt.txt)
+				human_output!prompt("Please add one switch device") // SIMULATION: prompting on human dialog
+			end
+		}
+		state Setup {
+			transition -> Setup
+			event adddev:human_input?add_device
+			action do
+				switch_id=adddev.did
+				request_actuator!add_device(switch_id)
+				human_output!prompt("Please give thermostat temperature setting") // SIMULATION: prompting
+			end
+			transition -> Setup
+			event get_sensor?temperature
+			action do
+				// just discard, the thermostat is not running, yet (161103)
+			end
+			transition -> Running
+			event set_temp:human_input?set_temperature
+			action do
+				tmrature = set_temp.t
+				human_output!prompt("Now entering thermostat. Please give temperature measurements") // SIMULATION: prompting 
+			end
+		}
+		
+		composite state Running init Thermostat keeps history {
+		
+		
+			state Thermostat {
+				transition -> Thermostat
+				event temp:get_sensor?temperature
+				action do
+					if (temp.t<tmrature-1) do
+						request_actuator!SwitchOn(switch_id)
+					end
+					if (temp.t>tmrature+1) do
+						request_actuator!SwitchOff(switch_id)
+					end
+					// otherwise the temperature is in the comfort zone and we do nothing
+				end
+				transition -> On
+				event swon:human_input?SwitchOn
+				action do
+					request_actuator!SwitchOn(swon.did)
+				end 
+				transition -> Off
+				event swoff:human_input?SwitchOff
+				action do
+					request_actuator!SwitchOff(swoff.did)
+				end 
+				transition -> Thermostat
+				event set_temp:human_input?set_temperature
+				action do
+					tmrature = set_temp.t
+				end
+			}
+			
+			state On {
+				transition -> Off
+				event swoff:human_input?SwitchOff
+				action do
+					request_actuator!SwitchOff(swoff.did)
+				end 
+				transition -> On
+				event swon:human_input?SwitchOn
+				action do
+					request_actuator!SwitchOn(swon.did)
+				end
+				transition -> Thermostat
+				event set_temp:human_input?set_temperature
+				action do
+					tmrature = set_temp.t
+				end
+			}
+			state Off {
+				transition -> Off
+				event swoff:human_input?SwitchOff
+				action do
+					request_actuator!SwitchOff(swoff.did)
+				end 
+				transition -> On
+				event swon:human_input?SwitchOn
+				action do
+					request_actuator!SwitchOn(swon.did)
+				end
+				transition -> Thermostat
+				event set_temp:human_input?set_temperature
+				action do
+					tmrature = set_temp.t
+				end	
+			}
+			
+			// Transitions of the composite state Running
+			transition -> Running
+			event pollint:human_input?set_polling_interval
+			action do
+				// just forward the polling interval instructions to the PSM
+				request_sensor!set_polling_interval(pollint.intrvl)
+			end
+		}
+	}
+}
+
