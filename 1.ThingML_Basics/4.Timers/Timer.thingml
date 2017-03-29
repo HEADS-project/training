@@ -69,12 +69,15 @@ thing HelloTimer includes TimerClient {
 		state Init {
 			on entry do
 				//TODO: start the timer every *period* milliseconds
+				timer!timer_start(period)
 			end
 			
 			transition -> Init //this will loop on the Init state, and start a new timer
 			//event myPort?myMessage //TODO: make the transition to be triggered by a timer_timeout event received on the timer port
+			event timer?timer_timeout
 			action do
 				//TODO: print hello
+				print "hello\n"
 			end
 		
 		}

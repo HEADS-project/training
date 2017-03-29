@@ -6,18 +6,20 @@ You can see that this thing is Platform-Independent: we are not using any C, Jav
 thing HelloThing {
 
 	statechart HelloWorld init Greetings {
-	
+
 		state Greetings {
-			
-			transition -> Bye 
-			action print "Hello World!\n"
-			
+
+			transition -> Bye
+			action do
+		        print "Hello World!\n"
+      		end
 		}
-	
+
+
 		state Bye {
 			on entry print "Bye.\n"
+
 		}
-	
 	}
 }
 
@@ -29,7 +31,7 @@ HEADS / ThingML -> Javascript for NodeJS
 HEADS / ThingML -> C/C++ for Linux / Posix
 HEADS / ThingML -> C/C++ for Arduino
 **/
-configuration HelloCfg 
+configuration HelloCfg
 @arduino_stdout "Serial"
 {
 
