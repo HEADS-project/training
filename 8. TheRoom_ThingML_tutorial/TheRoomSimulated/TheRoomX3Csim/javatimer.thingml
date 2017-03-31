@@ -1,0 +1,63 @@
+import "timer.thingml"
+
+object JTimerTask
+@java_type "java.util.TimerTask";
+
+object JTimer
+@java_type "java.util.Timer";
+
+// Manage a set of software timers.
+thing TimerJavaSet includes TimerSet
+@debug "false"
+{
+    property timer : JTimer
+    property timer_task : JTimerTask
+    property timer_id: Integer
+    property timer_delay: Integer
+    
+    function startTimer(timer_id:Integer,delay : Integer) do
+        timer = 'new java.util.Timer()'
+        'java.util.TimerTask temp_task = new java.util.TimerTask(){public void run(){'        	
+        	timer!timer_timeout(timer_id)
+        '}};'
+        timer_task = 'temp_task'
+        '' & timer & '.schedule(' & timer_task & ', ' & delay & ');'
+    end
+
+    function cancel(timer_id:Integer) do
+        if (not (timer_task == 'null')) do
+            '' & timer_task & '.cancel();'
+            '' & timer & '.purge();'            
+        end    
+    end
+
+    statechart SoftTimer init default {
+        state default {
+
+          internal event m : timer?timer_start
+            guard m.delay > 0
+            action do
+            	timer_delay = m.delay
+            	timer_id = m.timer_id
+            	startTimer(timer_id, timer_delay) // will set up timer and timer_task which will be cloned on fork
+            	fork timer_session
+        	end       
+        }
+        session timer_session init timer_running {
+        	state timer_running {
+        		transition -> timer_destruct
+        		event s : timer?timer_start // timer_start when it is running means it should be destructed as it is being restarted by root and a new fork will be established
+        		guard s.timer_id==timer_id
+        		
+        		transition -> timer_destruct
+        		event s : timer?timer_cancel
+        		guard s.timer_id==timer_id        		
+        	}
+        	final state timer_destruct{
+        		on entry do
+        			cancel(timer_id)
+        		end
+        	}
+        }
+    }
+}

@@ -1,0 +1,322 @@
+/* ThingML Framework */
+
+// Base datatypes
+import "datatypes.thingml"
+
+// Import everything in core [where is core?]
+// import "core/scheduler.thingml"
+// import "core/timer.thingml"
+
+/* PSM must be included */
+import "psm_sim.thingml"
+import "psm_datatypes_sim.thingml"
+import "pim_messages.thingml"
+import "timer.thingml"
+
+thing PIM includes GeneralMsg, TemperatureMsg, OnOffMsg, TimerMsgs {
+	provided port get_sensor {
+		receives temperature
+	}
+	required port request_sensor {
+		sends add_thermometer, set_polling_interval
+	}
+	required port request_actuator{
+		sends add_device, SwitchOn, SwitchOff
+	}
+	provided port human_input {
+		receives add_thermometer, add_device, SwitchOn, SwitchOff, set_temperature, set_polling_interval, set_temperature_range
+	}
+	required port human_output {
+		sends temperature, prompt
+	}
+	
+	//timer ports - it does not hold to include TimerClient since it only has one port and therefore cannot distinguish between two timers
+	required port guard_temperature
+    {
+		receives timer_timeout
+		sends timer_start, timer_cancel
+	}
+    
+	required port guard_human
+    {
+		receives timer_timeout
+		sends timer_start, timer_cancel
+	}
+    
+	
+	
+	property tmrature:Double = 20 // the requested temperature for the room
+	property tmrature_min:Double = -1 // lower delta range
+	property tmrature_max:Double = 1 // upper delta range
+	property thermo_id:Integer[10] // the thermometer identifiers
+	property thermo_no:Integer = 0 // the number of thermometers added
+	property switch_id:Integer // the single on-off switch identifier
+	
+	property lasttemp:Double[10] // the last temperatures recorded for the thermometers
+	property lasttemp_calc:Double = 0 // the last calculated temperature
+	property curtemp_calc:Double = 0 // the current calculated temperature
+	
+	function calc_temp(tempid:Integer,tempratur:Double):Double do
+		// calculating the new overall temperature in the room based on one new temperature
+		if (thermo_id[1]==tempid)lasttemp[1]=tempratur
+		if (thermo_id[2]==tempid)lasttemp[2]=tempratur
+		curtemp_calc = lasttemp[1]*0.3 + lasttemp[2]*0.7 // This formula can of course be very complicated ...
+		return curtemp_calc
+	end
+	
+	statechart PIM_behavior init Build {
+		composite state Build init AddThermo keeps history {
+		on entry guard_human!timer_start(0,30000) // 30s to do the whole build, 0 is just a choice of timer_id
+		on exit guard_human!timer_cancel(0)
+			state AddThermo {
+			on entry human_output!prompt("Please add another thermometer or the switch device")
+				// transition -> AddThermo // iterating on thermometers
+				internal event addt:human_input?add_thermometer
+				action do
+					thermo_no=thermo_no+1
+					thermo_id[thermo_no]=addt.id
+					request_sensor!add_thermometer(thermo_id[thermo_no],addt.txt)
+				end
+				transition -> SetThermostat
+				event adddev:human_input?add_device
+				action do
+					switch_id=adddev.did
+					request_actuator!add_device(switch_id)
+				end
+				transition -> AddThermo // Cover other messages
+				event human_input?SwitchOn
+				event human_input?SwitchOff
+				event human_input?set_temperature
+				event human_input?set_polling_interval
+				action do
+					// Prompt will be given according to the entry clause
+				end
+				
+				internal event get_sensor?temperature
+					// temperature is just discarded
+			}
+			state SetThermostat {
+			on entry human_output!prompt("Please give thermostat temperature setting") // SIMULATION: prompting on console
+			
+				// Here the only message we want is the set_temperature, but this is on one level up to move to Running
+				
+				internal event human_input?add_thermometer
+				internal event human_input?add_device
+				internal event human_input?SwitchOn
+				internal event human_input?SwitchOff
+				internal event human_input?set_polling_interval
+				action do
+					// looping until set_temperature is given
+				end	
+				internal event get_sensor?temperature
+					// temperature is just discarded		
+			}
+			
+			// Normal transition to the Running state
+			transition -> Running
+			event set_temp:human_input?set_temperature
+			action do
+				tmrature = set_temp.t
+				human_output!prompt("Now entering thermostat.") // SIMULATION: prompting on console 
+			end
+			
+			//Escape situations
+			transition -> Build
+			event get_sensor?temperature
+			action do 
+				human_output!prompt("Internal Error: temperature on Build should not happen")
+				// just discard, the thermostat is not running, yet (161103)
+			end
+				
+			transition -> Build
+			event tmout:guard_human?timer_timeout
+			action do
+				human_output!prompt("Please continue doing the build of the temperature control")
+			end
+			
+		} // end Build
+		
+		composite state Running init Thermostat keeps history {
+		
+		
+			composite state Thermostat init TemprDecide {  // notice that we are not keeping history, we do not know whether to turn on or off
+				state TemprDecide {
+					transition -> TemprDecrease
+					event temp2:get_sensor?temperature
+					guard calc_temp(temp2.id,temp2.t)>=tmrature+tmrature_min  // We choose switch OFF as much as we can here
+					action do
+						guard_temperature!timer_start(temp2.id,25000)  // hardcoded 25s to get the next temperature from this thermometer
+						request_actuator!SwitchOff(switch_id)
+						lasttemp_calc = curtemp_calc // buffering one calculated temperature to see development
+					end
+					
+					transition -> TemprIncrease
+					event temp2:get_sensor?temperature
+					guard calc_temp(temp2.id,temp2.t)<tmrature+tmrature_min
+					action do
+						guard_temperature!timer_start(temp2.id,25000)  // hardcoded 25s to get the next temperature from this thermometer
+						request_actuator!SwitchOn(switch_id)
+						lasttemp_calc = curtemp_calc // buffering one calculated temperature to see development
+					end
+					
+					transition -> TemprDecide
+					event timout:guard_temperature?timer_timeout
+					action do
+						human_output!prompt("WARNING: @TemprDecide - temperature measurement is delayed")
+						guard_temperature!timer_start(timout.timer_id,25000) // restarting the guarding timer again
+					end
+				}
+				
+				state TemprIncrease{ // Invariant: Switch is ON and temperature should increase
+					transition -> TemprIncrease 
+					event temp:get_sensor?temperature
+					guard calc_temp(temp.id,temp.t)<=tmrature+tmrature_max
+					action do
+						guard_temperature!timer_start(temp.id,25000)
+						if (lasttemp_calc>curtemp_calc) request_actuator!SwitchOn(switch_id) // the temperature is still falling even though switch should be ON, reactivate
+						lasttemp_calc = curtemp_calc
+					end
+					
+					transition -> TemprDecrease
+					event temp:get_sensor?temperature
+					guard calc_temp(temp.id,temp.t)>tmrature+tmrature_max 
+					action do
+						guard_temperature!timer_start(temp.id,25000)
+						request_actuator!SwitchOff(switch_id)
+						lasttemp_calc = curtemp_calc
+					end
+					
+					transition -> TemprIncrease
+					event timout:guard_temperature?timer_timeout
+					action do
+						human_output!prompt("WARNING: @TemprIncrease - temperature measurement is delayed")						
+						guard_temperature!timer_start(timout.timer_id,25000) // restarting the guarding timer again
+					end
+				}
+
+				state TemprDecrease{ // Invariant: Switch is OFF and temperature should decrease				
+					transition-> TemprDecrease
+					event temp:get_sensor?temperature
+					guard calc_temp(temp.id,temp.t)>=tmrature+tmrature_min
+					action do
+						guard_temperature!timer_start(temp.id,25000)
+						if (lasttemp_calc<curtemp_calc) request_actuator!SwitchOff(switch_id) // the temperature is still rising even though switch should be OFF, reactivate
+						lasttemp_calc = curtemp_calc
+					end
+					
+					transition -> TemprIncrease
+					event temp:get_sensor?temperature
+					guard calc_temp(temp.id,temp.t)<tmrature+tmrature_min
+					action do
+						guard_temperature!timer_start(temp.id,25000)
+						request_actuator!SwitchOn(switch_id)
+						lasttemp_calc = curtemp_calc
+					end
+					
+					transition -> TemprDecrease
+					event timout:guard_temperature?timer_timeout
+					action do
+						human_output!prompt("WARNING: @TemprDecrease - temperature measurement is delayed")
+						guard_temperature!timer_start(timout.timer_id,25000) // restarting the guarding timer again
+					end
+				}
+
+				
+				transition -> On
+				event swon:human_input?SwitchOn
+				action do
+					request_actuator!SwitchOn(swon.did)
+				end 
+				transition -> Off
+				event swoff:human_input?SwitchOff
+				action do
+					request_actuator!SwitchOff(swoff.did)
+				end 
+				transition -> Thermostat
+				event set_temp:human_input?set_temperature
+				action do
+					tmrature = set_temp.t
+				end
+			} // end Thermostat
+			
+			state On {
+				transition -> Off
+				event swoff:human_input?SwitchOff
+				action do
+					request_actuator!SwitchOff(swoff.did)
+				end 
+				transition -> On
+				event swon:human_input?SwitchOn
+				action do
+					request_actuator!SwitchOn(swon.did)
+				end
+				transition -> Thermostat
+				event set_temp:human_input?set_temperature
+				action do
+					tmrature = set_temp.t
+				end
+				transition -> On
+				event temp:get_sensor?temperature
+				action do
+					guard_temperature!timer_start(temp.id,25000)
+					if (lasttemp_calc>curtemp_calc) request_actuator!SwitchOn(switch_id) // the temperature is still falling even though switch should be ON, reactivate
+					lasttemp_calc = curtemp_calc
+				end
+			}
+			state Off {
+				transition -> Off
+				event swoff:human_input?SwitchOff
+				action do
+					request_actuator!SwitchOff(swoff.did)
+				end 
+				transition -> On
+				event swon:human_input?SwitchOn
+				action do
+					request_actuator!SwitchOn(swon.did)
+				end
+				transition -> Thermostat
+				event set_temp:human_input?set_temperature
+				action do
+					tmrature = set_temp.t
+				end	
+				transition -> Off
+				event temp:get_sensor?temperature
+				action do
+					guard_temperature!timer_start(temp.id,25000)
+					if (lasttemp_calc<curtemp_calc) request_actuator!SwitchOff(switch_id) // the temperature is still rising even though switch should be OFF, reactivate
+					lasttemp_calc = curtemp_calc
+				end
+			}
+			
+			// Transitions of the composite state Running
+			transition -> Running
+			event pollint:human_input?set_polling_interval
+			action do
+				// just forward the polling interval instructions to the PSM
+				request_sensor!set_polling_interval(pollint.intrvl)
+			end
+			
+			// Messages that should not occur
+			transition -> Running
+			event human_input?add_thermometer
+			event human_input?add_device
+			action do
+				human_output!prompt("Adding gadgets has been done and then blocked")
+			end			
+			// Messages the cannot occur - since they are always handled
+			transition -> Running
+			event human_input?SwitchOn
+			event human_input?SwitchOff
+			event human_input?set_temperature
+			action do
+				human_output!prompt("INTERNAL ERROR: Impossible messages at PIM.Running")
+			end		
+			transition -> Running
+			event temp:get_sensor?temperature
+			action do
+				human_output!prompt("INTERNAL ERROR: temperature received at PIM.Running")
+			end
+		} // end Running
+	} // end PIM_behavior
+} // end PIM thing
+

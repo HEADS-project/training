@@ -1,0 +1,45 @@
+import "psm_sim.thingml"
+import "pim.thingml"
+import "io.thingml"
+import "javatimer.thingml"
+
+configuration CPS {
+	instance tlstick:TellstickManager
+	instance T1:ThermometerSet
+	instance onoff1:OnOffSet
+	instance pim:PIM
+	instance myself:Human
+	instance g_temp:TimerJavaSet
+	instance g_humn:TimerJavaSet
+	instance timer : TimerJavaSet
+	
+	// SIMULATION
+	instance tg:TempSim
+	instance onoffobs:OnOffSim
+	instance gdg:GadgetSim
+	
+	// PSM
+	connector tlstick.to_T1 => T1.initial
+	connector tlstick.to_gdg => gdg.show_gadgets
+	connector tlstick.to_onoff1 => onoff1.initial
+	
+	connector T1.provide_val => pim.get_sensor
+	connector T1.timer => timer.timer
+	connector T1.show_values => tg.show_values
+	
+	connector onoff1.show_val => onoffobs.show_onoff
+	
+	// HMI
+	connector myself.send_cmd => pim.human_input
+	
+	// PIM outwards 
+	connector pim.request_sensor => T1.require_val
+	connector pim.request_actuator => onoff1.require_val
+	connector pim.human_output => myself.get_values
+	
+	connector pim.guard_temperature =>g_temp.timer
+	connector pim.guard_human => g_humn.timer
+	
+	// SIMULATION
+	connector tg.give_values => T1.get_values
+}
