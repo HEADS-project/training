@@ -12,15 +12,12 @@ thing TimerJS includes Timer
     end
     
     function _start(delay : Integer)
-    do
-        'this.timer = setTimeout(onTimeout.bind(this),' & delay & ');'
+    do        
+        'this.timer = setTimeout(()=>{' 
+        	timer!timer_timeout() 
+        '},' & delay & ');'        
     end
-    
-    function onTimeout() 
-    do
-        timer!timer_timeout()
-    end
-    
+       
     statechart SoftTimer init default {
         state default {
             
