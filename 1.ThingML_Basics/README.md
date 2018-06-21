@@ -7,9 +7,7 @@ These tutorials are based on ThingML v1.0 which is now outdated and should not b
 
 Most of the examples / tutorials in this repository need to be updated to work with recent versions of ThingML. It is mostly small syntactical updates which are needed but some examples may need more work.
 
-
-**HEADS ThingML modelling language basics**
-===
+## HEADS ThingML modelling language basics
 
 Learn the basics of ThingML. How to write you first program in a platform independent way and compile it to different platforms ranging from an Arduino microcontroller to a plain Java program. Also learn how to write platform specific components and link to exiting APIs or libraries.
 
