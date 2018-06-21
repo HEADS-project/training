@@ -1,5 +1,4 @@
 
-![HEADS](http://heads-project.eu/sites/default/files/heads_large.png)
 
 # ! WARNING !
 
@@ -10,6 +9,9 @@ Most of the examples / tutorials in this repository need to be updated to work w
 ## HEADS ThingML modelling language basics
 
 Learn the basics of ThingML. How to write you first program in a platform independent way and compile it to different platforms ranging from an Arduino microcontroller to a plain Java program. Also learn how to write platform specific components and link to exiting APIs or libraries.
+
+
+![HEADS](http://heads-project.eu/sites/default/files/heads_large.png)
 
 **This tutorial covers:**
 
