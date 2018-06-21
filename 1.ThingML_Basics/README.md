@@ -2,9 +2,14 @@
 
 # WARNING: These tutorials are now obsolete
 
-> These tutorials are based on ThingML v1.0 which is now outdated and should not be used. The latest version of ThingML can be found at https://github.com/TelluIoT/ThingML.
+> These tutorials are based on ThingML v1.0 which is now outdated and should not be used. 
+
+> The latest version of ThingML can be found at https://github.com/TelluIoT/ThingML.
 
 > Most of the examples / tutorials in this repository need to be updated to work with recent versions of ThingML. It is mostly small syntactical updates which are needed but some examples may need more work.
+
+
+# Original README
 
 ## HEADS ThingML modelling language basics
 
